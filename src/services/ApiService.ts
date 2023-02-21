@@ -3,7 +3,7 @@ import {
   bitcoin,
   bitcoin$,
   ethereum,
-  ethereum$,
+  ether$,
   flip$,
   polkadot,
   polkadot$,
@@ -24,15 +24,9 @@ const getPossibleDestinationChains = async (
 };
 
 const getTokens = async (chainId: ChainId): Promise<Token[] | undefined> => {
-  if (chainId === 1) {
-    return Promise.resolve([ethereum$, usdc$, flip$]);
-  }
-  if (chainId === 2) {
-    return Promise.resolve([polkadot$]);
-  }
-  if (chainId === 3) {
-    return Promise.resolve([bitcoin$]);
-  }
+  if (chainId === 1) return Promise.resolve([ether$, usdc$, flip$]);
+  if (chainId === 2) return Promise.resolve([polkadot$]);
+  if (chainId === 3) return Promise.resolve([bitcoin$]);
   return undefined;
 };
 

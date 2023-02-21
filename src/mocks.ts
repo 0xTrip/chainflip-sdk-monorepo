@@ -15,7 +15,7 @@ export const bitcoin: Chain = {
   name: 'bitcoin',
 };
 
-export const ethereum$: Token = {
+export const ether$: Token = {
   chainId: 1,
   contractAddress: '0xeth',
   decimals: 18,
