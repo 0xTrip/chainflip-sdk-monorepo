@@ -5,10 +5,7 @@ export enum Chains {
   BITCOIN = 3,
 }
 
-export type ChainId =
-  | 1 // ethereum
-  | 2 // polkadot
-  | 3; // bitcoin
+export type ChainId = (typeof Chains)[keyof typeof Chains];
 
 export interface Chain {
   id: ChainId;
