@@ -1,3 +1,10 @@
+// eslint-disable-next-line no-shadow
+export enum Chains {
+  ETHEREUM = 1,
+  POLKADOT = 2,
+  BITCOIN = 3,
+}
+
 export type ChainId =
   | 1 // ethereum
   | 2 // polkadot
