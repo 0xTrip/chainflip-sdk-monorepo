@@ -95,7 +95,7 @@ if (!newVersion) {
 
   const [major, minor, patch] = currentVersion.split('.');
 
-  newVersion = `${major}.${minor}.${Number(patch + 1)}`;
+  newVersion = `${major}.${minor}.${Number(patch) + 1}`;
 }
 
 const tagPkg = async () => {
