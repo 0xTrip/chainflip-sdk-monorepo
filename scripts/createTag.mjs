@@ -22,6 +22,14 @@ const args = yargs(process.argv)
     type: 'string',
     description: 'escape hatch for specifying the new version',
   })
+  .option('minor', {
+    description: 'Increment minor version',
+    boolean: true,
+  })
+  .option('major', {
+    description: 'Increment major version',
+    boolean: true,
+  })
   .option('dry-run', {
     demandOption: false,
     default: !['0', 'false'].includes(process.env.DRY_RUN?.toLowerCase()),
@@ -94,8 +102,14 @@ if (!newVersion) {
   }
 
   const [major, minor, patch] = currentVersion.split('.');
-
   newVersion = `${major}.${minor}.${Number(patch) + 1}`;
+
+  if (args.minor) {
+    newVersion = `${major}.${Number(minor) + 1}.0`;
+  }
+  if (args.major) {
+    newVersion = `${Number(major) + 1}.0.0`;
+  }
 }
 
 const tagPkg = async () => {
