@@ -95,20 +95,12 @@ if (!newVersion) {
 
   const [major, minor, patch] = currentVersion.split('.');
 
-  const today = new Date();
-  const currentYear = today.getFullYear().toString();
-  const currentMonth = (today.getMonth() + 1).toString();
-
-  newVersion = `v${
-    currentYear !== major || currentMonth !== minor
-      ? `${currentYear}.${currentMonth}.0`
-      : `${currentYear}.${currentMonth}.${Number(patch) + 1}`
-  }`;
+  newVersion = `${major}.${minor}.${Number(patch + 1)}`;
 }
 
 const tagPkg = async () => {
   await execCommand(`pnpm exec pnpm version ${newVersion}`);
-  const tag = `@chainflip-io/chainflip-sdk/${newVersion}`;
+  const tag = `@chainflip-io/chainflip-sdk/v${newVersion}`;
   await execCommand(`git commit -a -m "${tag}" --no-verify`);
   await execCommand(`git tag ${tag}`);
   await execCommand('git push');
