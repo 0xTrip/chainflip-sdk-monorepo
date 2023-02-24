@@ -11,7 +11,7 @@ export const polkadot: Chain = {
 };
 
 export const bitcoin: Chain = {
-  id: 2,
+  id: 3,
   name: 'bitcoin',
 };
 
@@ -26,7 +26,7 @@ export const ether$: Token = {
 export const usdc$: Token = {
   chainId: 1,
   contractAddress: '0xusdc',
-  decimals: 18,
+  decimals: 6,
   name: 'usdc',
   ticker: 'USDC',
 };
@@ -42,15 +42,15 @@ export const flip$: Token = {
 export const polkadot$: Token = {
   chainId: 2,
   contractAddress: '0xdot',
-  decimals: 18,
+  decimals: 10,
   name: 'dot',
   ticker: 'DOT',
 };
 
 export const bitcoin$: Token = {
-  chainId: 2,
+  chainId: 3,
   contractAddress: '0xbitcoin',
-  decimals: 18,
+  decimals: 6,
   name: 'bitcoin',
   ticker: 'BTC',
 };
