@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   bitcoin,
-  bitcoin$,
+  btc$,
   ethereum,
-  ether$,
+  eth$,
   flip$,
   polkadot,
-  polkadot$,
+  dot$,
   usdc$,
 } from '../mocks';
 import { Chain, ChainId, Chains, Route, RouteRequest, Token } from '../types';
@@ -24,10 +24,9 @@ const getPossibleDestinationChains = async (
 };
 
 const getTokens = async (chainId: ChainId): Promise<Token[] | undefined> => {
-  if (chainId === Chains.ETHEREUM)
-    return Promise.resolve([ether$, usdc$, flip$]);
-  if (chainId === Chains.POLKADOT) return Promise.resolve([polkadot$]);
-  if (chainId === Chains.BITCOIN) return Promise.resolve([bitcoin$]);
+  if (chainId === Chains.ETHEREUM) return Promise.resolve([eth$, usdc$, flip$]);
+  if (chainId === Chains.POLKADOT) return Promise.resolve([dot$]);
+  if (chainId === Chains.BITCOIN) return Promise.resolve([btc$]);
   return undefined;
 };
 

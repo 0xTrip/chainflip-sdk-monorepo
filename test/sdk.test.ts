@@ -1,12 +1,12 @@
 import ChainFlipSDK from '../src/index';
 import {
   bitcoin,
-  bitcoin$,
+  btc$,
   ethereum,
-  ether$,
+  eth$,
   flip$,
   polkadot,
-  polkadot$,
+  dot$,
   usdc$,
 } from '../src/mocks';
 import { Chains } from '../src/types';
@@ -27,18 +27,18 @@ describe('Chainflip SDK', () => {
     it('should return the available tokens for ethereum', async () => {
       const sdk = new ChainFlipSDK();
       expect(await sdk.getTokens(Chains.ETHEREUM)).toStrictEqual([
-        ether$,
+        eth$,
         usdc$,
         flip$,
       ]);
     });
     it('should return the available tokens for polkadot', async () => {
       const sdk = new ChainFlipSDK();
-      expect(await sdk.getTokens(Chains.POLKADOT)).toStrictEqual([polkadot$]);
+      expect(await sdk.getTokens(Chains.POLKADOT)).toStrictEqual([dot$]);
     });
     it('should return the available tokens for bitcoin', async () => {
       const sdk = new ChainFlipSDK();
-      expect(await sdk.getTokens(Chains.BITCOIN)).toStrictEqual([bitcoin$]);
+      expect(await sdk.getTokens(Chains.BITCOIN)).toStrictEqual([btc$]);
     });
   });
 
