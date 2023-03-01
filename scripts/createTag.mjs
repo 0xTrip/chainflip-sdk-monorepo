@@ -99,7 +99,7 @@ if (!newVersion) {
 }
 
 const tagPkg = async () => {
-  await execCommand(`pnpm exec pnpm version ${newVersion}`);
+  await execCommand(`pnpm version ${newVersion}`);
   const tag = `@chainflip-io/chainflip-sdk/v${newVersion}`;
   await execCommand(`git tag ${tag}`);
   await execCommand('git push');
