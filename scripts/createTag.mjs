@@ -49,20 +49,6 @@ if (!onMain) {
   process.exit(1);
 }
 
-const workingDirectoryDirty =
-  (await execAsync('git status --porcelain=v2')).stdout
-    .trim()
-    .split('\n')
-    .filter(Boolean)
-    .filter((line) => !line.startsWith('?')).length !== 0;
-
-if (workingDirectoryDirty) {
-  console.error(
-    'working directory is dirty, please stash changes before proceeding',
-  );
-  process.exit(1);
-}
-
 try {
   await execAsync('git pull origin main --ff-only');
 } catch {
@@ -115,7 +101,6 @@ if (!newVersion) {
 const tagPkg = async () => {
   await execCommand(`pnpm exec pnpm version ${newVersion}`);
   const tag = `@chainflip-io/chainflip-sdk/v${newVersion}`;
-  await execCommand(`git commit -a -m "${tag}" --no-verify`);
   await execCommand(`git tag ${tag}`);
   await execCommand('git push');
   await execCommand(`git push origin refs/tags/${tag}`);
