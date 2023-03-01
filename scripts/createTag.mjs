@@ -56,7 +56,7 @@ const workingDirectoryDirty =
     .filter(Boolean)
     .filter((line) => !line.startsWith('?')).length !== 0;
 
-if (workingDirectoryDirty) {
+if (!workingDirectoryDirty) {
   console.error(
     'working directory is dirty, please stash changes before proceeding',
   );
@@ -81,8 +81,10 @@ const execCommand = async (cmd) => {
 
   if (!isDryRun) {
     try {
-      await execAsync(cmd);
+      const res = await execAsync(cmd);
+      console.log('res', res);
     } catch (error) {
+      console.log('errorroror', error);
       console.error(error);
       process.exit(1);
     }
@@ -113,7 +115,7 @@ if (!newVersion) {
 }
 
 const tagPkg = async () => {
-  await execCommand(`pnpm exec pnpm version ${newVersion}`);
+  // await execCommand(`pnpm exec pnpm version ${newVersion}`);
   const tag = `@chainflip-io/chainflip-sdk/v${newVersion}`;
   await execCommand(`git commit -a -m "${tag}" --no-verify`);
   await execCommand(`git tag ${tag}`);
