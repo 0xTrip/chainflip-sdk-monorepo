@@ -56,12 +56,12 @@ const workingDirectoryDirty =
     .filter(Boolean)
     .filter((line) => !line.startsWith('?')).length !== 0;
 
-// if (workingDirectoryDirty) {
-//   console.error(
-//     'working directory is dirty, please stash changes before proceeding',
-//   );
-//   process.exit(1);
-// }
+if (workingDirectoryDirty) {
+  console.error(
+    'working directory is dirty, please stash changes before proceeding',
+  );
+  process.exit(1);
+}
 
 try {
   await execAsync('git pull origin main --ff-only');
@@ -81,10 +81,8 @@ const execCommand = async (cmd) => {
 
   if (!isDryRun) {
     try {
-      const res = await execAsync(cmd);
-      console.log('res', res);
+      await execAsync(cmd);
     } catch (error) {
-      console.log('errorroror', error);
       console.error(error);
       process.exit(1);
     }
