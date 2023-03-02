@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Chain, Chains, ChainId, Route, RouteRequest, Token } from '../types';
 import {
   bitcoin,
   btc$,
@@ -9,7 +10,6 @@ import {
   dot$,
   usdc$,
 } from '../mocks';
-import { Chain, ChainId, Chains, Route, RouteRequest, Token } from '../types';
 
 const getChains = async (): Promise<Chain[]> =>
   Promise.resolve([ethereum, polkadot, bitcoin]);

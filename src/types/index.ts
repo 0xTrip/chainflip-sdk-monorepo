@@ -6,7 +6,6 @@ export enum Chains {
 }
 
 export type ChainId = (typeof Chains)[keyof typeof Chains];
-
 export interface Chain {
   id: ChainId;
   name: string;

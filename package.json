@@ -9,13 +9,6 @@
     "dist",
     "README.md"
   ],
-  "typesVersions": {
-    "*": {
-      "dist/*": [
-        "dist/*"
-      ]
-    }
-  },
   "scripts": {
     "test": "jest --forceExit",
     "build": "rm -rf dist && tsc --project ./tsconfig.json && tsc --project ./tsconfig.cjs.json",

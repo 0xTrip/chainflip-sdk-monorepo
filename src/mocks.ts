@@ -1,4 +1,4 @@
-import { Chain, Token } from './types';
+import type { Chain, Token } from './types';
 
 export const ethereum: Chain = {
   id: 1,
