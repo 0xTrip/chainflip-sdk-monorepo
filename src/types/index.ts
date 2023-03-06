@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-shadow
-export enum Chains {
+export const enum Chains {
   ETHEREUM = 1,
   POLKADOT = 2,
   BITCOIN = 3,
