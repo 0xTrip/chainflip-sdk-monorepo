@@ -1,3 +1,4 @@
+import { Chains } from '../src/consts';
 import ChainFlipSDK from '../src/index';
 import {
   bitcoin,
@@ -9,7 +10,6 @@ import {
   dot$,
   usdc$,
 } from '../src/mocks';
-import { Chains } from '../src/types';
 
 describe('Chainflip SDK', () => {
   describe('chains', () => {
