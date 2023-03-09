@@ -1,5 +1,7 @@
 import { Chains } from '../consts';
 
+export * from '../consts';
+
 export type ChainId = (typeof Chains)[keyof typeof Chains];
 export interface Chain {
   id: ChainId;
