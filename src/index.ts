@@ -1,6 +1,7 @@
 import type { Chain, ChainId, Token, RouteRequest, Route } from './types';
-
 import ApiService from './services/ApiService';
+
+export * from './types';
 
 export default class ChainFlipSDK {
   public async getChains(): Promise<Chain[]> {
