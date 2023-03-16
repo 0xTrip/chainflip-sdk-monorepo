@@ -1,6 +1,13 @@
 import { BACKEND_SERVICE_URL, ChainId } from './consts';
-import ApiService from './services/ApiService';
-import type { Chain, Token, RouteRequest, Route } from './types';
+import ApiService, { RequestOptions } from './services/ApiService';
+import type {
+  Chain,
+  Token,
+  RouteRequest,
+  SwapRequest,
+  SwapResponse,
+  RouteResponse,
+} from './types';
 
 export { ChainId };
 export * from './types';
@@ -31,8 +38,17 @@ export class SwapSDK {
     return ApiService.getTokens(chainId);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  getRoute(routeRequest: RouteRequest): Promise<Route> {
-    return ApiService.getRoute(routeRequest);
+  getRoute(
+    routeRequest: RouteRequest,
+    options: RequestOptions = {},
+  ): Promise<RouteResponse> {
+    return ApiService.getRoute(this.baseUrl, routeRequest, options);
+  }
+
+  executeRoute(
+    swapRequest: SwapRequest,
+    options: RequestOptions = {},
+  ): Promise<SwapResponse> {
+    return ApiService.executeRoute(this.baseUrl, swapRequest, options);
   }
 }

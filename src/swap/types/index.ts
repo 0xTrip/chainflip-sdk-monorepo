@@ -1,4 +1,4 @@
-import { ChainId } from '../consts';
+import { ChainId, TokenSymbol } from '../consts';
 
 export type { SDKOptions } from '../sdk';
 
@@ -15,17 +15,26 @@ export interface Token {
   symbol: string;
 }
 
-export interface RouteRequest {
+interface Route {
   srcChainId: ChainId;
   destChainId: ChainId;
-  srcTokenSymbol: string;
-  destTokenSymbol: string;
+  srcTokenSymbol: TokenSymbol;
+  destTokenSymbol: TokenSymbol;
 }
 
-// tbd
-export interface Route {
-  srcChainId: ChainId;
-  destChainId: ChainId;
-  srcTokenSymbol: string;
-  destTokenSymbol: string;
+export interface RouteRequest extends Route {
+  amount: string;
+}
+
+export interface RouteResponse extends Route {
+  rate: string;
+}
+
+export interface SwapRequest extends Route {
+  egressAddress: string;
+}
+
+export interface SwapResponse {
+  id: string;
+  ingressAddress: string;
 }
