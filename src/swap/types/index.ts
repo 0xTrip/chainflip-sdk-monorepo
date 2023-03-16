@@ -1,8 +1,7 @@
-import { Chains } from '../consts';
+import { ChainId } from '../consts';
 
-export * from '../consts';
+export type { SDKOptions } from '../sdk';
 
-export type ChainId = (typeof Chains)[keyof typeof Chains];
 export interface Chain {
   id: ChainId;
   name: string;
@@ -13,20 +12,20 @@ export interface Token {
   contractAddress: string;
   decimals: number;
   name: string;
-  ticker: string;
+  symbol: string;
 }
 
 export interface RouteRequest {
   srcChainId: ChainId;
   destChainId: ChainId;
-  srcTokenTicker: string;
-  destTokenTicker: string;
+  srcTokenSymbol: string;
+  destTokenSymbol: string;
 }
 
 // tbd
 export interface Route {
   srcChainId: ChainId;
   destChainId: ChainId;
-  srcTokenTicker: string;
-  destTokenTicker: string;
+  srcTokenSymbol: string;
+  destTokenSymbol: string;
 }

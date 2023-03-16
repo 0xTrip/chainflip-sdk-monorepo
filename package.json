@@ -2,16 +2,35 @@
   "name": "@chainflip-io/chainflip-sdk",
   "version": "0.0.12",
   "description": "",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "exports": {
+    "./swap": {
+      "import": "./dist/mjs/swap/index.js",
+      "require": "./dist/cjs/swap/index.js",
+      "type": "./dist/mjs/swap/index.d.ts"
+    },
+    "./swap/types": {
+      "import": "./dist/mjs/swap/types/index.js",
+      "require": "./dist/cjs/swap/types/index.js",
+      "type": "./dist/mjs/swap/types/index.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "swap": [
+        "dist/cjs/swap/index.d.ts"
+      ],
+      "swap/types": [
+        "dist/cjs/swap/types/index.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist",
     "README.md"
   ],
   "scripts": {
     "test": "jest --forceExit",
-    "build": "rm -rf dist && tsc --project ./tsconfig.json && tsc --project ./tsconfig.cjs.json",
+    "build": "rm -rf dist && tsc --project ./tsconfig.mjs.json && tsc --project ./tsconfig.cjs.json",
     "start": "node ./dist/cjs/main.js",
     "prepare": "husky install"
   },

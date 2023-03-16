@@ -20,7 +20,7 @@ export const eth$: Token = {
   contractAddress: '0xeth',
   decimals: 18,
   name: 'ether',
-  ticker: 'ETH',
+  symbol: 'ETH',
 };
 
 export const usdc$: Token = {
@@ -28,7 +28,7 @@ export const usdc$: Token = {
   contractAddress: '0xusdc',
   decimals: 6,
   name: 'usdc',
-  ticker: 'USDC',
+  symbol: 'USDC',
 };
 
 export const flip$: Token = {
@@ -36,7 +36,7 @@ export const flip$: Token = {
   contractAddress: '0xflip',
   decimals: 18,
   name: 'flip',
-  ticker: 'FLIP',
+  symbol: 'FLIP',
 };
 
 export const dot$: Token = {
@@ -44,7 +44,7 @@ export const dot$: Token = {
   contractAddress: '0xdot',
   decimals: 10,
   name: 'dot',
-  ticker: 'DOT',
+  symbol: 'DOT',
 };
 
 export const btc$: Token = {
@@ -52,5 +52,5 @@ export const btc$: Token = {
   contractAddress: '0xbitcoin',
   decimals: 8,
   name: 'bitcoin',
-  ticker: 'BTC',
+  symbol: 'BTC',
 };
