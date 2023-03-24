@@ -17,14 +17,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check commit message
+        id: check-commit
+        run: |
+          publish=false
+          if [[ ${{ github.event.head_commit.message }} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          then
+            publish=true
+          fi
+
+          echo "publish=$skip" >> $GITHUB_OUTPUT
+
       - name: Get Node.JS version from package.json 👀
+        if: steps.check-commit.publish == 'true'
         id: get-versions
         run: echo "nodeVersion=$(jq -r .engines.node ./package.json)" >> $GITHUB_OUTPUT
 
       - name: Install pnpm 💿
+        if: steps.check-commit.publish == 'true'
         run: npm install -g pnpm@7
 
       - name: Setup Node 🎮
+        if: steps.check-commit.publish == 'true'
         uses: actions/setup-node@v3
         with:
           node-version: ${{ steps.get-versions.outputs.nodeVersion }}
@@ -33,13 +47,16 @@ jobs:
           scope: "@chainflip-io"
 
       - name: Install dependencies 🚚 📦
+        if: steps.check-commit.publish == 'true'
         run: pnpm install
 
       - name: Build
+        if: steps.check-commit.publish == 'true'
         run: pnpm build
         working-directory: ./
 
       - name: Publish npm package 📦
+        if: steps.check-commit.publish == 'true'
         run: |
           pnpm publish
         working-directory: ./
