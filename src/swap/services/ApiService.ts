@@ -16,6 +16,8 @@ import {
   RouteResponse,
   SwapRequest,
   SwapResponse,
+  SwapStatusRequest,
+  SwapStatusResponse,
   Token,
 } from '../types';
 
@@ -85,10 +87,21 @@ const executeRoute: BackendQuery<SwapRequest, SwapResponse> = async (
   return data;
 };
 
+const getStatus: BackendQuery<SwapStatusRequest, SwapStatusResponse> = async (
+  baseUrl,
+  { swapIntentId },
+  { signal },
+): Promise<SwapStatusResponse> => {
+  const url = new URL(`/swaps?${swapIntentId}`, baseUrl).toString();
+  const { data } = await axios.get<SwapStatusResponse>(url, { signal });
+  return data;
+};
+
 export default {
   getChains,
   getPossibleDestinationChains,
   getRoute,
   getTokens,
+  getStatus,
   executeRoute,
 };

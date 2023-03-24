@@ -7,6 +7,8 @@ import type {
   SwapRequest,
   SwapResponse,
   RouteResponse,
+  SwapStatusRequest,
+  SwapStatusResponse,
 } from './types';
 
 export { ChainId };
@@ -50,5 +52,12 @@ export class SwapSDK {
     options: RequestOptions = {},
   ): Promise<SwapResponse> {
     return ApiService.executeRoute(this.baseUrl, swapRequest, options);
+  }
+
+  getStatus(
+    swapStatusRequest: SwapStatusRequest,
+    options: RequestOptions = {},
+  ): Promise<SwapStatusResponse> {
+    return ApiService.getStatus(this.baseUrl, swapStatusRequest, options);
   }
 }
