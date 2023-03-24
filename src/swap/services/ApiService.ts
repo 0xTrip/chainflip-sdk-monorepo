@@ -14,7 +14,6 @@ import {
   Chain,
   RouteRequest,
   RouteResponse,
-  SwapRequest,
   SwapResponse,
   SwapStatusRequest,
   SwapStatusResponse,
@@ -60,6 +59,7 @@ const getRoute: BackendQuery<RouteRequest, RouteResponse> = async (
     amount,
     ingressAsset: routeRequest.srcTokenSymbol,
     egressAsset: routeRequest.destTokenSymbol,
+    egressAddress: routeRequest.egressAddress,
   });
 
   const url = new URL(`/rates?${queryParams.toString()}`, baseUrl).toString();
@@ -69,7 +69,7 @@ const getRoute: BackendQuery<RouteRequest, RouteResponse> = async (
   return { rate: data.rate, ...routeRequest };
 };
 
-const executeRoute: BackendQuery<SwapRequest, SwapResponse> = async (
+const executeRoute: BackendQuery<RouteResponse, SwapResponse> = async (
   baseUrl,
   route,
   { signal },

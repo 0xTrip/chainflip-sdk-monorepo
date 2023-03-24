@@ -20,6 +20,7 @@ interface Route {
   destChainId: ChainId;
   srcTokenSymbol: TokenSymbol;
   destTokenSymbol: TokenSymbol;
+  egressAddress: string;
 }
 
 export interface RouteRequest extends Route {
@@ -28,10 +29,6 @@ export interface RouteRequest extends Route {
 
 export interface RouteResponse extends Route {
   rate: string;
-}
-
-export interface SwapRequest extends Route {
-  egressAddress: string;
 }
 
 export interface SwapResponse {

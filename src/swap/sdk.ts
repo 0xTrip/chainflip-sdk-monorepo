@@ -4,7 +4,6 @@ import type {
   Chain,
   Token,
   RouteRequest,
-  SwapRequest,
   SwapResponse,
   RouteResponse,
   SwapStatusRequest,
@@ -48,10 +47,10 @@ export class SwapSDK {
   }
 
   executeRoute(
-    swapRequest: SwapRequest,
+    routeResponse: RouteResponse,
     options: RequestOptions = {},
   ): Promise<SwapResponse> {
-    return ApiService.executeRoute(this.baseUrl, swapRequest, options);
+    return ApiService.executeRoute(this.baseUrl, routeResponse, options);
   }
 
   getStatus(
