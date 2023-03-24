@@ -30,6 +30,7 @@
   ],
   "scripts": {
     "test": "jest --forceExit",
+    "test:ci": "CI=1 jest --forceExit",
     "build": "rm -rf dist && tsc --project ./tsconfig.mjs.json && tsc --project ./tsconfig.cjs.json",
     "start": "node ./dist/cjs/swap/index.js",
     "dev": "tsc-watch --noClear --compiler ./node_modules/typescript/bin/tsc --onFirstSuccess \"nodemon\"",
