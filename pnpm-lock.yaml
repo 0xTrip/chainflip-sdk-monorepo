@@ -19,7 +19,7 @@ specifiers:
   lint-staged: ^13.1.2
   nodemon: ^2.0.21
   prettier: ^2.8.4
-  tsc-watch: ^4.6.2
+  tsc-watch: ^6.0.0
   typescript: ^5.0.0
   yargs: ^17.5.1
 
@@ -44,7 +44,7 @@ devDependencies:
   lint-staged: 13.1.2
   nodemon: 2.0.21
   prettier: 2.8.4
-  tsc-watch: 4.6.2_typescript@5.0.2
+  tsc-watch: 6.0.0_typescript@5.0.2
   typescript: 5.0.2
   yargs: 17.7.0
 
@@ -3799,11 +3799,6 @@ packages:
       duplexer: 0.1.2
     dev: true
 
-  /string-argv/0.1.2:
-    resolution: {integrity: sha512-mBqPGEOMNJKXRo7z0keX0wlAhbBAjilUdPW13nN0PecVryZxdHIeM7TqbsSUA7VYuS00HGC6mojP7DlQzfa9ZA==}
-    engines: {node: '>=0.6.19'}
-    dev: true
-
   /string-argv/0.3.1:
     resolution: {integrity: sha512-a1uQGz7IyVy9YwhqjZIZu1c8JO8dNIe20xBmSS6qu9kv++k3JGzCVmprbNN5Kn+BgzD5E7YYwg1CcjuJMRNsvg==}
     engines: {node: '>=0.6.19'}
@@ -3956,9 +3951,9 @@ packages:
       nopt: 1.0.10
     dev: true
 
-  /tsc-watch/4.6.2_typescript@5.0.2:
-    resolution: {integrity: sha512-eHWzZGkPmzXVGQKbqQgf3BFpGiZZw1jQ29ZOJeaSe8JfyUvphbd221NfXmmsJUGGPGA/nnaSS01tXipUcyxAxg==}
-    engines: {node: '>=8.17.0'}
+  /tsc-watch/6.0.0_typescript@5.0.2:
+    resolution: {integrity: sha512-zgpju+/z5z29/kK5V28Nz16CMkX2voFOUxkTlCim/R25hxzbyUqu2NfTnmJBQfESBSPbEQUGqDdB9A8opAcB4A==}
+    engines: {node: '>=12.12.0'}
     hasBin: true
     peerDependencies:
       typescript: '*'
@@ -3966,8 +3961,7 @@ packages:
       cross-spawn: 7.0.3
       node-cleanup: 2.1.2
       ps-tree: 1.2.0
-      string-argv: 0.1.2
-      strip-ansi: 6.0.1
+      string-argv: 0.3.1
       typescript: 5.0.2
     dev: true
 
