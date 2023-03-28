@@ -20,6 +20,7 @@ describe('server', () => {
       expect((await request(app).get('/fees')).body).toMatchInlineSnapshot(`
         {
           "assets": {
+            "BTC": "0.0015",
             "DOT": "0.0015",
             "ETH": "0.0015",
             "FLIP": "0.0015",
