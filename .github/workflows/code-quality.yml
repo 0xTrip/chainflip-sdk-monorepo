@@ -16,7 +16,6 @@ on:
 
 env:
   FORCE_COLOR: 1
-  PACKAGE: "@chainflip-io/chainflip-sdk"
 
 jobs:
   test:
@@ -38,7 +37,7 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies 🚚 📦
-        run: pnpm --filter $PACKAGE install
+        run: pnpm install
 
       - name: Run prettier check
         run: pnpm prettier:check
