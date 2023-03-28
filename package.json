@@ -1,6 +1,6 @@
 {
   "name": "@chainflip-io/chainflip-sdk-monorepo",
-  "version": "0.0.0",
+  "version": "0.0.16",
   "description": "",
   "scripts": {
     "build:shared": "pnpm --filter @chainflip-io/sdk-shared build",
