@@ -26,7 +26,7 @@ jobs:
 
       - name: Check commit message
         run: |
-          if [[ "${{ github.event.head_commit.message }}" =~ ^@chainflip-io/chainflip-sdk/[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          if [[ "${{ github.event.head_commit.message }}" =~ ^@chainflip-io/chainflip-sdk/v[0-9]+\.[0-9]+\.[0-9]+$ ]]
           then
             echo "publish=true" >> $GITHUB_ENV
           fi

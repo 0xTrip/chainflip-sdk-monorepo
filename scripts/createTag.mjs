@@ -99,11 +99,11 @@ if (!newVersion) {
   const [major, minor, patch] = currentVersion.split('.');
 
   if (args.minor) {
-    newVersion = `v${major}.${Number(minor) + 1}.0`;
+    newVersion = `${major}.${Number(minor) + 1}.0`;
   } else if (args.major) {
-    newVersion = `v${Number(major) + 1}.0.0`;
+    newVersion = `${Number(major) + 1}.0.0`;
   } else {
-    newVersion = `v${major}.${minor}.${Number(patch) + 1}`;
+    newVersion = `${major}.${minor}.${Number(patch) + 1}`;
   }
 }
 
@@ -111,11 +111,11 @@ const tagPkg = async () => {
   await execCommand(
     `pnpm --filter ${packageJSON.name} exec pnpm version ${newVersion}`,
   );
-  const tag = `${packageJSON.name}/${newVersion}`;
+  const tag = `${packageJSON.name}/v${newVersion}`;
   await execCommand(`git commit -a -m "${tag}" --no-verify`);
   await execCommand(`git tag ${tag}`);
-  // await execCommand('git push');
-  // await execCommand(`git push origin refs/tags/${tag}`);
+  await execCommand('git push');
+  await execCommand(`git push origin refs/tags/${tag}`);
 };
 
 await tagPkg();
