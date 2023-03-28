@@ -1,7 +1,7 @@
-import { newSwapSchema } from '@chainflip-io/sdk-shared/schemas';
 import assert from 'assert';
 import BigNumber from 'bignumber.js';
 import express from 'express';
+import { newSwapSchema } from '@/shared/schemas';
 import { asyncHandler } from './common';
 import prisma from '../client';
 import {

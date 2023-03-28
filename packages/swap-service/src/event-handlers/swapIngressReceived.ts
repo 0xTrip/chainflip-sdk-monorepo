@@ -1,7 +1,7 @@
 // Set the column in the DB to the block timestamp and the ingress amount.
-import { unsignedInteger, hexString } from '@chainflip-io/sdk-shared/parsers';
 import assert from 'assert';
 import { z } from 'zod';
+import { unsignedInteger, hexString } from '@/shared/parsers';
 import { stateChainAsset } from '../utils/assets';
 import logger from '../utils/logger';
 import type { EventHandlerArgs } from '.';

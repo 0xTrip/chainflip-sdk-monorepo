@@ -1,5 +1,5 @@
-import { unsignedInteger } from '@chainflip-io/sdk-shared/parsers';
 import { z } from 'zod';
+import { unsignedInteger } from '@/shared/parsers';
 import { assetToNetwork, egressId } from './common';
 import { stateChainAsset } from '../utils/assets';
 import logger from '../utils/logger';

@@ -4,23 +4,23 @@
   "description": "",
   "exports": {
     "./swap": {
-      "import": "./dist/mjs/swap/index.js",
-      "require": "./dist/cjs/swap/index.js",
-      "type": "./dist/mjs/swap/index.d.ts"
+      "import": "./dist/swap.mjs",
+      "require": "./dist/swap.js",
+      "type": "./dist/swap.d.ts"
     },
     "./swap/types": {
-      "import": "./dist/mjs/swap/types/index.js",
-      "require": "./dist/cjs/swap/types/index.js",
-      "type": "./dist/mjs/swap/types/index.d.ts"
+      "import": "./dist/types.mjs",
+      "require": "./dist/types.js",
+      "type": "./dist/types.d.ts"
     }
   },
   "typesVersions": {
     "*": {
       "swap": [
-        "dist/cjs/swap/index.d.ts"
+        "dist/swap.d.ts"
       ],
       "swap/types": [
-        "dist/cjs/swap/types/index.d.ts"
+        "dist/types.d.ts"
       ]
     }
   },
@@ -31,7 +31,7 @@
   "scripts": {
     "test": "jest --forceExit",
     "test:ci": "CI=1 jest --forceExit",
-    "build": "rm -rf dist && tsc --project ./tsconfig.mjs.json && tsc --project ./tsconfig.cjs.json",
+    "build": "rm -rf dist && tsup",
     "start": "node ./dist/cjs/swap/index.js",
     "dev": "tsc-watch --noClear --compiler ./node_modules/typescript/bin/tsc --onFirstSuccess \"nodemon\"",
     "typecheck": "tsc"
@@ -48,7 +48,9 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@chainflip-io/sdk-shared": "workspace:../shared",
     "axios": "^1.3.4"
+  },
+  "devDependencies": {
+    "tsup": "^6.7.0"
   }
 }

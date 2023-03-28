@@ -1,5 +1,5 @@
-import { unsignedInteger } from '@chainflip-io/sdk-shared/parsers';
 import { z } from 'zod';
+import { unsignedInteger } from '@/shared/parsers';
 import { egressId } from './common';
 import logger from '../utils/logger';
 import type { EventHandlerArgs } from '.';

@@ -1,10 +1,6 @@
-import {
-  SupportedAsset,
-  Network,
-  network,
-} from '@chainflip-io/sdk-shared/assets';
-import { unsignedInteger } from '@chainflip-io/sdk-shared/parsers';
 import { z } from 'zod';
+import { SupportedAsset, Network, network } from '@/shared/assets';
+import { unsignedInteger } from '@/shared/parsers';
 
 export const assetToNetwork: Record<SupportedAsset, Network> = {
   DOT: 'Polkadot',

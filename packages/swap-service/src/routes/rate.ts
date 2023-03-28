@@ -1,5 +1,5 @@
-import { rateQuerySchema } from '@chainflip-io/sdk-shared/schemas';
 import express from 'express';
+import { rateQuerySchema } from '@/shared/schemas';
 import { asyncHandler } from './common';
 import logger from '../utils/logger';
 import ServiceError from '../utils/ServiceError';

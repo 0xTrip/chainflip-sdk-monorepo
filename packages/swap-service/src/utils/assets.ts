@@ -1,11 +1,8 @@
-import {
-  SupportedAsset,
-  supportedAsset,
-} from '@chainflip-io/sdk-shared/assets';
 import { hexToU8a, isHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import * as ethers from 'ethers';
 import { z } from 'zod';
+import { SupportedAsset, supportedAsset } from '@/shared/assets';
 import ServiceError from './ServiceError';
 
 export const stateChainAsset = z

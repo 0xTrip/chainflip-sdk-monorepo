@@ -1,6 +1,6 @@
-import { network as networkSchema } from '@chainflip-io/sdk-shared/assets';
-import { unsignedInteger } from '@chainflip-io/sdk-shared/parsers';
 import { z } from 'zod';
+import { network as networkSchema } from '@/shared/assets';
+import { unsignedInteger } from '@/shared/parsers';
 import { Prisma } from '../client';
 import logger from '../utils/logger';
 import type { EventHandlerArgs } from '.';

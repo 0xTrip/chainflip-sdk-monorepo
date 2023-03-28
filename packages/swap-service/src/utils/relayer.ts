@@ -1,13 +1,6 @@
-import {
-  supportedAsset,
-  SupportedAsset,
-} from '@chainflip-io/sdk-shared/assets';
-import {
-  bareHexString,
-  hexString,
-  numericString,
-} from '@chainflip-io/sdk-shared/parsers';
 import { z } from 'zod';
+import { supportedAsset, SupportedAsset } from '@/shared/assets';
+import { bareHexString, hexString, numericString } from '@/shared/parsers';
 import { memoize } from './function';
 import RpcClient from './RpcClient';
 import { transformAsset } from './string';

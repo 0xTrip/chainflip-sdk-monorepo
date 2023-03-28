@@ -41,7 +41,7 @@ jobs:
         run: pnpm prettier:check
 
       - name: Run eslint check
-        run: pnpm eslint .
+        run: pnpm eslint:check
 
       - name: Run typecheck
         run: pnpm typecheck

@@ -1,4 +1,4 @@
-import type { SupportedAsset } from '@chainflip-io/sdk-shared/assets';
+import type { SupportedAsset } from '@/shared/assets';
 import type { RpcAsset } from './RpcClient';
 
 export const transformAsset = (asset: SupportedAsset): RpcAsset =>

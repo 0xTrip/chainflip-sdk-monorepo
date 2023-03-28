@@ -1,6 +1,6 @@
-import { Network } from '@chainflip-io/sdk-shared/assets';
-import { unsignedInteger } from '@chainflip-io/sdk-shared/parsers';
 import { z } from 'zod';
+import { Network } from '@/shared/assets';
+import { unsignedInteger } from '@/shared/parsers';
 import logger from '../utils/logger';
 import type { EventHandlerArgs } from './index';
 

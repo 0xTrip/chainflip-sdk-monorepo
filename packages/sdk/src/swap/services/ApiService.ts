@@ -1,8 +1,5 @@
-import type {
-  RateQueryParams,
-  SwapRequestBody,
-} from '@chainflip-io/sdk-shared/schemas';
 import axios from 'axios';
+import type { RateQueryParams, SwapRequestBody } from '@/shared/schemas';
 import { ChainId } from '../consts';
 import {
   bitcoin,

@@ -4,10 +4,12 @@
   "description": "Back end swapping service",
   "private": true,
   "scripts": {
-    "build": "prisma generate && tsc",
+    "build": "pnpm clean && prisma generate && tsc && tsc-alias && mv lib/swap-service/src/model lib",
+    "clean": "rm -rf lib",
     "preinstall": "npx only-allow pnpm",
     "lint": "pnpm eslint --max-warnings 0 './**/*.ts'",
     "prettier:write": "pnpm prettier --write ./**/*",
+    "start": "node lib/swap-service/src/index.js",
     "test:ci": "CI=1 jest --forceExit",
     "test": "jest --runInBand",
     "typecheck": "tsc --noEmit"
@@ -33,7 +35,6 @@
     "pnpm": ">=7"
   },
   "dependencies": {
-    "@chainflip-io/sdk-shared": "workspace:../shared",
     "@polkadot/util": "^11.1.1",
     "@polkadot/util-crypto": "^11.1.1",
     "@prisma/client": "^4.11.0",
@@ -44,6 +45,7 @@
     "dotenv": "^16.0.3",
     "ethers": "^6.2.0",
     "express": "^4.18.2",
+    "pg": "^8.10.0",
     "qs": "^6.11.1",
     "rxjs": "^7.8.0",
     "typeorm": "^0.3.12",
