@@ -1,19 +1,11 @@
+import { rateQuerySchema } from '@chainflip-io/sdk-shared/schemas';
 import express from 'express';
-import { z } from 'zod';
 import { asyncHandler } from './common';
-import { supportedAsset } from '../utils/assets';
 import logger from '../utils/logger';
-import { numericString } from '../utils/parsers';
 import ServiceError from '../utils/ServiceError';
 import { getRateEstimate } from '../utils/statechain';
 
 const router = express.Router();
-
-const rateQuerySchema = z.object({
-  ingressAsset: supportedAsset,
-  egressAsset: supportedAsset,
-  amount: numericString,
-});
 
 router.get(
   '/',

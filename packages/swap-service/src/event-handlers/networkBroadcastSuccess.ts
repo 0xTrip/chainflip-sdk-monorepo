@@ -1,7 +1,7 @@
+import { Network } from '@chainflip-io/sdk-shared/assets';
+import { unsignedInteger } from '@chainflip-io/sdk-shared/parsers';
 import { z } from 'zod';
-import { Network } from './common';
 import logger from '../utils/logger';
-import { unsignedInteger } from '../utils/parsers';
 import type { EventHandlerArgs } from './index';
 
 const eventArgs = z.object({

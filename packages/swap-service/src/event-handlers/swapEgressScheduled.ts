@@ -1,8 +1,8 @@
-import { Prisma } from '.prisma/client';
+import { network as networkSchema } from '@chainflip-io/sdk-shared/assets';
+import { unsignedInteger } from '@chainflip-io/sdk-shared/parsers';
 import { z } from 'zod';
-import { network as networkSchema } from './common';
+import { Prisma } from '../client';
 import logger from '../utils/logger';
-import { unsignedInteger } from '../utils/parsers';
 import type { EventHandlerArgs } from '.';
 
 const eventArgs = z.object({

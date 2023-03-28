@@ -47,6 +47,7 @@ model Swap {
 enum Network {
   Polkadot
   Ethereum
+  Bitcoin
 }
 
 model Egress {

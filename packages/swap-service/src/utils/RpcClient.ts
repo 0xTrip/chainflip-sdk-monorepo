@@ -1,9 +1,9 @@
+import { SupportedAsset } from '@chainflip-io/sdk-shared/assets';
 import { once } from 'events';
 import { filter, firstValueFrom, Subject, timeout } from 'rxjs';
 import { setTimeout as sleep } from 'timers/promises';
 import WebSocket from 'ws';
 import { z } from 'zod';
-import { SupportedAsset } from './assets';
 import { handleExit } from './function';
 import logger from './logger';
 

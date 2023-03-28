@@ -1,8 +1,14 @@
 {
-  "name": "@chainflip-io/chainflip-sdk",
+  "name": "@chainflip-io/chainflip-sdk-monorepo",
   "version": "0.0.0",
   "description": "",
   "scripts": {
+    "build:shared": "pnpm --filter @chainflip-io/sdk-shared build",
+    "build:sdk": "pnpm build:shared && pnpm --filter @chainflip-io/chainflip-sdk build",
+    "build:swap-service": "pnpm build:shared && pnpm --filter swap-service build",
+    "prettier:check": "pnpm prettier ./** --check",
+    "prettier:write": "pnpm prettier ./** --check",
+    "typecheck": "pnpm -r typecheck",
     "prepare": "husky install"
   },
   "keywords": [],
@@ -14,7 +20,6 @@
     "@types/jest": "^29.4.0",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
-    "dotenv": "^16.0.0",
     "eslint": "^8.21.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",

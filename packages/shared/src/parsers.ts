@@ -1,8 +1,7 @@
-import * as util from 'util';
 import { z, ZodErrorMap } from 'zod';
 
 const errorMap: ZodErrorMap = (issue, context) => ({
-  message: util.format('received: %O', context.data),
+  message: `received: ${JSON.stringify(context.data)}`,
 });
 
 export const string = z.string({ errorMap });

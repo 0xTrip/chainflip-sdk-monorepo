@@ -1,17 +1,19 @@
+import {
+  SupportedAsset,
+  supportedAsset,
+} from '@chainflip-io/sdk-shared/assets';
 import { hexToU8a, isHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import * as ethers from 'ethers';
 import { z } from 'zod';
 import ServiceError from './ServiceError';
 
-export const supportedAsset = z.enum(['USDC', 'FLIP', 'DOT', 'ETH']);
-export type SupportedAsset = z.infer<typeof supportedAsset>;
 export const stateChainAsset = z
   .enum(['Usdc', 'Flip', 'Dot', 'Eth'])
   .transform((val) => val.toUpperCase() as SupportedAsset);
 
 export const validateAddress = (
-  egressAsset: z.infer<typeof supportedAsset>,
+  egressAsset: SupportedAsset,
   address: string,
 ): void => {
   if (
@@ -54,4 +56,5 @@ export const decimalPlaces: Record<SupportedAsset, number> = {
   ETH: 18,
   FLIP: 18,
   USDC: 6,
+  BTC: 8,
 };

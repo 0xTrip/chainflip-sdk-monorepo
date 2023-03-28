@@ -1,8 +1,12 @@
+import {
+  SupportedAsset,
+  supportedAsset,
+} from '@chainflip-io/sdk-shared/assets';
+import { numericString } from '@chainflip-io/sdk-shared/parsers';
 import BigNumber from 'bignumber.js';
 import { z } from 'zod';
-import { decimalPlaces, SupportedAsset, supportedAsset } from './assets';
+import { decimalPlaces } from './assets';
 import { memoize } from './function';
-import { numericString } from './parsers';
 import RpcClient from './RpcClient';
 import { transformAsset } from './string';
 

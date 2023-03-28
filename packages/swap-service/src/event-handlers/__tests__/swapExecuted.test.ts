@@ -29,7 +29,7 @@ describe(swapExecuted, () => {
   });
 
   it('updates an existing swap with the execution timestamp', async () => {
-    const swapId = event.args.swapId;
+    const { swapId } = event.args;
 
     // store a new swap intent to initiate a new swap
     const swapIntent = await createSwapIntent({

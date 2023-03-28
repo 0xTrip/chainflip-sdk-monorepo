@@ -33,7 +33,8 @@
     "test:ci": "CI=1 jest --forceExit",
     "build": "rm -rf dist && tsc --project ./tsconfig.mjs.json && tsc --project ./tsconfig.cjs.json",
     "start": "node ./dist/cjs/swap/index.js",
-    "dev": "tsc-watch --noClear --compiler ./node_modules/typescript/bin/tsc --onFirstSuccess \"nodemon\""
+    "dev": "tsc-watch --noClear --compiler ./node_modules/typescript/bin/tsc --onFirstSuccess \"nodemon\"",
+    "typecheck": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -47,6 +48,7 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
+    "@chainflip-io/sdk-shared": "workspace:../shared",
     "axios": "^1.3.4"
   }
 }

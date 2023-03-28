@@ -29,7 +29,7 @@ describe(swapEgressScheduled, () => {
   });
 
   it('updates an existing swap with the scheduled timestamp', async () => {
-    const swapId = event.args.swapId;
+    const { swapId } = event.args;
 
     await prisma.egress.create({
       data: {

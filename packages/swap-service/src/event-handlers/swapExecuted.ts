@@ -1,6 +1,6 @@
+import { unsignedInteger } from '@chainflip-io/sdk-shared/parsers';
 import { z } from 'zod';
 import logger from '../utils/logger';
-import { unsignedInteger } from '../utils/parsers';
 import type { EventHandlerArgs } from '.';
 
 const eventArgs = z.object({ swapId: unsignedInteger });

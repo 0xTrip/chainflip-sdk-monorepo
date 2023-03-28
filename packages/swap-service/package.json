@@ -4,12 +4,13 @@
   "description": "Back end swapping service",
   "private": true,
   "scripts": {
-    "build": "pnpm prisma generate && pnpm tsc",
+    "build": "prisma generate && tsc",
     "preinstall": "npx only-allow pnpm",
     "lint": "pnpm eslint --max-warnings 0 './**/*.ts'",
     "prettier:write": "pnpm prettier --write ./**/*",
     "test:ci": "CI=1 jest --forceExit",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "typescript"
@@ -24,7 +25,6 @@
     "@types/qs": "^6.9.7",
     "@types/supertest": "^2.0.12",
     "@types/ws": "^8.5.4",
-    "dotenv": "^16.0.3",
     "prisma": "^4.11.0",
     "supertest": "^6.3.3"
   },
@@ -33,6 +33,7 @@
     "pnpm": ">=7"
   },
   "dependencies": {
+    "@chainflip-io/sdk-shared": "workspace:../shared",
     "@polkadot/util": "^11.1.1",
     "@polkadot/util-crypto": "^11.1.1",
     "@prisma/client": "^4.11.0",
@@ -40,6 +41,7 @@
     "@subsquid/typeorm-store": "^0.2.2",
     "bignumber.js": "^9.1.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "ethers": "^6.2.0",
     "express": "^4.18.2",
     "qs": "^6.11.1",

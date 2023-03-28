@@ -4,13 +4,7 @@ export enum ChainId {
   Bitcoin,
 }
 
-export enum TokenSymbol {
-  FLIP = 'FLIP',
-  USDC = 'USDC',
-  DOT = 'DOT',
-  ETH = 'ETH',
-  BTC = 'BTC',
-}
+export { SupportedAsset as TokenSymbol } from '@chainflip-io/sdk-shared/assets';
 
 // value to be replaced at build time with `envsubst` or similar
 export const BACKEND_SERVICE_URL = '$BACKEND_SERVICE_URL';

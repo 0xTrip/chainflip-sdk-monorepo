@@ -1,5 +1,5 @@
+import { supportedAsset } from '@chainflip-io/sdk-shared/assets';
 import express from 'express';
-import { supportedAsset } from '../utils/assets';
 
 const router = express.Router();
 

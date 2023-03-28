@@ -1,13 +1,12 @@
+import { newSwapSchema } from '@chainflip-io/sdk-shared/schemas';
 import assert from 'assert';
 import BigNumber from 'bignumber.js';
 import express from 'express';
-import { z } from 'zod';
 import { asyncHandler } from './common';
 import prisma from '../client';
 import {
   assertSupportedAsset,
   decimalPlaces,
-  supportedAsset,
   validateAddress,
 } from '../utils/assets';
 import logger from '../utils/logger';
@@ -90,12 +89,6 @@ router.get(
     res.json(response);
   }),
 );
-
-const newSwapSchema = z.object({
-  ingressAsset: supportedAsset,
-  egressAsset: supportedAsset,
-  egressAddress: z.string(),
-});
 
 router.post(
   '/',

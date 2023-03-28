@@ -1,4 +1,4 @@
-import { Prisma } from '.prisma/client';
+import type { Prisma } from '.prisma/client';
 import networkBatchBroadcastRequested from './networkBatchBroadcastRequested';
 import networkBroadcastSuccess from './networkBroadcastSuccess';
 import networkEgressScheduled from './networkEgressScheduled';

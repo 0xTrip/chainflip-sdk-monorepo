@@ -1,3 +1,7 @@
+import type {
+  RateQueryParams,
+  SwapRequestBody,
+} from '@chainflip-io/sdk-shared/schemas';
 import axios from 'axios';
 import { ChainId } from '../consts';
 import {
@@ -55,12 +59,13 @@ const getRoute: BackendQuery<RouteRequest, RouteResponse> = async (
   { amount, ...routeRequest },
   { signal },
 ): Promise<RouteResponse> => {
-  const queryParams = new URLSearchParams({
+  const params: RateQueryParams = {
     amount,
     ingressAsset: routeRequest.srcTokenSymbol,
     egressAsset: routeRequest.destTokenSymbol,
-    egressAddress: routeRequest.egressAddress,
-  });
+  };
+
+  const queryParams = new URLSearchParams(params);
 
   const url = new URL(`/rates?${queryParams.toString()}`, baseUrl).toString();
 
@@ -74,7 +79,7 @@ const executeRoute: BackendQuery<RouteResponse, SwapResponse> = async (
   route,
   { signal },
 ) => {
-  const body = {
+  const body: SwapRequestBody = {
     egressAddress: route.egressAddress,
     ingressAsset: route.srcTokenSymbol,
     egressAsset: route.destTokenSymbol,
