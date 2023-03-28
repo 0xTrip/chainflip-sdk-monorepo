@@ -50,7 +50,7 @@ jobs:
 
       - name: Install dependencies 🚚 📦
         if: ${{ env.PUBLISH == 'true' }}
-        run: pnpm --filter $PACKAGE install
+        run: pnpm install
 
       - name: Build
         if: ${{ env.PUBLISH == 'true' }}
