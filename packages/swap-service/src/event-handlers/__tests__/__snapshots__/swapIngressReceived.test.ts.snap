@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`swapIngressReceived stores a new swap 1`] = `
+{
+  "createdAt": Any<Date>,
+  "egressCompleteAt": null,
+  "id": Any<BigInt>,
+  "ingressAmount": "222222222222222222",
+  "ingressReceivedAt": 2022-12-06T14:31:33.000Z,
+  "nativeId": 9876545n,
+  "swapExecutedAt": null,
+  "swapIntentId": Any<BigInt>,
+  "updatedAt": Any<Date>,
+}
+`;

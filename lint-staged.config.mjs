@@ -1,7 +1,6 @@
-// eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-var-requires
-const { ESLint } = require('eslint');
+import { ESLint } from 'eslint';
 
-module.exports = {
+export default {
   '*.{ts,js}': [
     async (files) => {
       const eslint = new ESLint();
@@ -13,4 +12,6 @@ module.exports = {
     },
     'prettier --check',
   ],
+  '*.{yaml,yml}': ['prettier --check'],
+  '*.prisma': 'pnpm prisma format',
 };

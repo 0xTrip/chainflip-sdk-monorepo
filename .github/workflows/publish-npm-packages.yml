@@ -4,10 +4,15 @@ on:
   push:
     branches:
       - main
+  paths:
+    - packages/sdk/**
 
 permissions:
   packages: write
   contents: read
+
+env:
+  PACKAGE: "@chainflip-io/chainflip-sdk"
 
 jobs:
   publish-gpr:
@@ -30,8 +35,7 @@ jobs:
 
       - name: Get Node.JS version from package.json 👀
         if: steps.check-commit.publish == 'true'
-        id: get-versions
-        run: echo "nodeVersion=$(jq -r .engines.node ./package.json)" >> $GITHUB_OUTPUT
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
 
       - name: Install pnpm 💿
         if: steps.check-commit.publish == 'true'
@@ -41,24 +45,24 @@ jobs:
         if: steps.check-commit.publish == 'true'
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ steps.get-versions.outputs.nodeVersion }}
+          node-version: ${{ env.NODE_VERSION }}
           cache: "pnpm"
           registry-url: "https://npm.pkg.github.com"
           scope: "@chainflip-io"
 
       - name: Install dependencies 🚚 📦
         if: steps.check-commit.publish == 'true'
-        run: pnpm install
+        run: pnpm --filter $PACKAGE install
 
       - name: Build
         if: steps.check-commit.publish == 'true'
-        run: pnpm build
+        run: pnpm --filter $PACKAGE build
         working-directory: ./
 
       - name: Publish npm package 📦
         if: steps.check-commit.publish == 'true'
         run: |
-          pnpm publish
+          pnpm --filter $PACKAGE publish
         working-directory: ./
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

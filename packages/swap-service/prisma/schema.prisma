@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// `pnpm prisma format` after changes :)
+
+generator client {
+  provider = "prisma-client-js"
+  // https://github.com/prisma/prisma/issues/2584#issuecomment-646414549
+  // https://github.com/prisma/prisma/issues/6603#issuecomment-849979849
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SwapIntent {
+  id             BigInt   @id @default(autoincrement())
+  uuid           String   @unique @default(uuid())
+  ingressAsset   String
+  ingressAddress String
+  egressAsset    String
+  egressAddress  String
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  swaps          Swap[]
+
+  @@index([ingressAddress])
+}
+
+model Swap {
+  id                BigInt     @id @default(autoincrement())
+  /// the swap id on the state chain
+  nativeId          BigInt     @unique
+  ingressAmount     Decimal    @db.Decimal(30, 0)
+  ingressReceivedAt DateTime
+  swapExecutedAt    DateTime?
+  egressCompleteAt  DateTime?
+  swapIntent        SwapIntent @relation(fields: [swapIntentId], references: [id])
+  swapIntentId      BigInt
+  egress            Egress?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @default(now()) @updatedAt
+}
+
+enum Network {
+  Polkadot
+  Ethereum
+}
+
+model Egress {
+  id          BigInt     @id @default(autoincrement())
+  /// the egress id on the state chain
+  nativeId    BigInt
+  /// the swap id on the state chain
+  network     Network
+  amount      Decimal    @db.Decimal(30, 0)
+  timestamp   DateTime
+  swap        Swap?      @relation(fields: [swapId], references: [id])
+  swapId      BigInt?    @unique
+  broadcast   Broadcast? @relation(fields: [broadcastId], references: [id])
+  broadcastId BigInt?
+  createdAt   DateTime   @default(now())
+
+  @@unique([nativeId, network])
+}
+
+model Broadcast {
+  id       BigInt   @id @default(autoincrement())
+  /// the broadcast id on the state chain
+  nativeId BigInt
+  network  Network
+  egresses Egress[]
+
+  @@unique([nativeId, network])
+}

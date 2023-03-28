@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`swapExecuted updates an existing swap with the execution timestamp 1`] = `
+{
+  "createdAt": Any<Date>,
+  "egressCompleteAt": null,
+  "id": Any<BigInt>,
+  "ingressAmount": "10000000000",
+  "ingressReceivedAt": 2022-12-06T14:31:33.000Z,
+  "nativeId": 9876545n,
+  "swapExecutedAt": 2022-12-06T14:31:39.000Z,
+  "swapIntentId": Any<BigInt>,
+  "updatedAt": Any<Date>,
+}
+`;
