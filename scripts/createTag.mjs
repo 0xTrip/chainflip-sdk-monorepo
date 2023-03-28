@@ -12,10 +12,11 @@ import yargs from 'yargs/yargs';
 
 const execAsync = util.promisify(exec);
 
-// eslint-disable-next-line no-underscore-dangle
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const root = path.join(__dirname, '../');
+
+const packages = await fs.readdir(path.join(root, 'packages'));
 
 const args = yargs(process.argv)
   .option('new-version', {
@@ -29,6 +30,12 @@ const args = yargs(process.argv)
   .option('major', {
     description: 'Increment major version',
     boolean: true,
+  })
+  .option('package', {
+    alias: 'p',
+    description: 'the package to tag',
+    demandOption: true,
+    choices: packages,
   })
   .option('dry-run', {
     demandOption: false,
@@ -76,11 +83,13 @@ const execCommand = async (cmd) => {
 };
 
 let newVersion = args['new-version'];
+const packageRoot = path.join(root, 'packages', args.package);
+const packageJSON = JSON.parse(
+  await fs.readFile(path.join(packageRoot, 'package.json'), 'utf-8'),
+);
 
 if (!newVersion) {
-  const currentVersion = JSON.parse(
-    await fs.readFile(path.join(root, 'package.json'), 'utf-8'),
-  ).version;
+  const currentVersion = packageJSON.version;
 
   if (typeof currentVersion !== 'string') {
     console.error('failed to find current version');
@@ -88,19 +97,19 @@ if (!newVersion) {
   }
 
   const [major, minor, patch] = currentVersion.split('.');
-  newVersion = `${major}.${minor}.${Number(patch) + 1}`;
 
   if (args.minor) {
     newVersion = `${major}.${Number(minor) + 1}.0`;
-  }
-  if (args.major) {
+  } else if (args.major) {
     newVersion = `${Number(major) + 1}.0.0`;
+  } else {
+    newVersion = `${major}.${minor}.${Number(patch) + 1}`;
   }
 }
 
 const tagPkg = async () => {
   await execCommand(`pnpm version ${newVersion}`);
-  const tag = `@chainflip-io/chainflip-sdk/v${newVersion}`;
+  const tag = `${packageJSON.name}/v${newVersion}`;
   await execCommand(`git tag ${tag}`);
   await execCommand('git push');
   await execCommand(`git push origin refs/tags/${tag}`);
