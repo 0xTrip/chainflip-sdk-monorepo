@@ -5,11 +5,13 @@ on:
     types:
       - opened
       - synchronize
+    paths:
+      - packages/**
   push:
     branches:
       - main
-  paths:
-    - packages/**
+    paths:
+      - packages/**
 
 env:
   FORCE_COLOR: 1
