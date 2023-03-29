@@ -7,13 +7,21 @@ export interface Chain {
   name: string;
 }
 
-export interface Token {
-  chainId: ChainId;
-  contractAddress: string;
-  decimals: number;
-  name: string;
-  symbol: string;
+interface ChainTokenMap {
+  [ChainId.Ethereum]: 'ETH' | 'USDC' | 'FLIP';
+  [ChainId.Polkadot]: 'DOT';
+  [ChainId.Bitcoin]: 'BTC';
 }
+
+export type Token = {
+  [K in keyof ChainTokenMap]: {
+    chainId: K;
+    contractAddress: string;
+    decimals: number;
+    name: string;
+    symbol: ChainTokenMap[K];
+  };
+}[keyof ChainTokenMap];
 
 interface Route {
   srcChainId: ChainId;
