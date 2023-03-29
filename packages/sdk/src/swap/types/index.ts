@@ -9,6 +9,7 @@ export interface Chain {
 
 interface ChainTokenMap {
   [ChainId.Ethereum]: 'ETH' | 'USDC' | 'FLIP';
+  [ChainId.Goerli]: ChainTokenMap[ChainId.Ethereum];
   [ChainId.Polkadot]: 'DOT';
   [ChainId.Bitcoin]: 'BTC';
 }

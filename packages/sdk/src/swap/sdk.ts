@@ -20,23 +20,23 @@ export type SDKOptions = {
 export class SwapSDK {
   private readonly baseUrl: string;
 
+  private readonly useTestnets = true;
+
   constructor(options: SDKOptions = {}) {
     this.baseUrl = options.backendServiceUrl ?? BACKEND_SERVICE_URL;
   }
 
   getChains(): Promise<Chain[]>;
   getChains(chainId: ChainId): Promise<Chain[] | undefined>;
-  // eslint-disable-next-line class-methods-use-this
   getChains(chainId?: ChainId): Promise<Chain[] | undefined> {
-    if (chainId) {
-      return ApiService.getPossibleDestinationChains(chainId);
+    if (chainId !== undefined) {
+      return ApiService.getPossibleDestinationChains(chainId, this.useTestnets);
     }
-    return ApiService.getChains();
+    return ApiService.getChains(this.useTestnets);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getTokens(chainId: ChainId): Promise<Token[] | undefined> {
-    return ApiService.getTokens(chainId);
+    return ApiService.getTokens(chainId, this.useTestnets);
   }
 
   getRoute(

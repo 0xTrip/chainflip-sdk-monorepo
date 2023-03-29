@@ -2,43 +2,56 @@ import { ChainId } from '../src/swap/consts';
 import {
   bitcoin,
   btc$,
-  ethereum,
-  eth$,
-  flip$,
   polkadot,
   dot$,
-  usdc$,
+  goerliTokens,
+  goerli,
 } from '../src/swap/mocks';
 import { SwapSDK } from '../src/swap/sdk';
 
-describe('Chainflip SDK', () => {
-  describe('chains', () => {
-    it('should return the available chains', async () => {
-      const sdk = new SwapSDK();
-      expect(await sdk.getChains()).toStrictEqual([
-        ethereum,
-        polkadot,
-        bitcoin,
-      ]);
+describe(SwapSDK, () => {
+  const sdk = new SwapSDK();
+
+  describe(SwapSDK.prototype.getChains, () => {
+    it('returns the available chains', async () => {
+      expect(await sdk.getChains()).toStrictEqual([goerli, polkadot, bitcoin]);
+    });
+
+    it.each([
+      [ChainId.Goerli, [polkadot, bitcoin]],
+      [ChainId.Polkadot, [goerli, bitcoin]],
+      [ChainId.Bitcoin, [goerli, polkadot]],
+    ])(
+      `returns the possible destination chains for %s`,
+      async (chainId, chains) => {
+        expect(await sdk.getChains(chainId)).toStrictEqual(chains);
+      },
+    );
+
+    it('throws when mainnet is requested', async () => {
+      await expect(sdk.getChains(ChainId.Ethereum)).rejects.toThrow();
+    });
+
+    it('throws when an unknown chain is requested', async () => {
+      await expect(sdk.getChains(NaN)).rejects.toThrow();
     });
   });
 
-  describe('tokens', () => {
-    it('should return the available tokens for ethereum', async () => {
-      const sdk = new SwapSDK();
-      expect(await sdk.getTokens(ChainId.Ethereum)).toStrictEqual([
-        eth$,
-        usdc$,
-        flip$,
-      ]);
+  describe(SwapSDK.prototype.getTokens, () => {
+    it.each([
+      [ChainId.Goerli, goerliTokens],
+      [ChainId.Polkadot, [dot$]],
+      [ChainId.Bitcoin, [btc$]],
+    ])('returns the available tokens for %s', async (chainId, tokens) => {
+      expect(await sdk.getTokens(chainId)).toStrictEqual(tokens);
     });
-    it('should return the available tokens for polkadot', async () => {
-      const sdk = new SwapSDK();
-      expect(await sdk.getTokens(ChainId.Polkadot)).toStrictEqual([dot$]);
+
+    it('disallows mainnet', async () => {
+      await expect(sdk.getTokens(ChainId.Ethereum)).rejects.toThrow();
     });
-    it('should return the available tokens for bitcoin', async () => {
-      const sdk = new SwapSDK();
-      expect(await sdk.getTokens(ChainId.Bitcoin)).toStrictEqual([btc$]);
+
+    it('throws when an unknown chain is requested', async () => {
+      await expect(sdk.getChains(NaN)).rejects.toThrow();
     });
   });
 

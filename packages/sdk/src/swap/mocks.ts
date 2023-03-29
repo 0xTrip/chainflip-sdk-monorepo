@@ -1,46 +1,52 @@
+import { ChainId } from './consts';
 import type { Chain, Token } from './types';
 
 export const ethereum: Chain = {
-  id: 1,
+  id: ChainId.Ethereum,
   name: 'ethereum',
 };
 
+export const goerli: Chain = {
+  id: ChainId.Goerli,
+  name: 'goerli',
+};
+
 export const polkadot: Chain = {
-  id: 2,
+  id: ChainId.Polkadot,
   name: 'polkadot',
 };
 
 export const bitcoin: Chain = {
-  id: 3,
+  id: ChainId.Bitcoin,
   name: 'bitcoin',
 };
 
-export const eth$: Token = {
-  chainId: 1,
-  contractAddress: '0xeth',
-  decimals: 18,
-  name: 'ether',
-  symbol: 'ETH',
-};
-
-export const usdc$: Token = {
-  chainId: 1,
-  contractAddress: '0xusdc',
-  decimals: 6,
-  name: 'usdc',
-  symbol: 'USDC',
-};
-
-export const flip$: Token = {
-  chainId: 1,
-  contractAddress: '0xflip',
-  decimals: 18,
-  name: 'flip',
-  symbol: 'FLIP',
-};
+export const goerliTokens: Token[] = [
+  {
+    chainId: ChainId.Goerli,
+    contractAddress: '0xeth',
+    decimals: 18,
+    name: 'ether',
+    symbol: 'ETH',
+  },
+  {
+    chainId: ChainId.Goerli,
+    contractAddress: '0xusdc',
+    decimals: 6,
+    name: 'usdc',
+    symbol: 'USDC',
+  },
+  {
+    chainId: ChainId.Goerli,
+    contractAddress: '0xflip',
+    decimals: 18,
+    name: 'flip',
+    symbol: 'FLIP',
+  },
+];
 
 export const dot$: Token = {
-  chainId: 2,
+  chainId: ChainId.Polkadot,
   contractAddress: '0xdot',
   decimals: 10,
   name: 'dot',
@@ -48,7 +54,7 @@ export const dot$: Token = {
 };
 
 export const btc$: Token = {
-  chainId: 3,
+  chainId: ChainId.Bitcoin,
   contractAddress: '0xbitcoin',
   decimals: 8,
   name: 'bitcoin',

@@ -1,16 +1,7 @@
 import axios from 'axios';
 import type { RateQueryParams, SwapRequestBody } from '@/shared/schemas';
 import { ChainId } from '../consts';
-import {
-  bitcoin,
-  btc$,
-  ethereum,
-  eth$,
-  flip$,
-  polkadot,
-  dot$,
-  usdc$,
-} from '../mocks';
+import { bitcoin, btc$, polkadot, dot$, goerli, goerliTokens } from '../mocks';
 import {
   Chain,
   RouteRequest,
@@ -20,25 +11,35 @@ import {
   SwapStatusResponse,
   Token,
 } from '../types';
+import { assert, unreachable } from '../utils';
 
-const getChains = async (): Promise<Chain[]> =>
-  Promise.resolve([ethereum, polkadot, bitcoin]);
+const getChains = async (useTestnets: boolean): Promise<Chain[]> => {
+  assert(useTestnets, 'mainnets not supported yet');
+  return [goerli, polkadot, bitcoin];
+};
 
 const getPossibleDestinationChains = async (
   chainId: ChainId,
-): Promise<Chain[] | undefined> => {
-  if (chainId === ChainId.Ethereum) return Promise.resolve([polkadot, bitcoin]);
-  if (chainId === ChainId.Polkadot) return Promise.resolve([ethereum, bitcoin]);
-  if (chainId === ChainId.Bitcoin) return Promise.resolve([ethereum, polkadot]);
-  return undefined;
+  useTestnets: boolean,
+): Promise<Chain[]> => {
+  assert(useTestnets, 'mainnets not supported yet');
+  assert(chainId !== ChainId.Ethereum, 'ethereum not supported yet');
+  if (chainId === ChainId.Goerli) return [polkadot, bitcoin];
+  if (chainId === ChainId.Polkadot) return [goerli, bitcoin];
+  if (chainId === ChainId.Bitcoin) return [goerli, polkadot];
+  return unreachable(chainId, 'received unknown chainId');
 };
 
-const getTokens = async (chainId: ChainId): Promise<Token[] | undefined> => {
-  if (chainId === ChainId.Ethereum)
-    return Promise.resolve([eth$, usdc$, flip$]);
-  if (chainId === ChainId.Polkadot) return Promise.resolve([dot$]);
-  if (chainId === ChainId.Bitcoin) return Promise.resolve([btc$]);
-  return undefined;
+const getTokens = async (
+  chainId: ChainId,
+  useTestnets: boolean,
+): Promise<Token[]> => {
+  assert(useTestnets, 'mainnets not supported yet');
+  assert(chainId !== ChainId.Ethereum, 'ethereum not supported yet');
+  if (chainId === ChainId.Goerli) return goerliTokens;
+  if (chainId === ChainId.Polkadot) return [dot$];
+  if (chainId === ChainId.Bitcoin) return [btc$];
+  return unreachable(chainId, 'received unknown chainId');
 };
 
 export type RequestOptions = {
