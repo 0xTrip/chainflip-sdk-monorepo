@@ -5,6 +5,7 @@ import networkEgressScheduled from './networkEgressScheduled';
 import swapEgressScheduled from './swapEgressScheduled';
 import swapExecuted from './swapExecuted';
 import swapIngressReceived from './swapIngressReceived';
+import swapIntentExpired from './swapIntentExpired';
 import type {
   Block,
   Item,
@@ -16,6 +17,7 @@ export enum Swapping {
   SwapIngressReceived = 'Swapping.SwapIngressReceived',
   SwapExecuted = 'Swapping.SwapExecuted',
   SwapEgressScheduled = 'Swapping.SwapEgressScheduled',
+  SwapIntentExpired = 'Swapping.SwapIntentExpired',
 }
 
 export enum PolkadotIngressEgress {
@@ -64,6 +66,7 @@ export const eventHandlers: Record<
   [EthereumIngressEgress.BatchBroadcastRequested]:
     networkBatchBroadcastRequested,
   [EthereumBroadcaster.BroadcastSuccess]: networkBroadcastSuccess('Ethereum'),
+  [Swapping.SwapIntentExpired]: swapIntentExpired,
 };
 
 export const isSwapEvent = (item: Item): item is SwappingEventItem =>

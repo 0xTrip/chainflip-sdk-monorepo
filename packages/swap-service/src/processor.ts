@@ -33,7 +33,8 @@ const processor = new SubstrateBatchProcessor()
   .addEvent(EthereumIngressEgress.BatchBroadcastRequested, {
     data: { event: true },
   })
-  .addEvent(EthereumBroadcaster.BroadcastSuccess, { data: { event: true } });
+  .addEvent(EthereumBroadcaster.BroadcastSuccess, { data: { event: true } })
+  .addEvent(Swapping.SwapIntentExpired, { data: { event: true } });
 
 export type Item = BatchProcessorItem<typeof processor>;
 export type Block = BatchBlock<Item>;
