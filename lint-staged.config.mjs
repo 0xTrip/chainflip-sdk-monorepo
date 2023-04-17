@@ -13,5 +13,4 @@ export default {
     'prettier --check',
   ],
   '*.{yaml,yml}': ['prettier --check'],
-  '*.prisma': 'pnpm prisma format',
 };

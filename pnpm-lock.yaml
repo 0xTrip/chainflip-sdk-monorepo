@@ -59,7 +59,7 @@ importers:
     devDependencies:
       zod: 3.21.4
 
-  packages/swap-service:
+  packages/swap:
     specifiers:
       '@polkadot/util': ^11.1.1
       '@polkadot/util-crypto': ^11.1.1

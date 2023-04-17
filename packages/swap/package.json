@@ -1,16 +1,16 @@
 {
-  "name": "swap-service",
+  "name": "swap",
   "version": "0.0.1",
   "description": "Back end swapping service",
   "private": true,
   "scripts": {
-    "build": "pnpm clean && prisma generate && tsc && tsc-alias && mv lib/swap-service/src/model lib",
+    "build": "pnpm clean && prisma generate && tsc && tsc-alias && mv lib/swap/src/model lib",
     "clean": "rm -rf lib",
     "preinstall": "npx only-allow pnpm",
     "lint": "pnpm eslint --max-warnings 0 './**/*.ts'",
     "postinstall": "prisma generate",
     "prettier:write": "pnpm prettier --write ./**/*",
-    "start": "node lib/swap-service/src/index.js",
+    "start": "node lib/swap/src/index.js",
     "test:ci": "CI=1 jest --forceExit",
     "test": "jest --runInBand",
     "typecheck": "tsc --noEmit"

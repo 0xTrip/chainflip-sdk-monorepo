@@ -119,6 +119,6 @@ const createLoggerFunc = (label: string) => {
   return logger;
 };
 
-const logger = createLoggerFunc('swap-service');
+const logger = createLoggerFunc('swap');
 
 export default logger;
