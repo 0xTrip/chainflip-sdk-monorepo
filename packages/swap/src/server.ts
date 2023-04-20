@@ -10,4 +10,8 @@ app.use('/fees', fee);
 app.use('/rates', rate);
 app.use('/swaps', express.json(), swap);
 
+app.get('/healthcheck', (req, res) => {
+  res.status(200).send('OK');
+});
+
 export default app;
