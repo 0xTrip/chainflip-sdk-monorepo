@@ -38,7 +38,7 @@ export async function handleEvent(
           }, [] as bigint[]),
         },
       },
-      data: { egressCompleteAt: new Date(block.header.timestamp) },
+      data: { egressCompleteAt: new Date(block.timestamp) },
     });
   } catch (error) {
     logger.customError(

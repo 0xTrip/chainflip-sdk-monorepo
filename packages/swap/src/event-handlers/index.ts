@@ -6,12 +6,7 @@ import swapEgressScheduled from './swapEgressScheduled';
 import swapExecuted from './swapExecuted';
 import swapIngressReceived from './swapIngressReceived';
 import swapIntentExpired from './swapIntentExpired';
-import type {
-  Block,
-  Item,
-  SwappingEvent,
-  SwappingEventItem,
-} from '../processor';
+import type { Block, Event } from '../gql/generated/graphql';
 
 export enum Swapping {
   SwapIngressReceived = 'Swapping.SwapIngressReceived',
@@ -47,8 +42,8 @@ export type SwappingEventName =
 
 export type EventHandlerArgs = {
   prisma: Prisma.TransactionClient;
-  event: SwappingEvent;
-  block: Block;
+  event: Pick<Event, 'args' | 'name'>;
+  block: Pick<Block, 'timestamp'>;
 };
 
 export const eventHandlers: Record<
@@ -68,6 +63,3 @@ export const eventHandlers: Record<
   [EthereumBroadcaster.BroadcastSuccess]: networkBroadcastSuccess('Ethereum'),
   [Swapping.SwapIntentExpired]: swapIntentExpired,
 };
-
-export const isSwapEvent = (item: Item): item is SwappingEventItem =>
-  item.kind === 'event' && item.name in eventHandlers;

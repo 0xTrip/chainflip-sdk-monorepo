@@ -37,7 +37,7 @@ describe(swapExecuted, () => {
         create: {
           nativeId: BigInt(swapId),
           ingressAmount: '10000000000',
-          ingressReceivedAt: new Date(block.header.timestamp - 6000),
+          ingressReceivedAt: new Date(block.timestamp - 6000),
         },
       },
     });

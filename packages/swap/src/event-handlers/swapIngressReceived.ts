@@ -47,7 +47,7 @@ export default async function swapIngressReceived({
       data: {
         ingressAmount: ingressAmount.toString(),
         nativeId: swapId,
-        ingressReceivedAt: new Date(block.header.timestamp),
+        ingressReceivedAt: new Date(block.timestamp),
         swapIntentId: swapIntents[0].id,
       },
     });

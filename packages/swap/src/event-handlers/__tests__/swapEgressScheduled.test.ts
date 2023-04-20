@@ -36,7 +36,7 @@ describe(swapEgressScheduled, () => {
         network: event.args.egressId[0].__kind,
         nativeId: BigInt(event.args.egressId[1]),
         amount: '1234567890',
-        timestamp: new Date(block.header.timestamp),
+        timestamp: new Date(block.timestamp),
       },
     });
 
@@ -46,8 +46,8 @@ describe(swapEgressScheduled, () => {
         create: {
           nativeId: BigInt(swapId),
           ingressAmount: '10000000000',
-          ingressReceivedAt: new Date(block.header.timestamp - 12000),
-          swapExecutedAt: new Date(block.header.timestamp - 6000),
+          ingressReceivedAt: new Date(block.timestamp - 12000),
+          swapExecutedAt: new Date(block.timestamp - 6000),
         },
       },
     });

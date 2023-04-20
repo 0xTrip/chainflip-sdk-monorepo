@@ -37,4 +37,4 @@ COPY --from=builder /app/packages/swap /app/packages/swap
 WORKDIR /app/packages/swap
 
 # using ENTRYPOINT causes signals (SIGINT) to be passed onto the node process
-ENTRYPOINT ["node", "--enable-source-maps", "./lib/swap/src/index.js"]
+ENTRYPOINT ["node", "--enable-source-maps", "./dist/swap/src/index.js"]

@@ -31,7 +31,7 @@ export default async function networkEgressScheduled({
         nativeId: id[1],
         network: assetToNetwork[asset],
         amount: amount.toString(),
-        timestamp: new Date(block.header.timestamp),
+        timestamp: new Date(block.timestamp),
       },
     });
   } catch (error) {

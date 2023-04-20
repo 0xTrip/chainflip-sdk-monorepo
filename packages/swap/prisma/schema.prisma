@@ -76,3 +76,8 @@ model Broadcast {
 
   @@unique([nativeId, network])
 }
+
+model State {
+  id     Int @id @default(autoincrement())
+  height Int @default(0)
+}

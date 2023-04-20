@@ -2,9 +2,7 @@ import { Swapping } from '../index';
 
 export const swapIngressMock = {
   block: {
-    header: {
-      timestamp: 1670337093000,
-    },
+    timestamp: 1670337093000,
   },
   eventContext: {
     kind: 'event',
@@ -54,9 +52,7 @@ export const swapIngressMock = {
 
 export const swapExecutedMock = {
   block: {
-    header: {
-      timestamp: 1670337099000,
-    },
+    timestamp: 1670337099000,
   },
   eventContext: {
     kind: 'event',
@@ -101,9 +97,7 @@ export const swapExecutedMock = {
 
 export const swapEgressScheduledMock = {
   block: {
-    header: {
-      timestamp: 1670337105000,
-    },
+    timestamp: 1670337105000,
   },
   eventContext: {
     kind: 'event',
@@ -149,9 +143,7 @@ export const swapEgressScheduledMock = {
 
 export const SwapExpiredMock = {
   block: {
-    header: {
-      timestamp: 1670337093000,
-    },
+    timestamp: 1670337093000,
   },
   eventContext: {
     kind: 'event',
