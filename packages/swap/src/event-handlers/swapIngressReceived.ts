@@ -12,6 +12,8 @@ const eventArgs = z.object({
   ingressAmount: unsignedInteger,
 });
 
+export type SwapIngressReceivedEvent = z.input<typeof eventArgs>;
+
 export default async function swapIngressReceived({
   prisma,
   block,
