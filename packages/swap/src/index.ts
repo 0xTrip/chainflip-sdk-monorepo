@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Server } from 'http';
 import start from './processor';
 import app from './server';
@@ -15,3 +16,7 @@ app.listen(
     handleExit(() => this.close());
   },
 );
+
+process.on('exit', (code) => {
+  logger.info(`process exiting with code "${code}"`);
+});

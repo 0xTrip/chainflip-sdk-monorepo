@@ -8,6 +8,7 @@ import type {
 } from './gql/generated/graphql';
 import { GET_BATCH } from './gql/query';
 import { handleExit, isTruthy } from './utils/function';
+import logger from './utils/logger';
 
 const { INGEST_GATEWAY_USERNAME, INGEST_GATEWAY_PASSWORD, INGEST_GATEWAY_URL } =
   process.env;
@@ -27,10 +28,12 @@ const createGraphQLClient = () => {
 
 export default async function processBlocks() {
   const client = createGraphQLClient();
+  logger.info('processing blocks');
 
   let run = true;
 
   handleExit(() => {
+    logger.info('stopping processing of blocks');
     run = false;
   });
 
@@ -42,6 +45,10 @@ export default async function processBlocks() {
   });
 
   while (run) {
+    logger.info(
+      `processing blocks from ${lastBlock + 1} to ${lastBlock + 50}...`,
+    );
+
     const batch = await client.request<GetBatchQuery, GetBatchQueryVariables>(
       GET_BATCH,
       { height: lastBlock + 1, limit: 50, swapEvents },
