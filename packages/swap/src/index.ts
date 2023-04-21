@@ -5,9 +5,13 @@ import { handleExit } from './utils/function';
 import logger from './utils/logger';
 
 start();
-// eslint-disable-next-line func-names
-app.listen(process.env.SWAPPING_APP_PORT ?? 8080, function (this: Server) {
-  logger.info('server listening', { address: this.address() });
+app.listen(
+  Number.parseInt(process.env.SWAPPING_APP_PORT as string, 10) || 8080,
+  '0.0.0.0',
+  // eslint-disable-next-line func-names
+  function (this: Server) {
+    logger.info('server listening', { address: this.address() });
 
-  handleExit(() => this.close());
-});
+    handleExit(() => this.close());
+  },
+);
