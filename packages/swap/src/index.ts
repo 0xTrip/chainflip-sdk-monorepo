@@ -20,3 +20,7 @@ app.listen(
 process.on('exit', (code) => {
   logger.info(`process exiting with code "${code}"`);
 });
+
+setInterval(() => {
+  logger.info('the event loop is not blocked');
+}, 60000);
