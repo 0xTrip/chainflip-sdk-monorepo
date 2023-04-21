@@ -1,11 +1,11 @@
 import 'dotenv/config';
 import { Server } from 'http';
-import start from './processor';
+// import start from './processor';
 import app from './server';
 import { handleExit } from './utils/function';
 import logger from './utils/logger';
 
-start();
+// start();
 app.listen(
   Number.parseInt(process.env.SWAPPING_APP_PORT as string, 10) || 8080,
   '0.0.0.0',

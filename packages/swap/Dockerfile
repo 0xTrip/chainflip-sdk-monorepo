@@ -22,6 +22,9 @@ RUN pnpm --filter swap build
 
 FROM node:18.16.0-bullseye-slim
 
+RUN apt update
+RUN apt install postgresql postgresql-contrib
+
 WORKDIR /app
 
 ARG package_mirror_url
