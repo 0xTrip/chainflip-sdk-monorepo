@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { GraphQLClient } from 'graphql-request';
+import { performance } from 'perf_hooks';
 import prisma from './client';
 import { SwappingEventName, eventHandlers } from './event-handlers';
 import type {
@@ -38,16 +39,20 @@ export default async function processBlocks() {
   });
 
   const swapEvents = Object.keys(eventHandlers) as SwappingEventName[];
+
+  logger.info('getting latest state');
   let { height: lastBlock } = await prisma.state.upsert({
     where: { id: 1 },
     create: { id: 1, height: 0 },
     update: {},
   });
+  logger.info(`resuming processing from block ${lastBlock}`);
 
   while (run) {
     logger.info(
       `processing blocks from ${lastBlock + 1} to ${lastBlock + 50}...`,
     );
+    const start = performance.now();
 
     const batch = await client.request<GetBatchQuery, GetBatchQueryVariables>(
       GET_BATCH,
@@ -86,5 +91,12 @@ export default async function processBlocks() {
       });
       lastBlock = block.height;
     }
+
+    const end = performance.now();
+    logger.info(
+      `processed ${blocks.length} blocks in ${
+        end - start
+      } milliseconds, last block: ${lastBlock}`,
+    );
   }
 }
