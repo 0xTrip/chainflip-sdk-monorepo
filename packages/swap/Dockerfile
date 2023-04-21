@@ -23,7 +23,7 @@ RUN pnpm --filter swap build
 FROM node:18.16.0-bullseye-slim
 
 RUN apt update
-RUN apt install postgresql postgresql-contrib
+RUN apt install -y postgresql postgresql-contrib -y
 
 WORKDIR /app
 
