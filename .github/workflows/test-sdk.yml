@@ -29,7 +29,7 @@ jobs:
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
 
       - name: Install pnpm 💿
-        run: npm install -g pnpm@7
+        run: npm install -g pnpm@8
 
       - name: Setup Node 🎮
         uses: actions/setup-node@v3

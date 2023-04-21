@@ -8,7 +8,7 @@ COPY . .
 ARG package_mirror_url
 ARG package_mirror_url_auth
 
-RUN npm install -g pnpm@7
+RUN npm install -g pnpm@8
 
 RUN pnpm set registry=$package_mirror_url
 RUN pnpm set _auth=$package_mirror_url_auth
@@ -27,7 +27,7 @@ WORKDIR /app
 ARG package_mirror_url
 ARG package_mirror_url_auth
 
-RUN npm install -g pnpm@7
+RUN npm install -g pnpm@8
 
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/package.json /app/package.json

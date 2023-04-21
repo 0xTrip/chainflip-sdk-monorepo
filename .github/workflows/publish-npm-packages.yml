@@ -37,7 +37,7 @@ jobs:
 
       - name: Install pnpm 💿
         if: ${{ env.PUBLISH == 'true' }}
-        run: npm install -g pnpm@7
+        run: npm install -g pnpm@8
 
       - name: Setup Node 🎮
         if: ${{ env.PUBLISH == 'true' }}
