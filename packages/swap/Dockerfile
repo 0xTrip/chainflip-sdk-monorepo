@@ -1,4 +1,4 @@
-FROM node:18.16.0-bullseye-slim as builder
+FROM node:16.20.0-bullseye-slim as builder
 
 # create root application folder
 WORKDIR /app
