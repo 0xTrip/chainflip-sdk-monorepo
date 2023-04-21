@@ -1,4 +1,4 @@
-FROM node:16.20.0-bullseye-slim as builder
+FROM node:18.16.0-bullseye-slim as builder
 
 # create root application folder
 WORKDIR /app
@@ -20,10 +20,7 @@ ENV NODE_ENV=$node_env
 
 RUN pnpm --filter swap build
 
-FROM node:16.20.0-bullseye-slim
-
-RUN apt update
-RUN apt install -y postgresql postgresql-contrib -y
+FROM node:18.16.0-bullseye-slim
 
 WORKDIR /app
 
