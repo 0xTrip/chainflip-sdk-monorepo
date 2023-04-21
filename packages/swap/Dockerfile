@@ -20,7 +20,7 @@ ENV NODE_ENV=$node_env
 
 RUN pnpm --filter swap build
 
-FROM node:18.16.0-bullseye-slim
+FROM node:16.20.0-bullseye-slim
 
 RUN apt update
 RUN apt install -y postgresql postgresql-contrib -y
