@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { GraphQLClient } from 'graphql-request';
 import { performance } from 'perf_hooks';
+import { setTimeout as sleep } from 'timers/promises';
 import prisma from './client';
 import { SwappingEventName, eventHandlers } from './event-handlers';
 import type {
@@ -49,9 +50,6 @@ export default async function processBlocks() {
   logger.info(`resuming processing from block ${lastBlock}`);
 
   while (run) {
-    logger.info(
-      `processing blocks from ${lastBlock + 1} to ${lastBlock + 50}...`,
-    );
     const start = performance.now();
 
     const batch = await client.request<GetBatchQuery, GetBatchQueryVariables>(
@@ -59,11 +57,23 @@ export default async function processBlocks() {
       { height: lastBlock + 1, limit: 50, swapEvents },
     );
 
-    const blocks = batch.blocks?.nodes;
+    const blocks = batch.blocks?.nodes.filter(isTruthy);
 
     assert(blocks !== undefined, 'blocks is undefined');
 
-    for (const { events, ...block } of blocks.filter(isTruthy)) {
+    if (blocks.length === 0) {
+      await sleep(5000);
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    logger.info(
+      `processing blocks from ${lastBlock + 1} to ${
+        lastBlock + blocks.length
+      }...`,
+    );
+
+    for (const { events, ...block } of blocks) {
       const state = await prisma.state.findUniqueOrThrow({ where: { id: 1 } });
 
       assert(
