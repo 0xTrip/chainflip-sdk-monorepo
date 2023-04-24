@@ -15,15 +15,18 @@ export * from './types';
 
 export type SDKOptions = {
   backendServiceUrl?: string;
+  useTestnets?: boolean;
 };
 
 export class SwapSDK {
   private readonly baseUrl: string;
 
-  private readonly useTestnets = true;
+  private readonly useTestnets: boolean;
 
   constructor(options: SDKOptions = {}) {
     this.baseUrl = options.backendServiceUrl ?? BACKEND_SERVICE_URL;
+    this.useTestnets = options.useTestnets ?? true;
+    assert(process.env.NODE_ENV === 'test' || this.useTestnets);
   }
 
   getChains(): Promise<Chain[]>;

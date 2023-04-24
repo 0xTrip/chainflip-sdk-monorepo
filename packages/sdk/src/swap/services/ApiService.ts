@@ -1,7 +1,20 @@
 import axios from 'axios';
 import type { RateQueryParams, SwapRequestBody } from '@/shared/schemas';
 import { ChainId } from '../consts';
-import { bitcoin, btc$, polkadot, dot$, goerli, goerliTokens } from '../mocks';
+import {
+  bitcoin,
+  polkadot,
+  dot$,
+  goerli,
+  goerliTokens,
+  westend,
+  bitcoinTest,
+  ethereum,
+  wnd$,
+  tbtc$,
+  btc$,
+  ethereumTokens,
+} from '../mocks';
 import {
   Chain,
   RouteRequest,
@@ -11,35 +24,51 @@ import {
   SwapStatusResponse,
   Token,
 } from '../types';
-import { assert, unreachable } from '../utils';
+import { unreachable } from '../utils';
 
 const getChains = async (useTestnets: boolean): Promise<Chain[]> => {
-  assert(useTestnets, 'mainnets not supported yet');
-  return [goerli, polkadot, bitcoin];
+  if (useTestnets) return [goerli, westend, bitcoinTest];
+  return [ethereum, polkadot, bitcoin];
 };
 
 const getPossibleDestinationChains = async (
   chainId: ChainId,
   useTestnets: boolean,
 ): Promise<Chain[]> => {
-  assert(useTestnets, 'mainnets not supported yet');
-  assert(chainId !== ChainId.Ethereum, 'ethereum not supported yet');
-  if (chainId === ChainId.Goerli) return [polkadot, bitcoin];
-  if (chainId === ChainId.Polkadot) return [goerli, bitcoin];
-  if (chainId === ChainId.Bitcoin) return [goerli, polkadot];
-  return unreachable(chainId, 'received unknown chainId');
+  if (useTestnets) {
+    if (chainId === ChainId.Goerli) return [westend, bitcoinTest];
+    if (chainId === ChainId.Westend) return [goerli, bitcoinTest];
+    if (chainId === ChainId.BitcoinTest) return [goerli, westend];
+    return unreachable(
+      chainId as never,
+      'received testnet flag but mainnet chainId',
+    );
+  }
+
+  if (chainId === ChainId.Ethereum) return [bitcoin, polkadot];
+  if (chainId === ChainId.Polkadot) return [ethereum, bitcoin];
+  if (chainId === ChainId.Bitcoin) return [ethereum, polkadot];
+  return unreachable(chainId as never, 'received unknown chainId');
 };
 
 const getTokens = async (
   chainId: ChainId,
   useTestnets: boolean,
 ): Promise<Token[]> => {
-  assert(useTestnets, 'mainnets not supported yet');
-  assert(chainId !== ChainId.Ethereum, 'ethereum not supported yet');
-  if (chainId === ChainId.Goerli) return goerliTokens;
+  if (useTestnets) {
+    if (chainId === ChainId.Goerli) return goerliTokens;
+    if (chainId === ChainId.Westend) return [wnd$];
+    if (chainId === ChainId.BitcoinTest) return [tbtc$];
+    return unreachable(
+      chainId as never,
+      'received testnet flag but mainnet chainId',
+    );
+  }
+
+  if (chainId === ChainId.Ethereum) return ethereumTokens;
   if (chainId === ChainId.Polkadot) return [dot$];
   if (chainId === ChainId.Bitcoin) return [btc$];
-  return unreachable(chainId, 'received unknown chainId');
+  return unreachable(chainId as never, 'received unknown chainId');
 };
 
 export type RequestOptions = {
