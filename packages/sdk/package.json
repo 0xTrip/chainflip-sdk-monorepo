@@ -34,6 +34,7 @@
     "build": "rm -rf dist && tsup",
     "start": "node ./dist/cjs/swap/index.js",
     "dev": "tsc-watch --noClear --compiler ./node_modules/typescript/bin/tsc --onFirstSuccess \"nodemon\"",
+    "lint": "pnpm eslint --max-warnings 0 './**/*.ts'",
     "typecheck": "tsc"
   },
   "keywords": [],

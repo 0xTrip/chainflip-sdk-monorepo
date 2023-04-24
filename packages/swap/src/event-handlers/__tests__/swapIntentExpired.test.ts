@@ -1,6 +1,5 @@
-import { SwapIntent } from '.prisma/client';
 import { SwapExpiredMock } from './utils';
-import prisma from '../../client';
+import prisma, { SwapIntent } from '../../client';
 import swapIntentExpired from '../swapIntentExpired';
 
 const ETH_ADDRESS = '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2';

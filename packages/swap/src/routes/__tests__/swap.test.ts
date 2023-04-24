@@ -1,8 +1,7 @@
-import { SwapIntent } from '.prisma/client';
 import * as crypto from 'crypto';
 import { Server } from 'http';
 import request from 'supertest';
-import prisma from '../../client';
+import prisma, { SwapIntent } from '../../client';
 import app from '../../server';
 import RpcClient from '../../utils/RpcClient';
 import { State } from '../swap';
