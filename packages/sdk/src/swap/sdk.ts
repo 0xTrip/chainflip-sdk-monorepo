@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { BACKEND_SERVICE_URL, ChainId } from './consts';
 import ApiService, { RequestOptions } from './services/ApiService';
 import type {

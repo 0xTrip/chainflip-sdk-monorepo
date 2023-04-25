@@ -6,6 +6,7 @@
   "scripts": {
     "build": "pnpm clean && prisma generate && tsc && tsc-alias",
     "clean": "rm -rf dist",
+    "dev": "tsx watch src/index.ts",
     "preinstall": "npx only-allow pnpm",
     "lint": "pnpm eslint --max-warnings 0 './**/*.ts'",
     "postinstall": "prisma generate && pnpm graphql:codegen",

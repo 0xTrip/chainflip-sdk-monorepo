@@ -81,3 +81,16 @@ model State {
   id     Int @id @default(autoincrement())
   height Int @default(0)
 }
+
+enum ThirdPartyProtocol {
+  Lifi
+  Squid
+}
+
+model ThirdPartySwap {
+  id            BigInt             @id @default(autoincrement())
+  uuid          String             @unique
+  protocol      ThirdPartyProtocol
+  routeResponse Json
+  createdAt     DateTime           @default(now())
+}

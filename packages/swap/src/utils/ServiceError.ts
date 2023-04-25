@@ -7,6 +7,10 @@ export default class ServiceError extends Error {
     return new ServiceError(message, 404);
   }
 
+  static internalError(message = 'internal error'): ServiceError {
+    return new ServiceError(message, 500);
+  }
+
   constructor(message: string, readonly code: number) {
     super(message);
 

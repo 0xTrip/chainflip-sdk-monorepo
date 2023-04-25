@@ -5,6 +5,7 @@ import { Server } from 'socket.io';
 import fee from './routes/fee';
 import rate from './routes/rate';
 import swap from './routes/swap';
+import thirdPartySwap from './routes/thirdPartySwap';
 import logger from './utils/logger';
 
 const app = express().use(cors());
@@ -14,6 +15,7 @@ const io = new Server(server);
 app.use('/fees', fee);
 app.use('/rates', rate);
 app.use('/swaps', express.json(), swap);
+app.use('/third-party-swap', express.json(), thirdPartySwap);
 
 app.get('/healthcheck', (req, res) => {
   res.status(200).send('OK');
