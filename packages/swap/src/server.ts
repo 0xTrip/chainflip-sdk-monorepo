@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import authenticate from './quoting/authenticate';
 import fee from './routes/fee';
 import rate from './routes/rate';
 import swap from './routes/swap';
@@ -24,5 +25,7 @@ app.get('/healthcheck', (req, res) => {
 io.on('connection', (socket) => {
   logger.info(`socket connected with id "${socket.id}"`);
 });
+
+io.use(authenticate);
 
 export default server;

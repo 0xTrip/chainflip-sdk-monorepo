@@ -6,7 +6,7 @@ import processBlocks from '../processBlocks';
 
 describe(processBlocks, () => {
   beforeEach(async () => {
-    await prisma.$queryRaw`TRUNCATE TABLE "SwapIntent", "Swap", "State" CASCADE`;
+    await prisma.$queryRaw`TRUNCATE TABLE "SwapIntent", "Swap", private."State" CASCADE`;
   });
 
   it('dispatches a SwapIngressReceived event', async () => {

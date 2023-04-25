@@ -1,15 +1,20 @@
+import * as crypto from 'crypto';
 import { once } from 'events';
 import { Server } from 'http';
 import { AddressInfo } from 'net';
 import { Socket, io } from 'socket.io-client';
 import request from 'supertest';
 import { setTimeout as sleep } from 'timers/promises';
+import { promisify } from 'util';
+import prisma from '../client';
 import app from '../server';
+
+const generateKeyPair = promisify(crypto.generateKeyPair);
 
 describe('server', () => {
   let server: Server;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     server = app.listen(0);
   });
 
@@ -25,11 +30,22 @@ describe('server', () => {
 
   describe('socket.io', () => {
     let socket: Socket;
+    const name = 'web_team_whales';
+    let privateKey: crypto.KeyObject;
 
-    beforeEach(() => {
-      const { port } = server.address() as AddressInfo;
+    beforeEach(async () => {
+      await prisma.$queryRaw`TRUNCATE TABLE private."MarketMaker" CASCADE`;
 
-      socket = io(`http://127.0.0.1:${port}`, { autoConnect: false });
+      const result = await generateKeyPair('ed25519');
+      await prisma.marketMaker.create({
+        data: {
+          name,
+          publicKey: result.publicKey
+            .export({ format: 'pem', type: 'spki' })
+            .toString(),
+        },
+      });
+      privateKey = result.privateKey;
     });
 
     afterEach(() => {
@@ -37,10 +53,22 @@ describe('server', () => {
     });
 
     it('can connect to the server', async () => {
-      socket.connect();
+      const { port } = server.address() as AddressInfo;
+      const timestamp = Date.now();
+
+      socket = io(`http://localhost:${port}`, {
+        auth: {
+          client_version: '1',
+          market_maker_id: name,
+          timestamp,
+          signature: crypto
+            .sign(null, Buffer.from(`${name}${timestamp}`, 'utf8'), privateKey)
+            .toString('base64'),
+        },
+      });
 
       const connected = await Promise.race([
-        sleep(100).then(() => false),
+        sleep(500).then(() => false),
         once(socket, 'connect').then(() => true),
       ]);
 

@@ -4,15 +4,17 @@
 // `pnpm prisma format` after changes :)
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   // https://github.com/prisma/prisma/issues/2584#issuecomment-646414549
   // https://github.com/prisma/prisma/issues/6603#issuecomment-849979849
-  output   = "../node_modules/.prisma/client"
+  output          = "../node_modules/.prisma/client"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public", "private"]
 }
 
 model SwapIntent {
@@ -27,6 +29,7 @@ model SwapIntent {
   swaps          Swap[]
 
   @@index([ingressAddress])
+  @@schema("public")
 }
 
 model Swap {
@@ -42,12 +45,16 @@ model Swap {
   egress            Egress?
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @default(now()) @updatedAt
+
+  @@schema("public")
 }
 
 enum Network {
   Polkadot
   Ethereum
   Bitcoin
+
+  @@schema("public")
 }
 
 model Egress {
@@ -65,6 +72,7 @@ model Egress {
   createdAt   DateTime   @default(now())
 
   @@unique([nativeId, network])
+  @@schema("public")
 }
 
 model Broadcast {
@@ -75,16 +83,29 @@ model Broadcast {
   egresses Egress[]
 
   @@unique([nativeId, network])
+  @@schema("public")
 }
 
 model State {
   id     Int @id @default(autoincrement())
   height Int @default(0)
+
+  @@schema("private")
+}
+
+model MarketMaker {
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  publicKey String
+
+  @@schema("private")
 }
 
 enum ThirdPartyProtocol {
   Lifi
   Squid
+
+  @@schema("public")
 }
 
 model ThirdPartySwap {
@@ -93,4 +114,6 @@ model ThirdPartySwap {
   protocol      ThirdPartyProtocol
   routeResponse Json
   createdAt     DateTime           @default(now())
+
+  @@schema("public")
 }
