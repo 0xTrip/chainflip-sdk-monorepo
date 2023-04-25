@@ -57,6 +57,15 @@ jobs:
       - name: Run tests
         run: pnpm --filter $PACKAGE test:ci
 
+      - name: Get package name without scope
+        run: echo "PACKAGE_WITHOUT_SCOPE=${PACKAGE#*/}" >> "$GITHUB_ENV" # https://stackoverflow.com/a/30865542
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          flags: ${{ env.PACKAGE_WITHOUT_SCOPE }}
+          token: ${{ secrets.CF_SDK_CODECOV_TOKEN }} # not required for public repos
+
   build-docker-images:
     runs-on: ubuntu-latest
     name: Trigger Docker Image Build in chainflip-io/chainflip-web-services 🪼
