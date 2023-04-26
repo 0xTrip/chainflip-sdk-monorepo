@@ -1,26 +1,76 @@
 import express from 'express';
-import { rateQuerySchema } from '@/shared/schemas';
+import { Subject } from 'rxjs';
+import type { Server } from 'socket.io';
+import {
+  rateQuerySchema,
+  QuoteResponse,
+  quoteResponseSchema,
+} from '@/shared/schemas';
 import { asyncHandler } from './common';
+import {
+  collectQuotes,
+  findBestQuote,
+  buildQuoteRequest,
+} from '../quoting/quotes';
 import logger from '../utils/logger';
 import ServiceError from '../utils/ServiceError';
-import { getRateEstimate } from '../utils/statechain';
+// import { getRateEstimate } from '../utils/statechain';
 
-const router = express.Router();
+const rates = (io: Server) => {
+  const router = express.Router();
 
-router.get(
-  '/',
-  asyncHandler(async (req, res) => {
-    const result = rateQuerySchema.safeParse(req.query);
+  const quoteResponses$ = new Subject<{
+    client: string;
+    quote: QuoteResponse;
+  }>();
 
-    if (!result.success) {
-      logger.info('received invalid rates request', { query: req.query });
-      throw ServiceError.badRequest('invalid request');
-    }
+  io.on('connection', (socket) => {
+    logger.info(`socket connected with id "${socket.id}"`);
 
-    const rate = await getRateEstimate(result.data);
+    socket.on('disconnect', () => {
+      logger.info(`socket disconnected with id "${socket.id}"`);
+    });
 
-    res.json({ rate });
-  }),
-);
+    socket.on('quote_response', (message) => {
+      const result = quoteResponseSchema.safeParse(message);
 
-export default router;
+      if (!result.success) {
+        logger.warn('received invalid quote response', { message });
+        return;
+      }
+
+      quoteResponses$.next({ client: socket.id, quote: result.data });
+    });
+  });
+
+  router.get(
+    '/',
+    asyncHandler(async (req, res) => {
+      const result = rateQuerySchema.safeParse(req.query);
+
+      if (!result.success) {
+        logger.info('received invalid rates request', { query: req.query });
+        throw ServiceError.badRequest('invalid request');
+      }
+
+      const quoteRequest = buildQuoteRequest(result.data);
+
+      io.emit('quote_request', quoteRequest);
+
+      const [quotes] = await Promise.all([
+        collectQuotes(
+          quoteRequest.id,
+          io.sockets.sockets.size,
+          quoteResponses$,
+        ),
+        // getRateEstimate(result.data),
+      ]);
+
+      res.json(findBestQuote(quotes));
+    }),
+  );
+
+  return router;
+};
+
+export default rates;

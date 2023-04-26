@@ -1,19 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`server GET /rates gets the rates 1`] = `
+exports[`server GET /quote gets the rates 1`] = `
 {
-  "rate": "1000000000",
-}
-`;
-
-exports[`server GET /rates gets the rates 2`] = `
-{
-  "rate": "0.0000001",
-}
-`;
-
-exports[`server GET /rates gets the rates 3`] = `
-{
-  "rate": "10",
+  "egress_amount": "0.005",
+  "id": Any<String>,
+  "intermediate_amount": "1000000000",
 }
 `;

@@ -9,7 +9,7 @@ import { promisify } from 'util';
 import prisma from '../client';
 import app from '../server';
 
-const generateKeyPair = promisify(crypto.generateKeyPair);
+const generateKeyPairAsync = promisify(crypto.generateKeyPair);
 
 describe('server', () => {
   let server: Server;
@@ -36,7 +36,7 @@ describe('server', () => {
     beforeEach(async () => {
       await prisma.$queryRaw`TRUNCATE TABLE private."MarketMaker" CASCADE`;
 
-      const result = await generateKeyPair('ed25519');
+      const result = await generateKeyPairAsync('ed25519');
       await prisma.marketMaker.create({
         data: {
           name,

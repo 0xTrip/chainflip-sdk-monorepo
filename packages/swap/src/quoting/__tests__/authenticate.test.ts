@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import prisma from '../../client';
 import authenticate from '../authenticate';
 
-const generateKeyPair = promisify(crypto.generateKeyPair);
+const generateKeyPairAsync = promisify(crypto.generateKeyPair);
 
 describe(authenticate, () => {
   let next: jest.Mock;
@@ -12,7 +12,7 @@ describe(authenticate, () => {
   beforeEach(async () => {
     await prisma.$queryRaw`TRUNCATE TABLE private."MarketMaker" CASCADE`;
     next = jest.fn();
-    const pair = await generateKeyPair('ed25519');
+    const pair = await generateKeyPairAsync('ed25519');
     await prisma.marketMaker.create({
       data: {
         name: 'web_team_whales',

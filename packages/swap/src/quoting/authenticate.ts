@@ -1,8 +1,11 @@
 import * as crypto from 'crypto';
 import type { Server } from 'socket.io';
+import { promisify } from 'util';
 import { z } from 'zod';
 import prisma from '../client';
 import logger from '../utils/logger';
+
+const verifyAsync = promisify(crypto.verify);
 
 type Middleware = Parameters<Server['use']>[0];
 type Socket = Parameters<Middleware>[0];
@@ -52,7 +55,7 @@ const authenticate = async (socket: Socket, next: Next) => {
     return;
   }
 
-  const signaturesMatch = crypto.verify(
+  const signaturesMatch = await verifyAsync(
     null,
     Buffer.from(`${auth.market_maker_id}${auth.timestamp}`, 'utf8'),
     key,

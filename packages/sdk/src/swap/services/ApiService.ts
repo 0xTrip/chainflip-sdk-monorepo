@@ -94,7 +94,7 @@ const getRoute: BackendQuery<RouteRequest, RouteResponse> = async (
 
   const queryParams = new URLSearchParams(params);
 
-  const url = new URL(`/rates?${queryParams.toString()}`, baseUrl).toString();
+  const url = new URL(`/quote?${queryParams.toString()}`, baseUrl).toString();
 
   const { data } = await axios.get<{ rate: string }>(url, { signal });
 
