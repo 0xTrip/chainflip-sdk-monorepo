@@ -14,7 +14,7 @@ import {
 } from '../quoting/quotes';
 import logger from '../utils/logger';
 import ServiceError from '../utils/ServiceError';
-// import { getRateEstimate } from '../utils/statechain';
+import { getBrokerQuote } from '../utils/statechain';
 
 const quote = (io: Server) => {
   const router = express.Router();
@@ -57,16 +57,16 @@ const quote = (io: Server) => {
 
       io.emit('quote_request', quoteRequest);
 
-      const [quotes] = await Promise.all([
+      const [marketMakerQuotes, brokerQuote] = await Promise.all([
         collectQuotes(
           quoteRequest.id,
           io.sockets.sockets.size,
           quoteResponses$,
         ),
-        // getRateEstimate(result.data),
+        getBrokerQuote(result.data, quoteRequest.id),
       ]);
 
-      res.json(findBestQuote(quotes));
+      res.json(findBestQuote(marketMakerQuotes, brokerQuote));
     }),
   );
 

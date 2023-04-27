@@ -84,27 +84,32 @@ describe('quotes', () => {
 
   describe(findBestQuote, () => {
     it('returns the quote with the highest egressAmount', () => {
-      const a = { egressAmount: '1' };
-      const b = { egressAmount: '2' };
-      expect(findBestQuote([a, b])).toBe(b);
-      expect(findBestQuote([b, a])).toBe(b);
+      const broker = { egressAmount: '1' };
+      const a = { egressAmount: '10' };
+      const b = { egressAmount: '20' };
+      expect(findBestQuote([a, b], broker)).toBe(b);
+      expect(findBestQuote([b, a], broker)).toBe(b);
     });
 
     it('returns the quote with the highest egressAmount if many match', () => {
-      const a = { egressAmount: '1' };
-      const b = { egressAmount: '2' };
-      const c = { egressAmount: '2' };
-      expect(findBestQuote([c, a, b])).toBe(c);
-      expect(findBestQuote([b, a, c])).toBe(b);
+      const broker = { egressAmount: '1' };
+      const a = { egressAmount: '10' };
+      const b = { egressAmount: '20' };
+      const c = { egressAmount: '20' };
+      expect(findBestQuote([c, a, b], broker)).toBe(c);
+      expect(findBestQuote([b, a, c], broker)).toBe(b);
     });
 
-    it('returns undefined if no quotes are provided', () => {
-      expect(findBestQuote([])).toBeNull();
+    it("returns the broker quote if it's best", () => {
+      const a = { egressAmount: '1' };
+      const b = { egressAmount: '10' };
+      const broker = { egressAmount: '20' };
+      expect(findBestQuote([a, b], broker)).toBe(broker);
     });
 
-    it('returns the only quote if only one is provided', () => {
-      const a = { egressAmount: '1' };
-      expect(findBestQuote([a])).toBe(a);
+    it('returns the broker quote in absence of market maker quotes', () => {
+      const broker = { egressAmount: '1' };
+      expect(findBestQuote([], broker)).toBe(broker);
     });
   });
 

@@ -38,6 +38,7 @@ export const quoteResponseSchema = z.union([
     .transform(({ id, ...rest }) => ({ id, egressAmount: rest.egress_amount })),
 ]);
 
+export type MarketMakerResponse = z.input<typeof quoteResponseSchema>;
 export type QuoteResponse = z.infer<typeof quoteResponseSchema>;
 
 interface BaseRequest {

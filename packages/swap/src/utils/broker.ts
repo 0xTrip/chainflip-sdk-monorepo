@@ -33,13 +33,13 @@ const initializeClient = memoize(async () => {
     process.env.RPC_RELAYER_WSS_URL as string,
     requestValidators,
     validators,
-    'relayer',
+    'broker',
   ).connect();
 
   return rpcClient;
 });
 
-export const submitSwapToRelayer = async (
+export const submitSwapToBroker = async (
   swapIntent: NewSwapIntent,
 ): Promise<string> => {
   const client = await initializeClient();

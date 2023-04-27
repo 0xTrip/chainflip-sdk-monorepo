@@ -1,4 +1,3 @@
-// import BigNumber from 'bignumber.js';
 import * as crypto from 'crypto';
 import { once } from 'events';
 import { Server } from 'http';
@@ -8,7 +7,7 @@ import { promisify } from 'util';
 import prisma from '../../client';
 import QuotingClient from '../../quoting/QuotingClient';
 import app from '../../server';
-// import RpcClient from '../../utils/RpcClient';
+import RpcClient from '../../utils/RpcClient';
 
 const generateKeyPairAsync = promisify(crypto.generateKeyPair);
 
@@ -58,11 +57,11 @@ describe('server', () => {
   });
 
   describe('GET /quote', () => {
-    it('gets the rates', async () => {
-      // TODO: restore broker mock
-      // const sendSpy = jest
-      //   .spyOn(RpcClient.prototype, 'sendRequest')
-      //   .mockResolvedValueOnce(new BigNumber('1').times(10e18));
+    it('gets the quote when the broker is best', async () => {
+      const sendSpy = jest
+        .spyOn(RpcClient.prototype, 'sendRequest')
+        .mockResolvedValueOnce((2000e6).toString())
+        .mockResolvedValueOnce((1e18).toString());
       const params = new URLSearchParams({
         ingressAsset: 'FLIP',
         egressAsset: 'ETH',
@@ -71,8 +70,8 @@ describe('server', () => {
 
       client.setQuoteRequestHandler(async (req) => ({
         id: req.id,
-        intermediate_amount: '1000000000',
-        egress_amount: '0.005',
+        intermediate_amount: (1000e6).toString(),
+        egress_amount: (5e17).toString(),
       }));
 
       const { body, status } = await request(server).get(
@@ -80,8 +79,42 @@ describe('server', () => {
       );
 
       expect(status).toBe(200);
-      expect(body).toMatchSnapshot({ id: expect.any(String) });
-      // expect(sendSpy).toHaveBeenCalledTimes(1);
+      expect(body).toMatchObject({
+        id: expect.any(String),
+        intermediateAmount: (2000e6).toString(),
+        egressAmount: (1e18).toString(),
+      });
+      expect(sendSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('gets the quote when the market maker is best', async () => {
+      const sendSpy = jest
+        .spyOn(RpcClient.prototype, 'sendRequest')
+        .mockResolvedValueOnce((2000e6).toString())
+        .mockResolvedValueOnce((1e18).toString());
+      const params = new URLSearchParams({
+        ingressAsset: 'FLIP',
+        egressAsset: 'ETH',
+        amount: '1',
+      });
+
+      client.setQuoteRequestHandler(async (req) => ({
+        id: req.id,
+        intermediate_amount: (2000e6).toString(),
+        egress_amount: (1.1e18).toString(),
+      }));
+
+      const { body, status } = await request(server).get(
+        `/quote?${params.toString()}`,
+      );
+
+      expect(status).toBe(200);
+      expect(body).toMatchObject({
+        id: expect.any(String),
+        intermediateAmount: (2000e6).toString(),
+        egressAmount: (1.1e18).toString(),
+      });
+      expect(sendSpy).toHaveBeenCalledTimes(2);
     });
   });
 });

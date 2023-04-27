@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`server GET /quote gets the rates 1`] = `
-{
-  "egressAmount": "0.005",
-  "id": Any<String>,
-  "intermediateAmount": "1000000000",
-}
-`;

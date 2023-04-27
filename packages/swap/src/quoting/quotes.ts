@@ -41,13 +41,14 @@ export const collectQuotes = (
   });
 };
 
-export const findBestQuote = (quotes: QuoteResponse[]): QuoteResponse | null =>
-  quotes.length === 0
-    ? null
-    : quotes.reduce((a, b) => {
-        const cmpResult = compareNumericStrings(a.egressAmount, b.egressAmount);
-        return cmpResult === Comparison.Less ? b : a;
-      });
+export const findBestQuote = (
+  quotes: QuoteResponse[],
+  brokerQuote: QuoteResponse,
+): QuoteResponse =>
+  quotes.reduce((a, b) => {
+    const cmpResult = compareNumericStrings(a.egressAmount, b.egressAmount);
+    return cmpResult === Comparison.Less ? b : a;
+  }, brokerQuote);
 
 export const buildQuoteRequest = (query: QuoteQueryParams): QuoteRequest => {
   const { ingressAsset, egressAsset, amount } = query;

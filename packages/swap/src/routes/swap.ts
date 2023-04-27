@@ -9,8 +9,8 @@ import {
   decimalPlaces,
   validateAddress,
 } from '../utils/assets';
+import { submitSwapToBroker } from '../utils/broker';
 import logger from '../utils/logger';
-import { submitSwapToRelayer } from '../utils/relayer';
 import ServiceError from '../utils/ServiceError';
 
 const router = express.Router();
@@ -103,7 +103,7 @@ router.post(
 
     validateAddress(payload.egressAsset, payload.egressAddress);
 
-    const ingressAddress = await submitSwapToRelayer(payload);
+    const ingressAddress = await submitSwapToBroker(payload);
 
     const { uuid } = await prisma.swapIntent.create({
       data: { ...payload, ingressAddress },

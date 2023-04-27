@@ -1,11 +1,11 @@
-import BigNumber from 'bignumber.js';
+import assert from 'assert';
 import { z } from 'zod';
 import { SupportedAsset, supportedAsset } from '@/shared/assets';
 import { numericString } from '@/shared/parsers';
-import { decimalPlaces } from './assets';
 import { memoize } from './function';
 import RpcClient from './RpcClient';
 import { transformAsset } from './string';
+import { QuoteResponse, QuoteQueryParams } from '../schemas';
 
 const requestValidators = {
   swap_rate: z.tuple([
@@ -15,7 +15,8 @@ const requestValidators = {
   ]),
 };
 
-const u128Fixed = z.string().transform((v) => new BigNumber(v));
+// parse hex encoding or decimal encoding into decimal encoding
+const u128Fixed = z.string().transform((v) => BigInt(v).toString());
 
 const validators = {
   swap_rate: u128Fixed,
@@ -32,30 +33,33 @@ const initializeClient = memoize(async () => {
   return rpcClient;
 });
 
-const FIXED_U128_DECIMAL_PLACES = 18;
-
-export const getRateEstimate = async ({
-  ingressAsset,
-  egressAsset,
-  amount,
-}: {
-  ingressAsset: SupportedAsset;
-  egressAsset: SupportedAsset;
-  amount: string;
-}) => {
+const getSwapAmount = async (
+  fromAsset: SupportedAsset,
+  toAsset: SupportedAsset,
+  amount: string,
+): Promise<string> => {
   const client = await initializeClient();
 
-  const decimalPlacesToRemove =
-    FIXED_U128_DECIMAL_PLACES -
-    decimalPlaces[ingressAsset] +
-    decimalPlaces[egressAsset];
+  return client.sendRequest('swap_rate', fromAsset, toAsset, amount);
+};
 
-  const rate = await client.sendRequest(
-    'swap_rate',
-    ingressAsset,
+export const getBrokerQuote = async (
+  { ingressAsset, egressAsset, amount }: QuoteQueryParams,
+  id: string,
+): Promise<QuoteResponse> => {
+  if (ingressAsset === 'USDC' || egressAsset === 'USDC') {
+    assert(ingressAsset !== egressAsset);
+    const egressAmount = await getSwapAmount(ingressAsset, egressAsset, amount);
+
+    return { id, egressAmount };
+  }
+
+  const intermediateAmount = await getSwapAmount(ingressAsset, 'USDC', amount);
+  const egressAmount = await getSwapAmount(
+    'USDC',
     egressAsset,
-    amount,
+    intermediateAmount,
   );
 
-  return rate.dividedBy(new BigNumber(10).pow(decimalPlacesToRemove)).toFixed();
+  return { id, intermediateAmount, egressAmount };
 };

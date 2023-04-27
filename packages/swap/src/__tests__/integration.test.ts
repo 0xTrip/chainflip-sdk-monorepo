@@ -16,6 +16,9 @@ import { promisify } from 'util';
 import { QuoteQueryParams } from '@/shared/schemas';
 import prisma from '../client';
 import app from '../server';
+import { getBrokerQuote } from '../utils/statechain';
+
+jest.mock('../utils/statechain', () => ({ getBrokerQuote: jest.fn() }));
 
 const generateKeyPairAsync = promisify(crypto.generateKeyPair);
 
@@ -85,6 +88,12 @@ describe('python integration test', () => {
       egressAsset: 'ETH',
       amount: '1000000000000000000',
     } as QuoteQueryParams);
+
+    jest.mocked(getBrokerQuote).mockResolvedValueOnce({
+      id: "doesn't matter",
+      intermediateAmount: '2000000000',
+      egressAmount: '999999999999999999',
+    });
 
     const response = await fetch(`${serverUrl}/quote?${params.toString()}`);
 
