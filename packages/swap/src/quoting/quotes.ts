@@ -1,7 +1,11 @@
 import assert from 'assert';
 import * as crypto from 'crypto';
 import { Observable, Subscription, filter } from 'rxjs';
-import { QuoteRequest, QuoteResponse, RateQueryParams } from '../schemas';
+import {
+  QuoteRequest,
+  QuoteResponse,
+  QuoteQueryParams,
+} from '@/shared/schemas';
 import { Comparison, compareNumericStrings } from '../utils/string';
 
 const QUOTE_TIMEOUT = Number.parseInt(process.env.QUOTE_TIMEOUT ?? '1000', 10);
@@ -41,14 +45,11 @@ export const findBestQuote = (quotes: QuoteResponse[]): QuoteResponse | null =>
   quotes.length === 0
     ? null
     : quotes.reduce((a, b) => {
-        const cmpResult = compareNumericStrings(
-          a.egress_amount,
-          b.egress_amount,
-        );
+        const cmpResult = compareNumericStrings(a.egressAmount, b.egressAmount);
         return cmpResult === Comparison.Less ? b : a;
       });
 
-export const buildQuoteRequest = (query: RateQueryParams): QuoteRequest => {
+export const buildQuoteRequest = (query: QuoteQueryParams): QuoteRequest => {
   const { ingressAsset, egressAsset, amount } = query;
 
   if (ingressAsset === 'USDC') {

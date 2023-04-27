@@ -47,14 +47,14 @@ describe(authenticate, () => {
     expect(next).toHaveBeenCalledWith(new Error('invalid auth'));
   });
 
-  it('rejects expired authentication', async () => {
+  it.each([[-10001, 1000]])('rejects invalid timestamps', async (diff) => {
     await authenticate(
       {
         handshake: {
           auth: {
             client_version: '1',
             market_maker_id: 'web_team_whales',
-            timestamp: Date.now() - 10001,
+            timestamp: Date.now() + diff,
             signature: 'deadbeef',
           },
         },
@@ -62,7 +62,7 @@ describe(authenticate, () => {
       next,
     );
     expect(next).toHaveBeenCalledTimes(1);
-    expect(next).toHaveBeenCalledWith(new Error('auth expired'));
+    expect(next).toHaveBeenCalledWith(new Error('invalid timestamp'));
   });
 
   it('rejects unknown market maker', async () => {

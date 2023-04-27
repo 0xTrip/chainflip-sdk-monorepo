@@ -3,7 +3,6 @@ import type { Server } from 'socket.io';
 import { promisify } from 'util';
 import { z } from 'zod';
 import prisma from '../client';
-import logger from '../utils/logger';
 
 const verifyAsync = promisify(crypto.verify);
 
@@ -18,56 +17,55 @@ const authSchema = z.object({
   signature: z.string(),
 });
 
-const authenticate = async (socket: Socket, next: Next) => {
-  const result = authSchema.safeParse(socket.handshake.auth);
-
-  if (!result.success) {
-    next(new Error('invalid auth'));
-    return;
+function assert(condition: unknown, message: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
   }
+}
 
-  const auth = result.data;
-
-  if (Date.now() - auth.timestamp > 10000) {
-    next(new Error('auth expired'));
-    return;
-  }
-
-  const marketMaker = await prisma.marketMaker.findUnique({
-    where: { name: auth.market_maker_id },
-  });
-
-  if (!marketMaker) {
-    next(new Error('market maker not found'));
-    return;
-  }
-
-  let key: crypto.KeyObject;
+const parseKey = (key: string) => {
   try {
-    key = crypto.createPublicKey({
-      key: Buffer.from(marketMaker.publicKey),
+    return crypto.createPublicKey({
+      key: Buffer.from(key),
       format: 'pem',
       type: 'spki',
     });
   } catch {
-    logger.error('invalid public key', { marketMaker });
-    next(new Error('invalid public key'));
-    return;
+    throw new Error('invalid public key');
   }
+};
 
-  const signaturesMatch = await verifyAsync(
-    null,
-    Buffer.from(`${auth.market_maker_id}${auth.timestamp}`, 'utf8'),
-    key,
-    Buffer.from(auth.signature, 'base64'),
-  );
+const authenticate = async (socket: Socket, next: Next) => {
+  try {
+    const result = authSchema.safeParse(socket.handshake.auth);
 
-  if (!signaturesMatch) {
-    next(new Error('invalid signature'));
-    return;
+    assert(result.success, 'invalid auth');
+
+    const auth = result.data;
+    const timeElapsed = Date.now() - auth.timestamp;
+    assert(timeElapsed < 10000 && timeElapsed >= 0, 'invalid timestamp');
+
+    const marketMaker = await prisma.marketMaker.findUnique({
+      where: { name: auth.market_maker_id },
+    });
+
+    assert(marketMaker, 'market maker not found');
+
+    const key = parseKey(marketMaker.publicKey);
+
+    const signaturesMatch = await verifyAsync(
+      null,
+      Buffer.from(`${auth.market_maker_id}${auth.timestamp}`, 'utf8'),
+      key,
+      Buffer.from(auth.signature, 'base64'),
+    );
+
+    assert(signaturesMatch, 'invalid signature');
+
+    next();
+  } catch (error) {
+    next(error as Error);
   }
-
-  next();
 };
 
 export default authenticate;

@@ -4,7 +4,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import authenticate from './quoting/authenticate';
 import fee from './routes/fee';
-import rate from './routes/rate';
+import quote from './routes/quote';
 import swap from './routes/swap';
 import thirdPartySwap from './routes/thirdPartySwap';
 
@@ -20,6 +20,6 @@ app.get('/healthcheck', (req, res) => {
   res.status(200).send('OK');
 });
 
-app.use('/quote', rate(io));
+app.use('/quote', quote(io));
 
 export default server;

@@ -83,17 +83,17 @@ describe('quotes', () => {
   });
 
   describe(findBestQuote, () => {
-    it('returns the quote with the highest egress_amount', () => {
-      const a = { egress_amount: '1' };
-      const b = { egress_amount: '2' };
+    it('returns the quote with the highest egressAmount', () => {
+      const a = { egressAmount: '1' };
+      const b = { egressAmount: '2' };
       expect(findBestQuote([a, b])).toBe(b);
       expect(findBestQuote([b, a])).toBe(b);
     });
 
-    it('returns the quote with the highest egress_amount if many match', () => {
-      const a = { egress_amount: '1' };
-      const b = { egress_amount: '2' };
-      const c = { egress_amount: '2' };
+    it('returns the quote with the highest egressAmount if many match', () => {
+      const a = { egressAmount: '1' };
+      const b = { egressAmount: '2' };
+      const c = { egressAmount: '2' };
       expect(findBestQuote([c, a, b])).toBe(c);
       expect(findBestQuote([b, a, c])).toBe(b);
     });
@@ -103,7 +103,7 @@ describe('quotes', () => {
     });
 
     it('returns the only quote if only one is provided', () => {
-      const a = { egress_amount: '1' };
+      const a = { egressAmount: '1' };
       expect(findBestQuote([a])).toBe(a);
     });
   });

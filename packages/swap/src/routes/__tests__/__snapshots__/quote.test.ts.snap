@@ -2,8 +2,8 @@
 
 exports[`server GET /quote gets the rates 1`] = `
 {
-  "egress_amount": "0.005",
+  "egressAmount": "0.005",
   "id": Any<String>,
-  "intermediate_amount": "1000000000",
+  "intermediateAmount": "1000000000",
 }
 `;

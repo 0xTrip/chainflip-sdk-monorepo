@@ -1,4 +1,5 @@
 import { Network } from '@/shared/assets';
+import { QuoteResponse } from '@/shared/schemas';
 import { ChainId, TokenSymbol } from '../consts';
 
 export type { SDKOptions } from '../sdk';
@@ -38,7 +39,7 @@ export interface RouteRequest extends Route {
 }
 
 export interface RouteResponse extends Route {
-  rate: string;
+  quote: QuoteResponse;
 }
 
 export interface SwapResponse {

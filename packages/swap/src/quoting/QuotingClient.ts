@@ -15,7 +15,7 @@ type QuoteHandler = (quote: QuoteRequest) => Promise<Omit<QuoteResponse, 'id'>>;
 export default class QuotingClient extends EventEmitter {
   private socket!: Socket;
 
-  private quoteHandler: QuoteHandler | null = null;
+  private quoteHandler!: QuoteHandler;
 
   private privateKey: crypto.KeyObject;
 
@@ -49,10 +49,8 @@ export default class QuotingClient extends EventEmitter {
     });
 
     this.socket.on('quote_request', async (quote: QuoteRequest) => {
-      const response = await this.quoteHandler?.(quote);
-      if (response) {
-        this.socket.emit('quote_response', { ...response, id: quote.id });
-      }
+      const response = await this.quoteHandler(quote);
+      this.socket.emit('quote_response', { ...response, id: quote.id });
     });
   }
 

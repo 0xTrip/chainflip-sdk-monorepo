@@ -1,5 +1,9 @@
 import axios from 'axios';
-import type { RateQueryParams, SwapRequestBody } from '@/shared/schemas';
+import type {
+  QuoteQueryParams,
+  QuoteResponse,
+  SwapRequestBody,
+} from '@/shared/schemas';
 import { ChainId } from '../consts';
 import {
   bitcoin,
@@ -20,7 +24,6 @@ import {
   SwapStatusResponse,
   Token,
 } from '../types';
-import { unreachable } from '../utils';
 
 const getChains = async (useTestnets: boolean): Promise<Chain[]> => {
   if (useTestnets) return testnetChains([ethereum, polkadot, bitcoin]);
@@ -35,12 +38,13 @@ const getPossibleDestinationChains = async (
     if (chainId === ChainId.Ethereum) return testnetChains([polkadot, bitcoin]);
     if (chainId === ChainId.Polkadot) return testnetChains([ethereum, bitcoin]);
     if (chainId === ChainId.Bitcoin) return testnetChains([ethereum, polkadot]);
+    throw new Error('received testnet flag but mainnet chainId');
   }
 
   if (chainId === ChainId.Ethereum) return [bitcoin, polkadot];
   if (chainId === ChainId.Polkadot) return [ethereum, bitcoin];
   if (chainId === ChainId.Bitcoin) return [ethereum, polkadot];
-  return unreachable(chainId, 'received unknown chainId');
+  throw new Error('received unknown chainId');
 };
 
 const getTokens = async (
@@ -51,12 +55,13 @@ const getTokens = async (
     if (chainId === ChainId.Ethereum) return testnetTokens(ethereumTokens);
     if (chainId === ChainId.Polkadot) return testnetTokens([dot$]);
     if (chainId === ChainId.Bitcoin) return testnetTokens([btc$]);
+    throw new Error('received testnet flag but mainnet chainId');
   }
 
   if (chainId === ChainId.Ethereum) return ethereumTokens;
   if (chainId === ChainId.Polkadot) return [dot$];
   if (chainId === ChainId.Bitcoin) return [btc$];
-  return unreachable(chainId, 'received unknown chainId');
+  throw new Error('received unknown chainId');
 };
 
 export type RequestOptions = {
@@ -74,7 +79,7 @@ const getRoute: BackendQuery<RouteRequest, RouteResponse> = async (
   { amount, ...routeRequest },
   { signal },
 ): Promise<RouteResponse> => {
-  const params: RateQueryParams = {
+  const params: QuoteQueryParams = {
     amount,
     ingressAsset: routeRequest.srcTokenSymbol,
     egressAsset: routeRequest.destTokenSymbol,
@@ -84,12 +89,14 @@ const getRoute: BackendQuery<RouteRequest, RouteResponse> = async (
 
   const url = new URL(`/quote?${queryParams.toString()}`, baseUrl).toString();
 
-  const { data } = await axios.get<{ rate: string }>(url, { signal });
+  const { data } = await axios.get<QuoteResponse>(url, { signal });
 
-  return { rate: data.rate, ...routeRequest };
+  return { quote: data, ...routeRequest };
 };
 
-const executeRoute: BackendQuery<RouteResponse, SwapResponse> = async (
+type RouteWithoutQuote = Omit<RouteResponse, 'quote'>;
+
+const executeRoute: BackendQuery<RouteWithoutQuote, SwapResponse> = async (
   baseUrl,
   route,
   { signal },

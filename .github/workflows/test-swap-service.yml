@@ -51,6 +51,15 @@ jobs:
       - name: Install dependencies 🚚 📦
         run: pnpm --filter $PACKAGE install
 
+      - name: pyenv Build
+        uses: gabrielfalcao/pyenv-action@v13
+        with:
+          default: "3.9"
+          command: pip install -U pip # upgrade pip after installing python
+
+      - name: Install dependencies
+        run: pip install -r packages/swap/python-client/requirements.txt
+
       - name: migrate database
         run: pnpm --filter $PACKAGE exec pnpm prisma migrate dev
 

@@ -2,7 +2,7 @@ import express from 'express';
 import { Subject } from 'rxjs';
 import type { Server } from 'socket.io';
 import {
-  rateQuerySchema,
+  quoteQuerySchema,
   QuoteResponse,
   quoteResponseSchema,
 } from '@/shared/schemas';
@@ -16,7 +16,7 @@ import logger from '../utils/logger';
 import ServiceError from '../utils/ServiceError';
 // import { getRateEstimate } from '../utils/statechain';
 
-const rates = (io: Server) => {
+const quote = (io: Server) => {
   const router = express.Router();
 
   const quoteResponses$ = new Subject<{
@@ -46,10 +46,10 @@ const rates = (io: Server) => {
   router.get(
     '/',
     asyncHandler(async (req, res) => {
-      const result = rateQuerySchema.safeParse(req.query);
+      const result = quoteQuerySchema.safeParse(req.query);
 
       if (!result.success) {
-        logger.info('received invalid rates request', { query: req.query });
+        logger.info('received invalid quote request', { query: req.query });
         throw ServiceError.badRequest('invalid request');
       }
 
@@ -73,4 +73,4 @@ const rates = (io: Server) => {
   return router;
 };
 
-export default rates;
+export default quote;
