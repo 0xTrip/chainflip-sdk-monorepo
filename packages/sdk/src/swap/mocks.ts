@@ -3,32 +3,20 @@ import type { Chain, Token } from './types';
 
 export const ethereum: Chain = {
   id: ChainId.Ethereum,
-  name: 'ethereum',
-};
-
-export const goerli: Chain = {
-  id: ChainId.Goerli,
-  name: 'goerli',
+  name: 'Ethereum',
+  isMainnet: true,
 };
 
 export const polkadot: Chain = {
   id: ChainId.Polkadot,
-  name: 'polkadot',
-};
-
-export const westend: Chain = {
-  id: ChainId.Westend,
-  name: 'westend',
+  name: 'Polkadot',
+  isMainnet: true,
 };
 
 export const bitcoin: Chain = {
   id: ChainId.Bitcoin,
-  name: 'bitcoin',
-};
-
-export const bitcoinTest: Chain = {
-  id: ChainId.BitcoinTest,
-  name: 'bitcoin-test',
+  name: 'Bitcoin',
+  isMainnet: true,
 };
 
 export const ethereumTokens: Token[] = [
@@ -38,6 +26,7 @@ export const ethereumTokens: Token[] = [
     decimals: 18,
     name: 'ether',
     symbol: 'ETH',
+    isMainnet: true,
   },
   {
     chainId: ChainId.Ethereum,
@@ -45,6 +34,7 @@ export const ethereumTokens: Token[] = [
     decimals: 6,
     name: 'usdc',
     symbol: 'USDC',
+    isMainnet: true,
   },
   {
     chainId: ChainId.Ethereum,
@@ -52,30 +42,7 @@ export const ethereumTokens: Token[] = [
     decimals: 18,
     name: 'flip',
     symbol: 'FLIP',
-  },
-];
-
-export const goerliTokens: Token[] = [
-  {
-    chainId: ChainId.Goerli,
-    contractAddress: '0xeth',
-    decimals: 18,
-    name: 'goerli ether',
-    symbol: 'gETH',
-  },
-  {
-    chainId: ChainId.Goerli,
-    contractAddress: '0xusdc',
-    decimals: 6,
-    name: 'goerli usdc',
-    symbol: 'gUSDC',
-  },
-  {
-    chainId: ChainId.Goerli,
-    contractAddress: '0xflip',
-    decimals: 18,
-    name: 'test flip',
-    symbol: 'tFLIP',
+    isMainnet: true,
   },
 ];
 
@@ -85,14 +52,7 @@ export const dot$: Token = {
   decimals: 10,
   name: 'dot',
   symbol: 'DOT',
-};
-
-export const wnd$: Token = {
-  chainId: ChainId.Westend,
-  contractAddress: '0xwnd',
-  decimals: 10,
-  name: 'westend',
-  symbol: 'WND',
+  isMainnet: true,
 };
 
 export const btc$: Token = {
@@ -101,12 +61,11 @@ export const btc$: Token = {
   decimals: 8,
   name: 'bitcoin',
   symbol: 'BTC',
+  isMainnet: true,
 };
 
-export const tbtc$: Token = {
-  chainId: ChainId.BitcoinTest,
-  contractAddress: '0xbitcoin',
-  decimals: 8,
-  name: 'bitcoin-test',
-  symbol: 'tBTC',
-};
+export const testnetChains = (chains: Chain[]): Chain[] =>
+  chains.map((chain) => ({ ...chain, isMainnet: false }));
+
+export const testnetTokens = (tokens: Token[]): Token[] =>
+  tokens.map((token) => ({ ...token, isMainnet: false }));

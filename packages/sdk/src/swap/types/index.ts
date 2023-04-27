@@ -1,19 +1,17 @@
+import { Network } from '@/shared/assets';
 import { ChainId, TokenSymbol } from '../consts';
 
 export type { SDKOptions } from '../sdk';
 
 export interface Chain {
   id: ChainId;
-  name: string;
+  name: Network;
+  isMainnet: boolean;
 }
-
 interface ChainTokenMap {
   [ChainId.Ethereum]: 'ETH' | 'USDC' | 'FLIP';
-  [ChainId.Goerli]: 'gETH' | 'gUSDC' | 'tFLIP';
-  [ChainId.Polkadot]: 'DOT';
-  [ChainId.Westend]: 'WND';
   [ChainId.Bitcoin]: 'BTC';
-  [ChainId.BitcoinTest]: 'tBTC';
+  [ChainId.Polkadot]: 'DOT';
 }
 
 export type Token = {
@@ -23,6 +21,7 @@ export type Token = {
     decimals: number;
     name: string;
     symbol: ChainTokenMap[K];
+    isMainnet: boolean;
   };
 }[keyof ChainTokenMap];
 

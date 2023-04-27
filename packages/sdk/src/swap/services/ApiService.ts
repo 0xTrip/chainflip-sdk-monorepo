@@ -5,15 +5,11 @@ import {
   bitcoin,
   polkadot,
   dot$,
-  goerli,
-  goerliTokens,
-  westend,
-  bitcoinTest,
   ethereum,
-  wnd$,
-  tbtc$,
   btc$,
   ethereumTokens,
+  testnetChains,
+  testnetTokens,
 } from '../mocks';
 import {
   Chain,
@@ -27,7 +23,7 @@ import {
 import { unreachable } from '../utils';
 
 const getChains = async (useTestnets: boolean): Promise<Chain[]> => {
-  if (useTestnets) return [goerli, westend, bitcoinTest];
+  if (useTestnets) return testnetChains([ethereum, polkadot, bitcoin]);
   return [ethereum, polkadot, bitcoin];
 };
 
@@ -36,19 +32,15 @@ const getPossibleDestinationChains = async (
   useTestnets: boolean,
 ): Promise<Chain[]> => {
   if (useTestnets) {
-    if (chainId === ChainId.Goerli) return [westend, bitcoinTest];
-    if (chainId === ChainId.Westend) return [goerli, bitcoinTest];
-    if (chainId === ChainId.BitcoinTest) return [goerli, westend];
-    return unreachable(
-      chainId as never,
-      'received testnet flag but mainnet chainId',
-    );
+    if (chainId === ChainId.Ethereum) return testnetChains([polkadot, bitcoin]);
+    if (chainId === ChainId.Polkadot) return testnetChains([ethereum, bitcoin]);
+    if (chainId === ChainId.Bitcoin) return testnetChains([ethereum, polkadot]);
   }
 
   if (chainId === ChainId.Ethereum) return [bitcoin, polkadot];
   if (chainId === ChainId.Polkadot) return [ethereum, bitcoin];
   if (chainId === ChainId.Bitcoin) return [ethereum, polkadot];
-  return unreachable(chainId as never, 'received unknown chainId');
+  return unreachable(chainId, 'received unknown chainId');
 };
 
 const getTokens = async (
@@ -56,19 +48,15 @@ const getTokens = async (
   useTestnets: boolean,
 ): Promise<Token[]> => {
   if (useTestnets) {
-    if (chainId === ChainId.Goerli) return goerliTokens;
-    if (chainId === ChainId.Westend) return [wnd$];
-    if (chainId === ChainId.BitcoinTest) return [tbtc$];
-    return unreachable(
-      chainId as never,
-      'received testnet flag but mainnet chainId',
-    );
+    if (chainId === ChainId.Ethereum) return testnetTokens(ethereumTokens);
+    if (chainId === ChainId.Polkadot) return testnetTokens([dot$]);
+    if (chainId === ChainId.Bitcoin) return testnetTokens([btc$]);
   }
 
   if (chainId === ChainId.Ethereum) return ethereumTokens;
   if (chainId === ChainId.Polkadot) return [dot$];
   if (chainId === ChainId.Bitcoin) return [btc$];
-  return unreachable(chainId as never, 'received unknown chainId');
+  return unreachable(chainId, 'received unknown chainId');
 };
 
 export type RequestOptions = {

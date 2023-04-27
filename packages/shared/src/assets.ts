@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const supportedNetworks = ['Polkadot', 'Ethereum', 'Bitcoin'] as const;
+const supportedNetworks = ['Bitcoin', 'Ethereum', 'Polkadot'] as const;
 export const network = z.enum(supportedNetworks);
 export type Network = (typeof supportedNetworks)[number];
 
