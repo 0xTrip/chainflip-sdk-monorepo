@@ -1,12 +1,8 @@
 import express from 'express';
-import { Subject } from 'rxjs';
 import type { Server } from 'socket.io';
-import {
-  quoteQuerySchema,
-  QuoteResponse,
-  quoteResponseSchema,
-} from '@/shared/schemas';
+import { quoteQuerySchema } from '@/shared/schemas';
 import { asyncHandler } from './common';
+import getConnectionHandler from '../quoting/getConnectionHandler';
 import {
   collectQuotes,
   findBestQuote,
@@ -19,29 +15,9 @@ import { getBrokerQuote } from '../utils/statechain';
 const quote = (io: Server) => {
   const router = express.Router();
 
-  const quoteResponses$ = new Subject<{
-    client: string;
-    quote: QuoteResponse;
-  }>();
+  const { handler, quotes$ } = getConnectionHandler();
 
-  io.on('connection', (socket) => {
-    logger.info(`socket connected with id "${socket.id}"`);
-
-    socket.on('disconnect', () => {
-      logger.info(`socket disconnected with id "${socket.id}"`);
-    });
-
-    socket.on('quote_response', (message) => {
-      const result = quoteResponseSchema.safeParse(message);
-
-      if (!result.success) {
-        logger.warn('received invalid quote response', { message });
-        return;
-      }
-
-      quoteResponses$.next({ client: socket.id, quote: result.data });
-    });
-  });
+  io.on('connection', handler);
 
   router.get(
     '/',
@@ -58,11 +34,7 @@ const quote = (io: Server) => {
       io.emit('quote_request', quoteRequest);
 
       const [marketMakerQuotes, brokerQuote] = await Promise.all([
-        collectQuotes(
-          quoteRequest.id,
-          io.sockets.sockets.size,
-          quoteResponses$,
-        ),
+        collectQuotes(quoteRequest.id, io.sockets.sockets.size, quotes$),
         getBrokerQuote(result.data, quoteRequest.id),
       ]);
 
