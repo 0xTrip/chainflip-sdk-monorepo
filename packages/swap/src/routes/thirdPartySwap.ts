@@ -35,4 +35,23 @@ router.post(
   }),
 );
 
+router.get(
+  '/:uuid',
+  asyncHandler(async (req, res) => {
+    const { uuid } = req.params;
+
+    try {
+      const { id, ...swap } = await prisma.thirdPartySwap.findFirstOrThrow({
+        where: {
+          uuid,
+        },
+      });
+      res.json({ ...swap });
+    } catch (err) {
+      if (err instanceof Error) throw ServiceError.internalError(err.message);
+      throw ServiceError.internalError();
+    }
+  }),
+);
+
 export default router;

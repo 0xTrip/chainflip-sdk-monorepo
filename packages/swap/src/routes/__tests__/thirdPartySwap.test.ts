@@ -69,4 +69,35 @@ describe('server', () => {
       expect(status).toBe(400);
     });
   });
+
+  describe('GET /third-party-swap/:uuid', () => {
+    beforeEach(async () => {
+      await prisma.thirdPartySwap.create({
+        data: {
+          uuid: 'test-uuid',
+          protocol: 'lifi',
+          routeResponse: { route: 'route' },
+        },
+      });
+    });
+
+    it('fetches the correct third party swap information', async () => {
+      const { status, body } = await request(app).get(
+        '/third-party-swap/test-uuid',
+      );
+      expect(status).toBe(200);
+      expect(body).toEqual(
+        expect.objectContaining({
+          uuid: 'test-uuid',
+          protocol: 'lifi',
+          routeResponse: { route: 'route' },
+        }),
+      );
+    });
+
+    it('throws bad request uuid is not found', async () => {
+      const { status } = await request(app).get('/third-party-swap/123');
+      expect(status).toBe(500);
+    });
+  });
 });
