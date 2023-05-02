@@ -21,7 +21,7 @@ describe('server', () => {
       const uuid = crypto.randomUUID();
       const body = {
         uuid,
-        routeResponse: { protocol: 'Lifi', route: 'route' },
+        routeResponse: { integration: 'lifi', route: 'route' },
       };
 
       const { status } = await request(app)

@@ -102,8 +102,8 @@ model MarketMaker {
 }
 
 enum ThirdPartyProtocol {
-  Lifi
-  Squid
+  lifi
+  squid
 
   @@schema("public")
 }

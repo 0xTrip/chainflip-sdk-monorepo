@@ -22,7 +22,7 @@ router.post(
       await prisma.thirdPartySwap.create({
         data: {
           uuid: result.data.uuid,
-          protocol: result.data.routeResponse.protocol,
+          protocol: result.data.routeResponse.integration,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           routeResponse: result.data.routeResponse as Record<string, any>,
         },
