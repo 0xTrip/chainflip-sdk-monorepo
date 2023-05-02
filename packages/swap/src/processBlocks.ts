@@ -4,10 +4,6 @@ import { performance } from 'perf_hooks';
 import { setTimeout as sleep } from 'timers/promises';
 import prisma from './client';
 import { SwappingEventName, eventHandlers } from './event-handlers';
-import type {
-  GetBatchQuery,
-  GetBatchQueryVariables,
-} from './gql/generated/graphql';
 import { GET_BATCH } from './gql/query';
 import { handleExit, isTruthy } from './utils/function';
 import logger from './utils/logger';
@@ -52,10 +48,11 @@ export default async function processBlocks() {
   while (run) {
     const start = performance.now();
 
-    const batch = await client.request<GetBatchQuery, GetBatchQueryVariables>(
-      GET_BATCH,
-      { height: lastBlock + 1, limit: 50, swapEvents },
-    );
+    const batch = await client.request(GET_BATCH, {
+      height: lastBlock + 1,
+      limit: 50,
+      swapEvents,
+    });
 
     const blocks = batch.blocks?.nodes.filter(isTruthy);
 

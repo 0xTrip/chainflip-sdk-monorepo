@@ -1,6 +1,6 @@
-import { gql } from 'graphql-request';
+import { gql } from './generated';
 
-export const GET_BATCH = gql`
+export const GET_BATCH = gql(/* GraphQL */ `
   query GetBatch($height: Int!, $limit: Int!, $swapEvents: [String!]!) {
     blocks: allBlocks(
       filter: { height: { greaterThanOrEqualTo: $height } }
@@ -19,4 +19,4 @@ export const GET_BATCH = gql`
       }
     }
   }
-`;
+`);
