@@ -5,7 +5,7 @@ import server from './server';
 import { handleExit } from './utils/function';
 import logger from './utils/logger';
 
-start();
+// start();
 server.listen(
   Number.parseInt(process.env.SWAPPING_APP_PORT as string, 10) || 8080,
   // eslint-disable-next-line func-names
