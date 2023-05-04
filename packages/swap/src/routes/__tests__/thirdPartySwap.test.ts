@@ -22,35 +22,44 @@ describe('server', () => {
       const body = {
         uuid,
         routeResponse: { integration: 'lifi', route: 'route' },
+        txHash: '0x123',
+        txLink: 'https://etherscan.io/tx/0xhash',
       };
 
       const { status } = await request(app)
         .post('/third-party-swap')
         .send(body);
-      try {
-        const swap = await prisma.thirdPartySwap.findFirstOrThrow({
-          where: { uuid },
-        });
-        expect(status).toBe(201);
-        expect(swap.uuid).toBe(uuid);
-      } catch {
-        expect(true).toBe(false);
-      }
+      const swap = await prisma.thirdPartySwap.findFirstOrThrow({
+        where: { uuid },
+      });
+      expect(status).toBe(201);
+      expect(swap.uuid).toBe(uuid);
     });
 
-    it('throws when protocol info is missing', async () => {
-      const uuid = crypto.randomUUID();
-      const body = {
-        uuid,
+    it.each([
+      {
+        uuid: crypto.randomUUID(),
         routeResponse: { route: 'route' },
-      };
-
+        txHash: '0x123',
+        txLink: 'https://etherscan.io/tx/0xhash',
+      },
+      {
+        uuid: crypto.randomUUID(),
+        routeResponse: { integration: 'lifi', route: 'route' },
+        txLink: 'https://etherscan.io/tx/0xhash',
+      },
+      {
+        uuid: crypto.randomUUID(),
+        routeResponse: { integration: 'lifi', route: 'route' },
+        txHash: '0x123',
+      },
+    ])('throws when request body has missing info', async (requestBody) => {
       const { status } = await request(app)
         .post('/third-party-swap')
-        .send(body);
+        .send(requestBody);
       try {
         await prisma.thirdPartySwap.findFirstOrThrow({
-          where: { uuid },
+          where: { uuid: requestBody.uuid },
         });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
@@ -77,6 +86,8 @@ describe('server', () => {
           uuid: 'test-uuid',
           protocol: 'lifi',
           routeResponse: { route: 'route' },
+          txHash: '0x1234',
+          txLink: 'https://etherscan.io/tx/0x1234',
         },
       });
     });
@@ -91,6 +102,8 @@ describe('server', () => {
           uuid: 'test-uuid',
           protocol: 'lifi',
           routeResponse: { route: 'route' },
+          txHash: '0x1234',
+          txLink: 'https://etherscan.io/tx/0x1234',
         }),
       );
     });

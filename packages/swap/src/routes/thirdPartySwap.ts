@@ -23,6 +23,8 @@ router.post(
         data: {
           uuid: result.data.uuid,
           protocol: result.data.routeResponse.integration,
+          txHash: result.data.txHash,
+          txLink: result.data.txLink,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           routeResponse: result.data.routeResponse as Record<string, any>,
         },

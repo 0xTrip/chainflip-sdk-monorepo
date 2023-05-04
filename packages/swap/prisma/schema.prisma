@@ -113,6 +113,8 @@ model ThirdPartySwap {
   uuid          String             @unique
   protocol      ThirdPartyProtocol
   routeResponse Json
+  txHash        String
+  txLink        String  
   createdAt     DateTime           @default(now())
 
   @@schema("public")
