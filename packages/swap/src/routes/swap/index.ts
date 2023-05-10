@@ -2,16 +2,17 @@ import assert from 'assert';
 import BigNumber from 'bignumber.js';
 import express from 'express';
 import { newSwapSchema } from '@/shared/schemas';
-import { asyncHandler } from './common';
-import prisma from '../client';
+import findBlockHeightForSwapIntent from './findBlockHeightForSwapIntent';
+import prisma from '../../client';
 import {
   assertSupportedAsset,
   decimalPlaces,
   validateAddress,
-} from '../utils/assets';
-import { submitSwapToBroker } from '../utils/broker';
-import logger from '../utils/logger';
-import ServiceError from '../utils/ServiceError';
+} from '../../utils/assets';
+import { submitSwapToBroker } from '../../utils/broker';
+import logger from '../../utils/logger';
+import ServiceError from '../../utils/ServiceError';
+import { asyncHandler } from '../common';
 
 const router = express.Router();
 
@@ -103,13 +104,19 @@ router.post(
 
     validateAddress(payload.egressAsset, payload.egressAddress);
 
+    const { height } = await prisma.state.findFirstOrThrow();
     const ingressAddress = await submitSwapToBroker(payload);
 
+    const blockHeight = await findBlockHeightForSwapIntent(
+      height,
+      ingressAddress,
+    );
+
     const { uuid } = await prisma.swapIntent.create({
-      data: { ...payload, ingressAddress },
+      data: { ...payload, ingressAddress, blockHeight },
     });
 
-    res.json({ ingressAddress, id: uuid });
+    res.json({ ingressAddress, blockHeight, id: uuid });
   }),
 );
 

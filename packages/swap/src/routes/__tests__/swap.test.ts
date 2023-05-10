@@ -6,6 +6,10 @@ import app from '../../server';
 import RpcClient from '../../utils/RpcClient';
 import { State } from '../swap';
 
+jest.mock('timers/promises', () => ({
+  setTimeout: jest.fn().mockResolvedValue(undefined),
+}));
+
 const randomId = () => BigInt(crypto.randomInt(1, 100000));
 
 jest.mock(
@@ -41,9 +45,11 @@ const createSwapIntent = (data: Partial<SwapData> = {}): Promise<SwapIntent> =>
 
 describe('server', () => {
   let server: Server;
+  jest.setTimeout(1000);
 
   beforeEach(async () => {
-    await prisma.$queryRaw`TRUNCATE TABLE "SwapIntent" CASCADE`;
+    await prisma.$queryRaw`TRUNCATE TABLE "SwapIntent", private."State", "SwapIntentBlock" CASCADE`;
+    await prisma.state.create({ data: { id: 1, height: 10 } });
     server = app.listen(0);
   });
 
@@ -230,9 +236,14 @@ describe('server', () => {
       [{ ingressAsset: 'ETH', egressAsset: 'DOT', egressAddress: DOT_ADDRESS }],
       [{ ingressAsset: 'DOT', egressAsset: 'ETH', egressAddress: ETH_ADDRESS }],
     ])('creates a new swap intent', async (requestBody) => {
+      const blockHeight = 123;
+      const ingressAddress = 'THE_INGRESS_ADDRESS';
       jest
         .spyOn(RpcClient.prototype, 'sendRequest')
-        .mockResolvedValueOnce('THE_INGRESS_ADDRESS');
+        .mockResolvedValueOnce(ingressAddress);
+      await prisma.swapIntentBlock.create({
+        data: { ingressAddress, blockHeight },
+      });
 
       const { body, status } = await request(app)
         .post('/swaps')
@@ -240,7 +251,8 @@ describe('server', () => {
 
       expect(status).toBe(200);
       expect(body).toMatchObject({
-        ingressAddress: 'THE_INGRESS_ADDRESS',
+        blockHeight,
+        ingressAddress,
         id: expect.any(String),
       });
     });
@@ -288,6 +300,27 @@ describe('server', () => {
 
       expect(status).toBe(400);
       expect(body).toMatchObject({ message: 'provided address is not valid' });
+    });
+  });
+
+  it('returns no block height if unable', async () => {
+    jest
+      .spyOn(RpcClient.prototype, 'sendRequest')
+      .mockResolvedValueOnce('THE_INGRESS_ADDRESS');
+
+    const promise = request(app).post('/swaps').send({
+      ingressAsset: 'ETH',
+      egressAsset: 'DOT',
+      egressAddress: HEX_DOT_ADDRESS,
+    });
+
+    const { body, status } = await promise;
+
+    expect(status).toBe(200);
+    expect(body).not.toHaveProperty('blockHeight');
+    expect(body).toMatchObject({
+      ingressAddress: 'THE_INGRESS_ADDRESS',
+      id: expect.any(String),
     });
   });
 });

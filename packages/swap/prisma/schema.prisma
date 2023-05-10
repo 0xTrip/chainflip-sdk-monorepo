@@ -17,6 +17,15 @@ datasource db {
   schemas  = ["public", "private"]
 }
 
+model SwapIntentBlock {
+  id             BigInt @id @default(autoincrement())
+  ingressAddress String
+  blockHeight    Int
+
+  @@index([blockHeight])
+  @@schema("public")
+}
+
 model SwapIntent {
   id             BigInt   @id @default(autoincrement())
   uuid           String   @unique @default(uuid())
@@ -25,6 +34,7 @@ model SwapIntent {
   egressAsset    String
   egressAddress  String
   active         Boolean  @default(true)
+  blockHeight    Int?
   createdAt      DateTime @default(now())
   swaps          Swap[]
 

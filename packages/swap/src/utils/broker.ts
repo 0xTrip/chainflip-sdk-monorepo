@@ -1,3 +1,5 @@
+import { u8aToHex } from '@polkadot/util';
+import { decodeAddress } from '@polkadot/util-crypto';
 import { z } from 'zod';
 import { supportedAsset, SupportedAsset } from '@/shared/assets';
 import { bareHexString, hexString, numericString } from '@/shared/parsers';
@@ -33,7 +35,7 @@ const initializeClient = memoize(async () => {
     process.env.RPC_RELAYER_WSS_URL as string,
     requestValidators,
     validators,
-    'broker',
+    'relayer',
   ).connect();
 
   return rpcClient;
@@ -42,13 +44,15 @@ const initializeClient = memoize(async () => {
 export const submitSwapToBroker = async (
   swapIntent: NewSwapIntent,
 ): Promise<string> => {
+  const { ingressAsset, egressAsset, egressAddress } = swapIntent;
   const client = await initializeClient();
-
   const ingressAddress = await client.sendRequest(
     'newSwapIngressAddress',
-    swapIntent.ingressAsset,
-    swapIntent.egressAsset,
-    swapIntent.egressAddress,
+    ingressAsset,
+    egressAsset,
+    egressAsset === 'DOT' // btc not yet implemented on broker side
+      ? u8aToHex(decodeAddress(egressAddress))
+      : egressAddress,
     0,
   );
 

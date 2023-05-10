@@ -2,6 +2,7 @@ import type { Prisma } from '.prisma/client';
 import networkBatchBroadcastRequested from './networkBatchBroadcastRequested';
 import networkBroadcastSuccess from './networkBroadcastSuccess';
 import networkEgressScheduled from './networkEgressScheduled';
+import newSwapIntent from './newSwapIntent';
 import swapEgressScheduled from './swapEgressScheduled';
 import swapExecuted from './swapExecuted';
 import swapIngressReceived from './swapIngressReceived';
@@ -9,6 +10,7 @@ import swapIntentExpired from './swapIntentExpired';
 import type { Block, Event } from '../gql/generated/graphql';
 
 export enum Swapping {
+  NewSwapIntent = 'Swapping.NewSwapIntent',
   SwapIngressReceived = 'Swapping.SwapIngressReceived',
   SwapExecuted = 'Swapping.SwapExecuted',
   SwapEgressScheduled = 'Swapping.SwapEgressScheduled',
@@ -43,13 +45,14 @@ export type SwappingEventName =
 export type EventHandlerArgs = {
   prisma: Prisma.TransactionClient;
   event: Pick<Event, 'args' | 'name'>;
-  block: Pick<Block, 'timestamp'>;
+  block: Pick<Block, 'height' | 'timestamp'>;
 };
 
 export const eventHandlers: Record<
   SwappingEventName,
   (args: EventHandlerArgs) => Promise<void>
 > = {
+  [Swapping.NewSwapIntent]: newSwapIntent,
   [Swapping.SwapIngressReceived]: swapIngressReceived,
   [Swapping.SwapExecuted]: swapExecuted,
   [Swapping.SwapEgressScheduled]: swapEgressScheduled,

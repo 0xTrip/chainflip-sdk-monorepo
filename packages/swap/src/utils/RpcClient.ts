@@ -83,7 +83,6 @@ export default class RpcClient<
     ...params: z.input<Req[R]>
   ): Promise<z.infer<Res[R]>> {
     await this.connectionReady();
-
     const id = this.requestId;
     this.requestId += 1;
 
@@ -105,6 +104,9 @@ export default class RpcClient<
 
     if ('error' in response) throw new Error(response.error.message);
 
-    return this.responseMap[method].parse(response.result) as z.infer<Res[R]>;
+    // temp till relayer fix: currently it returns eth(0x....) instead of 0x...
+    const sliced = (response.result as string).slice(4, -1);
+
+    return this.responseMap[method].parse(sliced) as z.infer<Res[R]>;
   }
 }
