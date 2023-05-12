@@ -5,7 +5,7 @@ import { setTimeout as sleep } from 'timers/promises';
 import prisma from './client';
 import { SwappingEventName, eventHandlers } from './event-handlers';
 import { GET_BATCH } from './gql/query';
-import { handleExit, isTruthy } from './utils/function';
+import { handleExit } from './utils/function';
 import logger from './utils/logger';
 
 const { INGEST_GATEWAY_USERNAME, INGEST_GATEWAY_PASSWORD, INGEST_GATEWAY_URL } =
@@ -54,7 +54,7 @@ export default async function processBlocks() {
       swapEvents,
     });
 
-    const blocks = batch.blocks?.nodes.filter(isTruthy);
+    const blocks = batch.blocks?.nodes;
 
     assert(blocks !== undefined, 'blocks is undefined');
 
@@ -80,7 +80,7 @@ export default async function processBlocks() {
 
       assert(lastBlock < block.height, 'block height is not increasing');
       await prisma.$transaction(async (txClient) => {
-        for (const event of events.nodes.filter(isTruthy)) {
+        for (const event of events.nodes) {
           await eventHandlers[event.name as SwappingEventName]({
             block,
             event,
