@@ -60,11 +60,8 @@ describe('server', () => {
     it('gets the quote when the broker is best', async () => {
       const sendSpy = jest
         .spyOn(RpcClient.prototype, 'sendRequest')
-        .mockResolvedValueOnce({
-          intermediary: (2000e6).toString(),
-          output: (1e18).toString(),
-        });
-
+        .mockResolvedValueOnce((2000e6).toString())
+        .mockResolvedValueOnce((1e18).toString());
       const params = new URLSearchParams({
         ingressAsset: 'FLIP',
         egressAsset: 'ETH',
@@ -87,16 +84,14 @@ describe('server', () => {
         intermediateAmount: (2000e6).toString(),
         egressAmount: (1e18).toString(),
       });
-      expect(sendSpy).toHaveBeenCalledTimes(1);
+      expect(sendSpy).toHaveBeenCalledTimes(2);
     });
 
     it('gets the quote when the market maker is best', async () => {
       const sendSpy = jest
         .spyOn(RpcClient.prototype, 'sendRequest')
-        .mockResolvedValueOnce({
-          intermediary: (2000e6).toString(),
-          output: (1e18).toString(),
-        });
+        .mockResolvedValueOnce((2000e6).toString())
+        .mockResolvedValueOnce((1e18).toString());
       const params = new URLSearchParams({
         ingressAsset: 'FLIP',
         egressAsset: 'ETH',
@@ -119,7 +114,7 @@ describe('server', () => {
         intermediateAmount: (2000e6).toString(),
         egressAmount: (1.1e18).toString(),
       });
-      expect(sendSpy).toHaveBeenCalledTimes(1);
+      expect(sendSpy).toHaveBeenCalledTimes(2);
     });
   });
 });

@@ -9,7 +9,6 @@ import type {
   RouteResponse,
   SwapStatusRequest,
   SwapStatusResponse,
-  SwapRequest,
 } from './types';
 
 export { ChainId };
@@ -47,15 +46,15 @@ export class SwapSDK {
   getRoute(
     routeRequest: RouteRequest,
     options: RequestOptions = {},
-  ): Promise<RouteResponse> {
+  ): Promise<Omit<RouteResponse, 'expectedIngressAmount'>> {
     return ApiService.getRoute(this.baseUrl, routeRequest, options);
   }
 
   executeRoute(
-    swapRequest: SwapRequest,
+    routeResponse: RouteResponse,
     options: RequestOptions = {},
   ): Promise<SwapResponse> {
-    return ApiService.executeRoute(this.baseUrl, swapRequest, options);
+    return ApiService.executeRoute(this.baseUrl, routeResponse, options);
   }
 
   getStatus(

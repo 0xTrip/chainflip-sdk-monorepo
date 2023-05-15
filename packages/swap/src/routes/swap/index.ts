@@ -1,9 +1,14 @@
 import assert from 'assert';
+import BigNumber from 'bignumber.js';
 import express from 'express';
-import { postSwapSchema } from '@/shared/schemas';
+import { swapBody } from '@/shared/schemas';
 import findBlockHeightForSwapIntent from './findBlockHeightForSwapIntent';
 import prisma from '../../client';
-import { validateAddress } from '../../utils/assets';
+import {
+  assertSupportedAsset,
+  decimalPlaces,
+  validateAddress,
+} from '../../utils/assets';
 import { submitSwapToBroker } from '../../utils/broker';
 import logger from '../../utils/logger';
 import ServiceError from '../../utils/ServiceError';
@@ -19,10 +24,18 @@ export enum State {
   AwaitingIngress = 'AWAITING_INGRESS',
 }
 
+const formatValue = (asset: string, amount: string | undefined) => {
+  assertSupportedAsset(asset);
+  if (amount === undefined) return undefined;
+  return new BigNumber(amount)
+    .dividedBy(new BigNumber(10).pow(decimalPlaces[asset]))
+    .toFixed();
+};
+
 router.get(
-  '/:uuid',
+  '/',
   asyncHandler(async (req, res) => {
-    const { uuid } = req.params;
+    const uuid = req.query.uuid as string;
 
     const swapIntent = await prisma.swapIntent.findUnique({
       where: { uuid },
@@ -56,13 +69,22 @@ router.get(
     const response = {
       state,
       egressCompleteAt: swap?.egressCompleteAt?.valueOf(),
-      egressAmount: swap?.egress?.amount?.toString(),
-      ingressAmount: swap?.ingressAmount?.toString(),
+      egressAmount: formatValue(
+        swapIntent.egressAsset,
+        swap?.egress?.amount.toString(),
+      ),
+      ingressAmount: formatValue(
+        swapIntent.ingressAsset,
+        swap?.ingressAmount?.toString(),
+      ),
       egressScheduledAt: swap?.egress?.timestamp.valueOf(),
       swapExecutedAt: swap?.swapExecutedAt?.valueOf(),
       ingressReceivedAt: swap?.ingressReceivedAt.valueOf(),
       ingressAddress: swapIntent.ingressAddress,
-      expectedIngressAmount: swapIntent.expectedIngressAmount.toString(),
+      expectedIngressAmount: formatValue(
+        swapIntent.ingressAsset,
+        swapIntent.expectedIngressAmount.toString(),
+      ),
       egressAddress: swapIntent.egressAddress,
       ingressAsset: swapIntent.ingressAsset,
       egressAsset: swapIntent.egressAsset,
@@ -77,7 +99,7 @@ router.get(
 router.post(
   '/',
   asyncHandler(async (req, res) => {
-    const result = postSwapSchema.safeParse(req.body);
+    const result = swapBody.safeParse(req.body);
     if (!result.success) {
       logger.info('received bad request for new swap', { body: req.body });
       throw ServiceError.badRequest('invalid request body');

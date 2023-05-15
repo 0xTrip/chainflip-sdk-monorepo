@@ -26,7 +26,7 @@ const requestValidators = {
     .transform(([a, b, c, d]) => [a, b, c, d]),
 };
 
-const responseValidators = {
+const validators = {
   newSwapIngressAddress: address,
 };
 
@@ -34,8 +34,8 @@ const initializeClient = memoize(async () => {
   const rpcClient = await new RpcClient(
     process.env.RPC_RELAYER_WSS_URL as string,
     requestValidators,
-    responseValidators,
-    'broker',
+    validators,
+    'relayer',
   ).connect();
 
   return rpcClient;

@@ -19,6 +19,10 @@ export default class RpcClient<
   Req extends Record<string, z.ZodTypeAny>,
   Res extends Record<string, z.ZodTypeAny>,
 > {
+  private requestMap: Req;
+
+  private responseMap: Res;
+
   private socket!: WebSocket;
 
   private requestId = 0;
@@ -29,10 +33,13 @@ export default class RpcClient<
 
   constructor(
     private readonly url: string,
-    private readonly requestMap: Req,
-    private readonly responseMap: Res,
-    private readonly namespace: string,
+    req: Req,
+    res: Res,
+    private readonly methodPrefix: string,
   ) {
+    this.requestMap = req;
+    this.responseMap = res;
+
     handleExit(() => this.handleClose());
   }
 
@@ -83,7 +90,7 @@ export default class RpcClient<
       JSON.stringify({
         id,
         jsonrpc: '2.0',
-        method: `${this.namespace}_${method as string}`,
+        method: `${this.methodPrefix}_${method as string}`,
         params: this.requestMap[method].parse(params),
       }),
     );

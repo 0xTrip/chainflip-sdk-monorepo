@@ -10,14 +10,14 @@ export const quoteQuerySchema = z.object({
 
 export type QuoteQueryParams = z.infer<typeof quoteQuerySchema>;
 
-export const postSwapSchema = z.object({
+export const swapBody = z.object({
   ingressAsset: supportedAsset,
   egressAsset: supportedAsset,
   egressAddress: z.string(),
   expectedIngressAmount: numericString,
 });
 
-export type SwapRequestBody = z.infer<typeof postSwapSchema>;
+export type SwapRequestBody = z.infer<typeof swapBody>;
 
 export const quoteResponseSchema = z.union([
   z

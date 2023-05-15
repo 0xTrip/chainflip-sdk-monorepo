@@ -3,19 +3,14 @@ import type { Server } from 'socket.io';
 import { quoteQuerySchema } from '@/shared/schemas';
 import { asyncHandler } from './common';
 import getConnectionHandler from '../quoting/getConnectionHandler';
-import {
-  findBestQuote,
-  buildQuoteRequest,
-  collectQuotes,
-} from '../quoting/quotes';
+import { findBestQuote, buildQuoteRequest } from '../quoting/quotes';
 import logger from '../utils/logger';
 import ServiceError from '../utils/ServiceError';
-import { getBrokerQuote } from '../utils/statechain';
 
 const quote = (io: Server) => {
   const router = express.Router();
 
-  const { handler, quotes$ } = getConnectionHandler();
+  const { handler } = getConnectionHandler();
 
   io.on('connection', handler);
 
@@ -31,14 +26,31 @@ const quote = (io: Server) => {
 
       const quoteRequest = buildQuoteRequest(result.data);
 
-      io.emit('quote_request', quoteRequest);
+      // enable later when we have a market maker
 
-      const [marketMakerQuotes, brokerQuote] = await Promise.all([
-        collectQuotes(quoteRequest.id, io.sockets.sockets.size, quotes$),
-        getBrokerQuote(result.data, quoteRequest.id),
-      ]);
+      // io.emit('quote_request', quoteRequest);
 
-      res.json(findBestQuote(marketMakerQuotes, brokerQuote));
+      // const [marketMakerQuotes, brokerQuote] = await Promise.all([
+      //   collectQuotes(quoteRequest.id, io.sockets.sockets.size, quotes$),
+      //   getBrokerQuote(result.data, quoteRequest.id),
+      // ]);
+
+      const egressAmount =
+        Math.random() < 5 ? BigInt('1000000000') : BigInt('2000000000');
+      res.json(
+        findBestQuote(
+          [
+            {
+              id: quoteRequest.id,
+              egressAmount: egressAmount.toString(),
+            },
+          ],
+          {
+            id: quoteRequest.id,
+            egressAmount: egressAmount.toString(),
+          },
+        ),
+      );
     }),
   );
 

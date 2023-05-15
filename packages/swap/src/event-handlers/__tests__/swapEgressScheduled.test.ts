@@ -13,7 +13,6 @@ const createSwapIntent = (data: Partial<SwapData> = {}): Promise<SwapIntent> =>
       egressAsset: 'DOT',
       ingressAddress: ETH_ADDRESS,
       egressAddress: DOT_ADDRESS,
-      expectedIngressAmount: '10000000000',
       ...data,
     },
   });

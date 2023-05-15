@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { z } from 'zod';
 import { SupportedAsset, supportedAsset } from '@/shared/assets';
 import { numericString } from '@/shared/parsers';
@@ -15,21 +16,17 @@ const requestValidators = {
 };
 
 // parse hex encoding or decimal encoding into decimal encoding
-const assetAmount = z.string().transform((v) => BigInt(v).toString());
+const u128Fixed = z.string().transform((v) => BigInt(v).toString());
 
-const responseValidators = {
-  swap_rate: z.object({
-    // TODO: simplify when we know how Rust `Option` is encoded
-    intermediary: assetAmount.optional().nullable(),
-    output: assetAmount,
-  }),
+const validators = {
+  swap_rate: u128Fixed,
 };
 
 const initializeClient = memoize(async () => {
   const rpcClient = await new RpcClient(
     process.env.RPC_NODE_WSS_URL as string,
     requestValidators,
-    responseValidators,
+    validators,
     'cf',
   ).connect();
 
@@ -40,7 +37,7 @@ const getSwapAmount = async (
   fromAsset: SupportedAsset,
   toAsset: SupportedAsset,
   amount: string,
-): Promise<z.infer<(typeof responseValidators)['swap_rate']>> => {
+): Promise<string> => {
   const client = await initializeClient();
 
   return client.sendRequest('swap_rate', fromAsset, toAsset, amount);
@@ -50,15 +47,19 @@ export const getBrokerQuote = async (
   { ingressAsset, egressAsset, amount }: QuoteQueryParams,
   id: string,
 ): Promise<QuoteResponse> => {
-  const { intermediary, output } = await getSwapAmount(
-    ingressAsset,
+  if (ingressAsset === 'USDC' || egressAsset === 'USDC') {
+    assert(ingressAsset !== egressAsset);
+    const egressAmount = await getSwapAmount(ingressAsset, egressAsset, amount);
+
+    return { id, egressAmount };
+  }
+
+  const intermediateAmount = await getSwapAmount(ingressAsset, 'USDC', amount);
+  const egressAmount = await getSwapAmount(
+    'USDC',
     egressAsset,
-    amount,
+    intermediateAmount,
   );
 
-  return {
-    id,
-    intermediateAmount: intermediary ?? undefined,
-    egressAmount: output,
-  };
+  return { id, intermediateAmount, egressAmount };
 };

@@ -18,7 +18,6 @@ describe(processBlocks, () => {
         ingressAsset: 'ETH',
         egressAsset: 'USDC',
         egressAddress: '0xdeadbeef',
-        expectedIngressAmount: '1000000000000000000',
       },
     });
 
