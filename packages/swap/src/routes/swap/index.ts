@@ -1,14 +1,9 @@
 import assert from 'assert';
-import BigNumber from 'bignumber.js';
 import express from 'express';
-import { newSwapSchema } from '@/shared/schemas';
+import { postSwapSchema } from '@/shared/schemas';
 import findBlockHeightForSwapIntent from './findBlockHeightForSwapIntent';
 import prisma from '../../client';
-import {
-  assertSupportedAsset,
-  decimalPlaces,
-  validateAddress,
-} from '../../utils/assets';
+import { validateAddress } from '../../utils/assets';
 import { submitSwapToBroker } from '../../utils/broker';
 import logger from '../../utils/logger';
 import ServiceError from '../../utils/ServiceError';
@@ -23,14 +18,6 @@ export enum State {
   IngressReceived = 'INGRESS_RECEIVED',
   AwaitingIngress = 'AWAITING_INGRESS',
 }
-
-const formatValue = (asset: string, amount: string | undefined) => {
-  assertSupportedAsset(asset);
-  if (amount === undefined) return undefined;
-  return new BigNumber(amount)
-    .dividedBy(new BigNumber(10).pow(decimalPlaces[asset]))
-    .toFixed();
-};
 
 router.get(
   '/:uuid',
@@ -69,17 +56,13 @@ router.get(
     const response = {
       state,
       egressCompleteAt: swap?.egressCompleteAt?.valueOf(),
-      egressAmount: formatValue(
-        swapIntent.egressAsset,
-        swap?.egress?.amount.toString(),
-      ),
-      ingressAmount: formatValue(
-        swapIntent.ingressAsset,
-        swap?.ingressAmount?.toString(),
-      ),
+      egressAmount: swap?.egress?.amount?.toString(),
+      ingressAmount: swap?.ingressAmount?.toString(),
       egressScheduledAt: swap?.egress?.timestamp.valueOf(),
       swapExecutedAt: swap?.swapExecutedAt?.valueOf(),
       ingressReceivedAt: swap?.ingressReceivedAt.valueOf(),
+      ingressAddress: swapIntent.ingressAddress,
+      expectedIngressAmount: swapIntent.expectedIngressAmount.toString(),
       egressAddress: swapIntent.egressAddress,
       ingressAsset: swapIntent.ingressAsset,
       egressAsset: swapIntent.egressAsset,
@@ -94,7 +77,7 @@ router.get(
 router.post(
   '/',
   asyncHandler(async (req, res) => {
-    const result = newSwapSchema.safeParse(req.body);
+    const result = postSwapSchema.safeParse(req.body);
     if (!result.success) {
       logger.info('received bad request for new swap', { body: req.body });
       throw ServiceError.badRequest('invalid request body');

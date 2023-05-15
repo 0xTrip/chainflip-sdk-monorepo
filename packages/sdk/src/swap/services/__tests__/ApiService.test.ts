@@ -100,7 +100,10 @@ describe('ApiService', () => {
 
       const depositChannel = await ApiService.executeRoute(
         'https://swapperoo.org',
-        mockRoute,
+        {
+          ...mockRoute,
+          expectedIngressAmount: mockRoute.amount,
+        },
         {},
       );
       expect(depositChannel).toEqual(response);
@@ -112,11 +115,17 @@ describe('ApiService', () => {
         data: { id: 'new deposit channel id', ingressAddress: '0xcafebabe' },
       });
 
-      await ApiService.executeRoute('https://swapperoo.org', mockRoute, {
-        signal: new AbortController().signal,
-      });
-      // @ts-expect-error mistyped
-      expect(mockedPost.mock.lastCall?.[1]?.signal).not.toBeUndefined();
+      await ApiService.executeRoute(
+        'https://swapperoo.org',
+        {
+          ...mockRoute,
+          expectedIngressAmount: mockRoute.amount,
+        },
+        {
+          signal: new AbortController().signal,
+        },
+      );
+      expect(mockedPost.mock.lastCall?.[2]?.signal).not.toBeUndefined();
     });
   });
 

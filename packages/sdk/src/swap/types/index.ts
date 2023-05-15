@@ -1,4 +1,4 @@
-import { Network } from '@/shared/assets';
+import { Network, SupportedAsset } from '@/shared/assets';
 import { QuoteResponse } from '@/shared/schemas';
 import { ChainId, TokenSymbol } from '../consts';
 
@@ -42,6 +42,10 @@ export interface RouteResponse extends Route {
   quote: QuoteResponse;
 }
 
+export interface SwapRequest extends Omit<RouteResponse, 'quote'> {
+  expectedIngressAmount: string;
+}
+
 export interface SwapResponse {
   id: string;
   ingressAddress: string;
@@ -51,33 +55,43 @@ export interface SwapStatusRequest {
   swapIntentId: string;
 }
 
-export type SwapStatusResponse =
-  | { state: 'AWAITING_INGRESS' }
-  | {
-      state: 'INGRESS_RECEIVED';
-      ingressAmount: string;
-      ingressReceivedAt: number;
-    }
-  | {
-      state: 'SWAP_EXECUTED';
-      ingressAmount: string;
-      ingressReceivedAt: number;
-      swapExecutedAt: number;
-    }
-  | {
-      state: 'EGRESS_SCHEDULED';
-      egressAmount: string;
-      egressScheduledAt: number;
-      ingressAmount: string;
-      ingressReceivedAt: number;
-      swapExecutedAt: number;
-    }
-  | {
-      state: 'COMPLETE';
-      egressAmount: string;
-      egressCompleteAt: number;
-      egressScheduledAt: number;
-      ingressAmount: string;
-      ingressReceivedAt: number;
-      swapExecutedAt: number;
-    };
+type CommonStatusFields = {
+  ingressAddress: string;
+  egressAddress: string;
+  ingressAsset: SupportedAsset;
+  egressAsset: SupportedAsset;
+  expectedIngressAmount: string;
+};
+
+export type SwapStatusResponse = CommonStatusFields &
+  (
+    | { state: 'AWAITING_INGRESS' }
+    | {
+        state: 'INGRESS_RECEIVED';
+        ingressAmount: string;
+        ingressReceivedAt: number;
+      }
+    | {
+        state: 'SWAP_EXECUTED';
+        ingressAmount: string;
+        ingressReceivedAt: number;
+        swapExecutedAt: number;
+      }
+    | {
+        state: 'EGRESS_SCHEDULED';
+        egressAmount: string;
+        egressScheduledAt: number;
+        ingressAmount: string;
+        ingressReceivedAt: number;
+        swapExecutedAt: number;
+      }
+    | {
+        state: 'COMPLETE';
+        egressAmount: string;
+        egressCompleteAt: number;
+        egressScheduledAt: number;
+        ingressAmount: string;
+        ingressReceivedAt: number;
+        swapExecutedAt: number;
+      }
+  );

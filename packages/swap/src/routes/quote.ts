@@ -4,9 +4,9 @@ import { quoteQuerySchema } from '@/shared/schemas';
 import { asyncHandler } from './common';
 import getConnectionHandler from '../quoting/getConnectionHandler';
 import {
-  collectQuotes,
   findBestQuote,
   buildQuoteRequest,
+  collectQuotes,
 } from '../quoting/quotes';
 import logger from '../utils/logger';
 import ServiceError from '../utils/ServiceError';

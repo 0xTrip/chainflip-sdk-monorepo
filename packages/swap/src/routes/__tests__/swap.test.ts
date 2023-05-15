@@ -39,6 +39,7 @@ const createSwapIntent = (data: Partial<SwapData> = {}): Promise<SwapIntent> =>
       egressAsset: 'DOT',
       ingressAddress: ETH_ADDRESS,
       egressAddress: DOT_ADDRESS,
+      expectedIngressAmount: '1000000000',
       ...data,
     },
   });
@@ -77,6 +78,8 @@ describe('server', () => {
         {
           "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
           "egressAsset": "DOT",
+          "expectedIngressAmount": "1000000000",
+          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
           "ingressAsset": "ETH",
           "state": "AWAITING_INGRESS",
         }
@@ -103,7 +106,9 @@ describe('server', () => {
         {
           "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
           "egressAsset": "DOT",
-          "ingressAmount": "0.00000000000000001",
+          "expectedIngressAmount": "1000000000",
+          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
+          "ingressAmount": "10",
           "ingressAsset": "ETH",
           "ingressReceivedAt": 1669907135201,
           "state": "INGRESS_RECEIVED",
@@ -132,7 +137,9 @@ describe('server', () => {
         {
           "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
           "egressAsset": "DOT",
-          "ingressAmount": "0.00000000000000001",
+          "expectedIngressAmount": "1000000000",
+          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
+          "ingressAmount": "10",
           "ingressAsset": "ETH",
           "ingressReceivedAt": 1669907135201,
           "state": "SWAP_EXECUTED",
@@ -169,10 +176,12 @@ describe('server', () => {
       expect(body).toMatchInlineSnapshot(`
         {
           "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
-          "egressAmount": "100000000",
+          "egressAmount": "1000000000000000000",
           "egressAsset": "DOT",
           "egressScheduledAt": 1669907147201,
-          "ingressAmount": "0.00000000000000001",
+          "expectedIngressAmount": "1000000000",
+          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
+          "ingressAmount": "10",
           "ingressAsset": "ETH",
           "ingressReceivedAt": 1669907135201,
           "state": "EGRESS_SCHEDULED",
@@ -210,11 +219,13 @@ describe('server', () => {
       expect(body).toMatchInlineSnapshot(`
         {
           "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
-          "egressAmount": "100000000",
+          "egressAmount": "1000000000000000000",
           "egressAsset": "DOT",
           "egressCompleteAt": 1669907153201,
           "egressScheduledAt": 1669907147201,
-          "ingressAmount": "0.00000000000000001",
+          "expectedIngressAmount": "1000000000",
+          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
+          "ingressAmount": "10",
           "ingressAsset": "ETH",
           "ingressReceivedAt": 1669907135201,
           "state": "COMPLETE",
@@ -231,10 +242,25 @@ describe('server', () => {
           ingressAsset: 'ETH',
           egressAsset: 'DOT',
           egressAddress: HEX_DOT_ADDRESS,
+          expectedIngressAmount: '1000000000',
         },
       ],
-      [{ ingressAsset: 'ETH', egressAsset: 'DOT', egressAddress: DOT_ADDRESS }],
-      [{ ingressAsset: 'DOT', egressAsset: 'ETH', egressAddress: ETH_ADDRESS }],
+      [
+        {
+          ingressAsset: 'ETH',
+          egressAsset: 'DOT',
+          egressAddress: DOT_ADDRESS,
+          expectedIngressAmount: '1000000000',
+        },
+      ],
+      [
+        {
+          ingressAsset: 'DOT',
+          egressAsset: 'ETH',
+          egressAddress: ETH_ADDRESS,
+          expectedIngressAmount: '1000000000',
+        },
+      ],
     ])('creates a new swap intent', async (requestBody) => {
       const blockHeight = 123;
       const ingressAddress = 'THE_INGRESS_ADDRESS';
@@ -265,6 +291,7 @@ describe('server', () => {
         ingressAsset: 'ETH',
         egressAsset: 'DOT',
         egressAddress: HEX_DOT_ADDRESS,
+        expectedIngressAmount: '1000000000',
         [key]: value,
       };
 
@@ -283,6 +310,7 @@ describe('server', () => {
           ingressAsset: 'DOT',
           egressAsset: 'ETH',
           egressAddress: '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181f2',
+          expectedIngressAmount: '1000000000',
         },
       ],
       [
@@ -291,6 +319,7 @@ describe('server', () => {
           ingressAsset: 'ETH',
           egressAsset: 'DOT',
           egressAddress: '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181f2',
+          expectedIngressAmount: '1000000000',
         },
       ],
     ])('throws on bad addresses (%s)', async (address, requestBody) => {
@@ -312,6 +341,7 @@ describe('server', () => {
       ingressAsset: 'ETH',
       egressAsset: 'DOT',
       egressAddress: HEX_DOT_ADDRESS,
+      expectedIngressAmount: '1000000000',
     });
 
     const { body, status } = await promise;

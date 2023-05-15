@@ -27,16 +27,17 @@ model SwapIntentBlock {
 }
 
 model SwapIntent {
-  id             BigInt   @id @default(autoincrement())
-  uuid           String   @unique @default(uuid())
-  ingressAsset   String
-  ingressAddress String
-  egressAsset    String
-  egressAddress  String
-  active         Boolean  @default(true)
-  blockHeight    Int?
-  createdAt      DateTime @default(now())
-  swaps          Swap[]
+  id                    BigInt   @id @default(autoincrement())
+  uuid                  String   @unique @default(uuid())
+  ingressAsset          String
+  ingressAddress        String
+  expectedIngressAmount Decimal  @db.Decimal(30, 0)
+  egressAsset           String
+  egressAddress         String
+  active                Boolean  @default(true)
+  blockHeight           Int?
+  createdAt             DateTime @default(now())
+  swaps                 Swap[]
 
   @@index([ingressAddress])
   @@schema("public")
@@ -124,7 +125,7 @@ model ThirdPartySwap {
   protocol      ThirdPartyProtocol
   routeResponse Json
   txHash        String
-  txLink        String  
+  txLink        String
   createdAt     DateTime           @default(now())
 
   @@schema("public")
