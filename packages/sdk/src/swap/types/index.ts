@@ -40,6 +40,9 @@ export interface RouteRequest extends Route {
 
 export interface RouteResponse extends Route {
   quote: QuoteResponse;
+}
+
+export interface SwapRequest extends Omit<RouteResponse, 'quote'> {
   expectedIngressAmount: string;
 }
 

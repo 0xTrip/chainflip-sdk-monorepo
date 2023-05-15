@@ -3,14 +3,19 @@ import type { Server } from 'socket.io';
 import { quoteQuerySchema } from '@/shared/schemas';
 import { asyncHandler } from './common';
 import getConnectionHandler from '../quoting/getConnectionHandler';
-import { findBestQuote, buildQuoteRequest } from '../quoting/quotes';
+import {
+  findBestQuote,
+  buildQuoteRequest,
+  collectQuotes,
+} from '../quoting/quotes';
 import logger from '../utils/logger';
 import ServiceError from '../utils/ServiceError';
+import { getBrokerQuote } from '../utils/statechain';
 
 const quote = (io: Server) => {
   const router = express.Router();
 
-  const { handler } = getConnectionHandler();
+  const { handler, quotes$ } = getConnectionHandler();
 
   io.on('connection', handler);
 
@@ -26,31 +31,14 @@ const quote = (io: Server) => {
 
       const quoteRequest = buildQuoteRequest(result.data);
 
-      // enable later when we have a market maker
+      io.emit('quote_request', quoteRequest);
 
-      // io.emit('quote_request', quoteRequest);
+      const [marketMakerQuotes, brokerQuote] = await Promise.all([
+        collectQuotes(quoteRequest.id, io.sockets.sockets.size, quotes$),
+        getBrokerQuote(result.data, quoteRequest.id),
+      ]);
 
-      // const [marketMakerQuotes, brokerQuote] = await Promise.all([
-      //   collectQuotes(quoteRequest.id, io.sockets.sockets.size, quotes$),
-      //   getBrokerQuote(result.data, quoteRequest.id),
-      // ]);
-
-      const egressAmount =
-        Math.random() < 5 ? BigInt('1000000000') : BigInt('2000000000');
-      res.json(
-        findBestQuote(
-          [
-            {
-              id: quoteRequest.id,
-              egressAmount: egressAmount.toString(),
-            },
-          ],
-          {
-            id: quoteRequest.id,
-            egressAmount: egressAmount.toString(),
-          },
-        ),
-      );
+      res.json(findBestQuote(marketMakerQuotes, brokerQuote));
     }),
   );
 

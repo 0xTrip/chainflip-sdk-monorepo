@@ -52,7 +52,7 @@ jobs:
         run: pnpm --filter $PACKAGE install
 
       - name: pyenv Build
-        uses: gabrielfalcao/pyenv-action@v13
+        uses: gabrielfalcao/pyenv-action@v14
         with:
           default: "3.9"
           command: pip install -U pip # upgrade pip after installing python
