@@ -17,13 +17,13 @@ export enum Swapping {
   SwapIntentExpired = 'Swapping.SwapIntentExpired',
 }
 
-export enum PolkadotIngressEgress {
-  EgressScheduled = 'PolkadotIngressEgress.EgressScheduled',
-  BatchBroadcastRequested = 'PolkadotIngressEgress.BatchBroadcastRequested',
+export enum BitcoinIngressEgress {
+  EgressScheduled = 'BitcoinIngressEgress.EgressScheduled',
+  BatchBroadcastRequested = 'BitcoinIngressEgress.BatchBroadcastRequested',
 }
 
-export enum PolkadotBroadcaster {
-  BroadcastSuccess = 'PolkadotBroadcaster.BroadcastSuccess',
+export enum BitcoinBroadcaster {
+  BroadcastSuccess = 'BitcoinBroadcaster.BroadcastSuccess',
 }
 
 export enum EthereumIngressEgress {
@@ -35,7 +35,18 @@ export enum EthereumBroadcaster {
   BroadcastSuccess = 'EthereumBroadcaster.BroadcastSuccess',
 }
 
+export enum PolkadotIngressEgress {
+  EgressScheduled = 'PolkadotIngressEgress.EgressScheduled',
+  BatchBroadcastRequested = 'PolkadotIngressEgress.BatchBroadcastRequested',
+}
+
+export enum PolkadotBroadcaster {
+  BroadcastSuccess = 'PolkadotBroadcaster.BroadcastSuccess',
+}
+
 export type SwappingEventName =
+  | BitcoinIngressEgress
+  | BitcoinBroadcaster
   | EthereumBroadcaster
   | EthereumIngressEgress
   | PolkadotBroadcaster
@@ -56,13 +67,17 @@ export const eventHandlers: Record<
   [Swapping.SwapIngressReceived]: swapIngressReceived,
   [Swapping.SwapExecuted]: swapExecuted,
   [Swapping.SwapEgressScheduled]: swapEgressScheduled,
-  [PolkadotIngressEgress.EgressScheduled]: networkEgressScheduled,
-  [PolkadotIngressEgress.BatchBroadcastRequested]:
+  [BitcoinIngressEgress.EgressScheduled]: networkEgressScheduled,
+  [BitcoinIngressEgress.BatchBroadcastRequested]:
     networkBatchBroadcastRequested,
-  [PolkadotBroadcaster.BroadcastSuccess]: networkBroadcastSuccess('Polkadot'),
+  [BitcoinBroadcaster.BroadcastSuccess]: networkBroadcastSuccess('Bitcoin'),
   [EthereumIngressEgress.EgressScheduled]: networkEgressScheduled,
   [EthereumIngressEgress.BatchBroadcastRequested]:
     networkBatchBroadcastRequested,
   [EthereumBroadcaster.BroadcastSuccess]: networkBroadcastSuccess('Ethereum'),
+  [PolkadotIngressEgress.EgressScheduled]: networkEgressScheduled,
+  [PolkadotIngressEgress.BatchBroadcastRequested]:
+    networkBatchBroadcastRequested,
+  [PolkadotBroadcaster.BroadcastSuccess]: networkBroadcastSuccess('Polkadot'),
   [Swapping.SwapIntentExpired]: swapIntentExpired,
 };

@@ -1,7 +1,7 @@
+import { hexToU8a } from '@polkadot/util';
 import { z } from 'zod';
 import { SupportedAsset, Network, network } from '@/shared/assets';
-import { hexString, unsignedInteger } from '@/shared/parsers';
-import { stateChainAsset } from '../utils/assets';
+import { btcString, hexString, unsignedInteger } from '@/shared/parsers';
 
 export const assetToNetwork: Record<SupportedAsset, Network> = {
   DOT: 'Polkadot',
@@ -16,12 +16,27 @@ export const egressId = z.tuple([
   unsignedInteger,
 ]);
 
+const ethChainAddress = z.object({
+  __kind: z.literal('Eth'),
+  value: hexString,
+});
+const dotChainAddress = z.object({
+  __kind: z.literal('Dot'),
+  value: hexString,
+});
+const btcChainAddress = z.object({
+  __kind: z.literal('Btc'),
+  value: hexString
+    .transform((v) => Buffer.from(hexToU8a(v)).toString('utf-8'))
+    .pipe(btcString),
+});
+
 export const chainAddress = z
-  .object({ __kind: stateChainAsset, value: hexString })
+  .union([ethChainAddress, dotChainAddress, btcChainAddress])
   .transform(
     ({ __kind, value }) =>
       ({
-        chain: __kind,
+        chain: __kind.toUpperCase(),
         address: value,
       } as const),
   );

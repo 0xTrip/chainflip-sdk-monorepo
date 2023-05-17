@@ -1,10 +1,11 @@
 import assert from 'assert';
 import express from 'express';
+import { validateAddress } from '@/sdk/swap/validation/addressValidation';
 import { postSwapSchema } from '@/shared/schemas';
 import findBlockHeightForSwapIntent from './findBlockHeightForSwapIntent';
 import prisma from '../../client';
-import { validateAddress } from '../../utils/assets';
 import { submitSwapToBroker } from '../../utils/broker';
+import { isProduction } from '../../utils/consts';
 import logger from '../../utils/logger';
 import ServiceError from '../../utils/ServiceError';
 import { asyncHandler } from '../common';
@@ -85,7 +86,11 @@ router.post(
 
     const payload = result.data;
 
-    validateAddress(payload.egressAsset, payload.egressAddress);
+    if (
+      !validateAddress(payload.egressAsset, payload.egressAddress, isProduction)
+    ) {
+      throw ServiceError.badRequest('provided address is not valid');
+    }
 
     const { height } = await prisma.state.findFirstOrThrow();
     const ingressAddress = await submitSwapToBroker(payload);

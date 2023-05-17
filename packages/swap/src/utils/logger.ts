@@ -6,9 +6,7 @@ import {
   transports,
   type Logger,
 } from 'winston';
-
-const isProduction = process.env.NODE_ENV === 'production';
-const isTest = process.env.NODE_ENV === 'test';
+import { isProduction, isTest } from './consts';
 
 type CommonAlertCode = 'DbReadError' | 'DbWriteError';
 

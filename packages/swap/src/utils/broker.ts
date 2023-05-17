@@ -2,7 +2,12 @@ import { u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { z } from 'zod';
 import { supportedAsset, SupportedAsset } from '@/shared/assets';
-import { bareHexString, hexString, numericString } from '@/shared/parsers';
+import {
+  bareHexString,
+  btcString,
+  hexString,
+  numericString,
+} from '@/shared/parsers';
 import { memoize } from './function';
 import RpcClient from './RpcClient';
 import { transformAsset } from './string';
@@ -13,7 +18,11 @@ type NewSwapIntent = {
   egressAddress: string;
 };
 
-const address = z.union([hexString, bareHexString.transform((v) => `0x${v}`)]);
+const address = z.union([
+  hexString,
+  bareHexString.transform((v) => `0x${v}`),
+  btcString,
+]);
 
 const requestValidators = {
   newSwapIngressAddress: z
@@ -35,7 +44,7 @@ const initializeClient = memoize(async () => {
     process.env.RPC_RELAYER_WSS_URL as string,
     requestValidators,
     responseValidators,
-    'broker',
+    'relayer',
   ).connect();
 
   return rpcClient;
