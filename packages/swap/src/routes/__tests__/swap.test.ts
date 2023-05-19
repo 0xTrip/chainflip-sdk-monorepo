@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import { Server } from 'http';
 import request from 'supertest';
-import prisma, { SwapIntent } from '../../client';
+import prisma, { SwapDepositChannel } from '../../client';
 import app from '../../server';
 import RpcClient from '../../utils/RpcClient';
 import { State } from '../swap';
@@ -31,15 +31,19 @@ const HEX_DOT_ADDRESS = '0xca';
 const DOT_ADDRESS = '5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX';
 const RECEIVED_TIMESTAMP = 1669907135201;
 
-type SwapData = Parameters<(typeof prisma)['swapIntent']['create']>[0]['data'];
-const createSwapIntent = (data: Partial<SwapData> = {}): Promise<SwapIntent> =>
-  prisma.swapIntent.create({
+type SwapData = Parameters<
+  (typeof prisma)['swapDepositChannel']['create']
+>[0]['data'];
+const createSwapRequest = (
+  data: Partial<SwapData> = {},
+): Promise<SwapDepositChannel> =>
+  prisma.swapDepositChannel.create({
     data: {
-      ingressAsset: 'ETH',
-      egressAsset: 'DOT',
-      ingressAddress: ETH_ADDRESS,
-      egressAddress: DOT_ADDRESS,
-      expectedIngressAmount: '1000000000',
+      depositAsset: 'ETH',
+      destinationAsset: 'DOT',
+      depositAddress: ETH_ADDRESS,
+      destinationAddress: DOT_ADDRESS,
+      expectedDepositAmount: '1000000000',
       ...data,
     },
   });
@@ -49,7 +53,7 @@ describe('server', () => {
   jest.setTimeout(1000);
 
   beforeEach(async () => {
-    await prisma.$queryRaw`TRUNCATE TABLE "SwapIntent", private."State", "SwapIntentBlock" CASCADE`;
+    await prisma.$queryRaw`TRUNCATE TABLE "SwapDepositChannel", private."State", "SwapIntentBlock" CASCADE`;
     await prisma.state.create({ data: { id: 1, height: 10 } });
     server = app.listen(0);
   });
@@ -66,8 +70,8 @@ describe('server', () => {
       expect(body).toEqual({ message: 'resource not found' });
     });
 
-    it(`retrieves a swap in ${State.AwaitingIngress} status`, async () => {
-      const swapIntent = await createSwapIntent();
+    it(`retrieves a swap in ${State.AwaitingDeposit} status`, async () => {
+      const swapIntent = await createSwapRequest();
 
       const { body, status } = await request(server).get(
         `/swaps/${swapIntent.uuid}`,
@@ -76,22 +80,22 @@ describe('server', () => {
       expect(status).toBe(200);
       expect(body).toMatchInlineSnapshot(`
         {
-          "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
-          "egressAsset": "DOT",
-          "expectedIngressAmount": "1000000000",
-          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
-          "ingressAsset": "ETH",
-          "state": "AWAITING_INGRESS",
+          "depositAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
+          "depositAsset": "ETH",
+          "destinationAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
+          "destinationAsset": "DOT",
+          "expectedDepositAmount": "1000000000",
+          "state": "AWAITING_DEPOSIT",
         }
       `);
     });
 
-    it(`retrieves a swap in ${State.IngressReceived} status`, async () => {
-      const swapIntent = await createSwapIntent({
+    it(`retrieves a swap in ${State.DepositReceived} status`, async () => {
+      const swapIntent = await createSwapRequest({
         swaps: {
           create: {
-            ingressAmount: '10',
-            ingressReceivedAt: new Date(RECEIVED_TIMESTAMP),
+            depositAmount: '10',
+            depositReceivedAt: new Date(RECEIVED_TIMESTAMP),
             nativeId: randomId(),
           },
         },
@@ -104,25 +108,25 @@ describe('server', () => {
       expect(status).toBe(200);
       expect(body).toMatchInlineSnapshot(`
         {
-          "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
-          "egressAsset": "DOT",
-          "expectedIngressAmount": "1000000000",
-          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
-          "ingressAmount": "10",
-          "ingressAsset": "ETH",
-          "ingressReceivedAt": 1669907135201,
-          "state": "INGRESS_RECEIVED",
+          "depositAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
+          "depositAmount": "10",
+          "depositAsset": "ETH",
+          "depositReceivedAt": 1669907135201,
+          "destinationAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
+          "destinationAsset": "DOT",
+          "expectedDepositAmount": "1000000000",
+          "state": "DEPOSIT_RECEIVED",
         }
       `);
     });
 
     it(`retrieves a swap in ${State.SwapExecuted} status`, async () => {
-      const swapIntent = await createSwapIntent({
+      const swapIntent = await createSwapRequest({
         swaps: {
           create: {
             nativeId: randomId(),
-            ingressReceivedAt: new Date(RECEIVED_TIMESTAMP),
-            ingressAmount: '10',
+            depositReceivedAt: new Date(RECEIVED_TIMESTAMP),
+            depositAmount: '10',
             swapExecutedAt: new Date(RECEIVED_TIMESTAMP + 6000),
           },
         },
@@ -135,13 +139,13 @@ describe('server', () => {
       expect(status).toBe(200);
       expect(body).toMatchInlineSnapshot(`
         {
-          "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
-          "egressAsset": "DOT",
-          "expectedIngressAmount": "1000000000",
-          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
-          "ingressAmount": "10",
-          "ingressAsset": "ETH",
-          "ingressReceivedAt": 1669907135201,
+          "depositAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
+          "depositAmount": "10",
+          "depositAsset": "ETH",
+          "depositReceivedAt": 1669907135201,
+          "destinationAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
+          "destinationAsset": "DOT",
+          "expectedDepositAmount": "1000000000",
           "state": "SWAP_EXECUTED",
           "swapExecutedAt": 1669907141201,
         }
@@ -149,12 +153,12 @@ describe('server', () => {
     });
 
     it(`retrieves a swap in ${State.EgressScheduled} status`, async () => {
-      const swapIntent = await createSwapIntent({
+      const swapIntent = await createSwapRequest({
         swaps: {
           create: {
             nativeId: randomId(),
-            ingressReceivedAt: new Date(RECEIVED_TIMESTAMP),
-            ingressAmount: '10',
+            depositReceivedAt: new Date(RECEIVED_TIMESTAMP),
+            depositAmount: '10',
             swapExecutedAt: new Date(RECEIVED_TIMESTAMP + 6000),
             egress: {
               create: {
@@ -175,15 +179,15 @@ describe('server', () => {
       expect(status).toBe(200);
       expect(body).toMatchInlineSnapshot(`
         {
-          "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
+          "depositAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
+          "depositAmount": "10",
+          "depositAsset": "ETH",
+          "depositReceivedAt": 1669907135201,
+          "destinationAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
+          "destinationAsset": "DOT",
           "egressAmount": "1000000000000000000",
-          "egressAsset": "DOT",
           "egressScheduledAt": 1669907147201,
-          "expectedIngressAmount": "1000000000",
-          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
-          "ingressAmount": "10",
-          "ingressAsset": "ETH",
-          "ingressReceivedAt": 1669907135201,
+          "expectedDepositAmount": "1000000000",
           "state": "EGRESS_SCHEDULED",
           "swapExecutedAt": 1669907141201,
         }
@@ -191,14 +195,14 @@ describe('server', () => {
     });
 
     it(`retrieves a swap in ${State.Complete} status`, async () => {
-      const swapIntent = await createSwapIntent({
+      const swapIntent = await createSwapRequest({
         swaps: {
           create: {
             nativeId: randomId(),
-            ingressReceivedAt: new Date(RECEIVED_TIMESTAMP),
-            ingressAmount: '10',
+            depositReceivedAt: new Date(RECEIVED_TIMESTAMP),
+            depositAmount: '10',
             swapExecutedAt: new Date(RECEIVED_TIMESTAMP + 6000),
-            egressCompleteAt: new Date(RECEIVED_TIMESTAMP + 18000),
+            egressCompletedAt: new Date(RECEIVED_TIMESTAMP + 18000),
             egress: {
               create: {
                 timestamp: new Date(RECEIVED_TIMESTAMP + 12000),
@@ -218,16 +222,16 @@ describe('server', () => {
       expect(status).toBe(200);
       expect(body).toMatchInlineSnapshot(`
         {
-          "egressAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
+          "depositAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
+          "depositAmount": "10",
+          "depositAsset": "ETH",
+          "depositReceivedAt": 1669907135201,
+          "destinationAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
+          "destinationAsset": "DOT",
           "egressAmount": "1000000000000000000",
-          "egressAsset": "DOT",
-          "egressCompleteAt": 1669907153201,
+          "egressCompletedAt": 1669907153201,
           "egressScheduledAt": 1669907147201,
-          "expectedIngressAmount": "1000000000",
-          "ingressAddress": "0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2",
-          "ingressAmount": "10",
-          "ingressAsset": "ETH",
-          "ingressReceivedAt": 1669907135201,
+          "expectedDepositAmount": "1000000000",
           "state": "COMPLETE",
           "swapExecutedAt": 1669907141201,
         }
@@ -239,36 +243,36 @@ describe('server', () => {
     it.each([
       [
         {
-          ingressAsset: 'ETH',
-          egressAsset: 'DOT',
-          egressAddress: HEX_DOT_ADDRESS,
-          expectedIngressAmount: '1000000000',
+          depositAsset: 'ETH',
+          destinationAsset: 'DOT',
+          destinationAddress: HEX_DOT_ADDRESS,
+          expectedDepositAmount: '1000000000',
         },
       ],
       [
         {
-          ingressAsset: 'ETH',
-          egressAsset: 'DOT',
-          egressAddress: DOT_ADDRESS,
-          expectedIngressAmount: '1000000000',
+          depositAsset: 'ETH',
+          destinationAsset: 'DOT',
+          destinationAddress: DOT_ADDRESS,
+          expectedDepositAmount: '1000000000',
         },
       ],
       [
         {
-          ingressAsset: 'DOT',
-          egressAsset: 'ETH',
-          egressAddress: ETH_ADDRESS,
-          expectedIngressAmount: '1000000000',
+          depositAsset: 'DOT',
+          destinationAsset: 'ETH',
+          destinationAddress: ETH_ADDRESS,
+          expectedDepositAmount: '1000000000',
         },
       ],
     ])('creates a new swap intent', async (requestBody) => {
       const blockHeight = 123;
-      const ingressAddress = 'THE_INGRESS_ADDRESS';
+      const depositAddress = 'THE_INGRESS_ADDRESS';
       jest
         .spyOn(RpcClient.prototype, 'sendRequest')
-        .mockResolvedValueOnce(ingressAddress);
+        .mockResolvedValueOnce(depositAddress);
       await prisma.swapIntentBlock.create({
-        data: { ingressAddress, blockHeight },
+        data: { depositAddress, blockHeight },
       });
 
       const { body, status } = await request(app)
@@ -278,20 +282,20 @@ describe('server', () => {
       expect(status).toBe(200);
       expect(body).toMatchObject({
         blockHeight,
-        ingressAddress,
+        depositAddress,
         id: expect.any(String),
       });
     });
 
     it.each([
-      ['ingressAsset', 'SHIB'],
-      ['egressAsset', 'SHIB'],
+      ['depositAsset', 'SHIB'],
+      ['destinationAsset', 'SHIB'],
     ])('rejects an invalid %s', async (key, value) => {
       const requestBody = {
-        ingressAsset: 'ETH',
-        egressAsset: 'DOT',
-        egressAddress: HEX_DOT_ADDRESS,
-        expectedIngressAmount: '1000000000',
+        depositAsset: 'ETH',
+        destinationAsset: 'DOT',
+        destinationAddress: HEX_DOT_ADDRESS,
+        expectedDepositAmount: '1000000000',
         [key]: value,
       };
 
@@ -307,19 +311,19 @@ describe('server', () => {
       [
         'ETH',
         {
-          ingressAsset: 'DOT',
-          egressAsset: 'ETH',
-          egressAddress: '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181f2',
-          expectedIngressAmount: '1000000000',
+          depositAsset: 'DOT',
+          destinationAsset: 'ETH',
+          destinationAddress: '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181f2',
+          expectedDepositAmount: '1000000000',
         },
       ],
       [
         'DOT',
         {
-          ingressAsset: 'ETH',
-          egressAsset: 'DOT',
-          egressAddress: '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181f2',
-          expectedIngressAmount: '1000000000',
+          depositAsset: 'ETH',
+          destinationAsset: 'DOT',
+          destinationAddress: '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181f2',
+          expectedDepositAmount: '1000000000',
         },
       ],
     ])('throws on bad addresses (%s)', async (address, requestBody) => {
@@ -338,10 +342,10 @@ describe('server', () => {
       .mockResolvedValueOnce('THE_INGRESS_ADDRESS');
 
     const promise = request(app).post('/swaps').send({
-      ingressAsset: 'ETH',
-      egressAsset: 'DOT',
-      egressAddress: HEX_DOT_ADDRESS,
-      expectedIngressAmount: '1000000000',
+      depositAsset: 'ETH',
+      destinationAsset: 'DOT',
+      destinationAddress: HEX_DOT_ADDRESS,
+      expectedDepositAmount: '1000000000',
     });
 
     const { body, status } = await promise;
@@ -349,7 +353,7 @@ describe('server', () => {
     expect(status).toBe(200);
     expect(body).not.toHaveProperty('blockHeight');
     expect(body).toMatchObject({
-      ingressAddress: 'THE_INGRESS_ADDRESS',
+      depositAddress: 'THE_INGRESS_ADDRESS',
       id: expect.any(String),
     });
   });

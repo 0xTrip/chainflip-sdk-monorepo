@@ -2,19 +2,19 @@ import type { Prisma } from '.prisma/client';
 import networkBatchBroadcastRequested from './networkBatchBroadcastRequested';
 import networkBroadcastSuccess from './networkBroadcastSuccess';
 import networkEgressScheduled from './networkEgressScheduled';
-import newSwapIntent from './newSwapIntent';
+import swapDepositAddressExpired from './swapDepositAddressExpired';
+import swapDepositAddressReady from './swapDepositAddressReady';
+import swapDepositReceived from './swapDepositReceived';
 import swapEgressScheduled from './swapEgressScheduled';
 import swapExecuted from './swapExecuted';
-import swapIngressReceived from './swapIngressReceived';
-import swapIntentExpired from './swapIntentExpired';
 import type { Block, Event } from '../gql/generated/graphql';
 
 export enum Swapping {
-  NewSwapIntent = 'Swapping.NewSwapIntent',
-  SwapIngressReceived = 'Swapping.SwapIngressReceived',
+  SwapDepositAddressReady = 'Swapping.SwapDepositAddressReady',
+  SwapDepositReceived = 'Swapping.SwapDepositReceived',
   SwapExecuted = 'Swapping.SwapExecuted',
   SwapEgressScheduled = 'Swapping.SwapEgressScheduled',
-  SwapIntentExpired = 'Swapping.SwapIntentExpired',
+  SwapDepositAddressExpired = 'Swapping.SwapDepositAddressExpired',
 }
 
 export enum BitcoinIngressEgress {
@@ -63,8 +63,8 @@ export const eventHandlers: Record<
   SwappingEventName,
   (args: EventHandlerArgs) => Promise<void>
 > = {
-  [Swapping.NewSwapIntent]: newSwapIntent,
-  [Swapping.SwapIngressReceived]: swapIngressReceived,
+  [Swapping.SwapDepositAddressReady]: swapDepositAddressReady,
+  [Swapping.SwapDepositReceived]: swapDepositReceived,
   [Swapping.SwapExecuted]: swapExecuted,
   [Swapping.SwapEgressScheduled]: swapEgressScheduled,
   [BitcoinIngressEgress.EgressScheduled]: networkEgressScheduled,
@@ -79,5 +79,5 @@ export const eventHandlers: Record<
   [PolkadotIngressEgress.BatchBroadcastRequested]:
     networkBatchBroadcastRequested,
   [PolkadotBroadcaster.BroadcastSuccess]: networkBroadcastSuccess('Polkadot'),
-  [Swapping.SwapIntentExpired]: swapIntentExpired,
+  [Swapping.SwapDepositAddressExpired]: swapDepositAddressExpired,
 };

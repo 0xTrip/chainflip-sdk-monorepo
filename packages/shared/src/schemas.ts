@@ -3,18 +3,18 @@ import { SupportedAsset, supportedAsset } from './assets';
 import { numericString } from './parsers';
 
 export const quoteQuerySchema = z.object({
-  ingressAsset: supportedAsset,
-  egressAsset: supportedAsset,
+  depositAsset: supportedAsset,
+  destinationAsset: supportedAsset,
   amount: numericString,
 });
 
 export type QuoteQueryParams = z.infer<typeof quoteQuerySchema>;
 
 export const postSwapSchema = z.object({
-  ingressAsset: supportedAsset,
-  egressAsset: supportedAsset,
-  egressAddress: z.string(),
-  expectedIngressAmount: numericString,
+  depositAsset: supportedAsset,
+  destinationAsset: supportedAsset,
+  destinationAddress: z.string(),
+  expectedDepositAmount: numericString,
 });
 
 export type SwapRequestBody = z.infer<typeof postSwapSchema>;
@@ -36,7 +36,10 @@ export const quoteResponseSchema = z.union([
       id: z.string(),
       egress_amount: z.string(),
     })
-    .transform(({ id, ...rest }) => ({ id, egressAmount: rest.egress_amount })),
+    .transform(({ id, ...rest }) => ({
+      id,
+      egressAmount: rest.egress_amount,
+    })),
 ]);
 
 export type MarketMakerResponse = z.input<typeof quoteResponseSchema>;
@@ -44,25 +47,25 @@ export type QuoteResponse = z.infer<typeof quoteResponseSchema>;
 
 interface BaseRequest {
   id: string; // random UUID
-  ingress_amount: string; // base unit of the ingress asset, e.g. wei for ETH
+  deposit_amount: string; // base unit of the deposit asset, e.g. wei for ETH
 }
 
 interface Intermediate extends BaseRequest {
-  ingress_asset: Exclude<SupportedAsset, 'USDC'>;
+  deposit_asset: Exclude<SupportedAsset, 'USDC'>;
   intermediate_asset: 'USDC';
-  egress_asset: Exclude<SupportedAsset, 'USDC'>;
+  destination_asset: Exclude<SupportedAsset, 'USDC'>;
 }
 
-interface USDCIngress extends BaseRequest {
-  ingress_asset: 'USDC';
+interface USDCDeposit extends BaseRequest {
+  deposit_asset: 'USDC';
   intermediate_asset: null;
-  egress_asset: Exclude<SupportedAsset, 'USDC'>;
+  destination_asset: Exclude<SupportedAsset, 'USDC'>;
 }
 
 interface USDCEgress extends BaseRequest {
-  ingress_asset: Exclude<SupportedAsset, 'USDC'>;
+  deposit_asset: Exclude<SupportedAsset, 'USDC'>;
   intermediate_asset: null;
-  egress_asset: 'USDC';
+  destination_asset: 'USDC';
 }
 
-export type QuoteRequest = Intermediate | USDCIngress | USDCEgress;
+export type QuoteRequest = Intermediate | USDCDeposit | USDCEgress;

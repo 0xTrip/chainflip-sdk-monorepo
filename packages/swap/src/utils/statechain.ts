@@ -37,22 +37,27 @@ const initializeClient = memoize(async () => {
 });
 
 const getSwapAmount = async (
-  fromAsset: SupportedAsset,
-  toAsset: SupportedAsset,
+  depositAsset: SupportedAsset,
+  destinationAsset: SupportedAsset,
   amount: string,
 ): Promise<z.infer<(typeof responseValidators)['swap_rate']>> => {
   const client = await initializeClient();
 
-  return client.sendRequest('swap_rate', fromAsset, toAsset, amount);
+  return client.sendRequest(
+    'swap_rate',
+    depositAsset,
+    destinationAsset,
+    amount,
+  );
 };
 
 export const getBrokerQuote = async (
-  { ingressAsset, egressAsset, amount }: QuoteQueryParams,
+  { depositAsset, destinationAsset, amount }: QuoteQueryParams,
   id: string,
 ): Promise<QuoteResponse> => {
   const { intermediary, output } = await getSwapAmount(
-    ingressAsset,
-    egressAsset,
+    depositAsset,
+    destinationAsset,
     amount,
   );
 

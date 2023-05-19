@@ -38,7 +38,7 @@ export async function handleEvent(
           }, [] as bigint[]),
         },
       },
-      data: { egressCompleteAt: new Date(block.timestamp) },
+      data: { egressCompletedAt: new Date(block.timestamp) },
     });
   } catch (error) {
     logger.customError(
@@ -51,7 +51,7 @@ export async function handleEvent(
 }
 
 /**
- * this event is emitted when a broadcast is successful. all of the egresses
+ * this event is emitted when a broadcast is successful. all of the destinations
  * contained by the broadcast id can be marked as successful
  */
 export default function networkBroadcastSuccess(

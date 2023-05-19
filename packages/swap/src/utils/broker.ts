@@ -12,10 +12,10 @@ import { memoize } from './function';
 import RpcClient from './RpcClient';
 import { transformAsset } from './string';
 
-type NewSwapIntent = {
-  ingressAsset: SupportedAsset;
-  egressAsset: SupportedAsset;
-  egressAddress: string;
+type NewSwapRequest = {
+  depositAsset: SupportedAsset;
+  destinationAsset: SupportedAsset;
+  destinationAddress: string;
 };
 
 const address = z.union([
@@ -25,7 +25,7 @@ const address = z.union([
 ]);
 
 const requestValidators = {
-  newSwapIngressAddress: z
+  requestSwapDepositAddress: z
     .tuple([
       supportedAsset.transform(transformAsset),
       supportedAsset.transform(transformAsset),
@@ -36,34 +36,34 @@ const requestValidators = {
 };
 
 const responseValidators = {
-  newSwapIngressAddress: address,
+  requestSwapDepositAddress: address,
 };
 
 const initializeClient = memoize(async () => {
   const rpcClient = await new RpcClient(
-    process.env.RPC_RELAYER_WSS_URL as string,
+    process.env.RPC_BROKER_WSS_URL as string,
     requestValidators,
     responseValidators,
-    'relayer',
+    'broker',
   ).connect();
 
   return rpcClient;
 });
 
 export const submitSwapToBroker = async (
-  swapIntent: NewSwapIntent,
+  swapRequest: NewSwapRequest,
 ): Promise<string> => {
-  const { ingressAsset, egressAsset, egressAddress } = swapIntent;
+  const { depositAsset, destinationAsset, destinationAddress } = swapRequest;
   const client = await initializeClient();
-  const ingressAddress = await client.sendRequest(
-    'newSwapIngressAddress',
-    ingressAsset,
-    egressAsset,
-    egressAsset === 'DOT' // btc not yet implemented on broker side
-      ? u8aToHex(decodeAddress(egressAddress))
-      : egressAddress,
+  const depositAddress = await client.sendRequest(
+    'requestSwapDepositAddress',
+    depositAsset,
+    destinationAsset,
+    destinationAsset === 'DOT' // btc not yet implemented on broker side
+      ? u8aToHex(decodeAddress(destinationAddress))
+      : destinationAddress,
     0,
   );
 
-  return ingressAddress;
+  return depositAddress;
 };

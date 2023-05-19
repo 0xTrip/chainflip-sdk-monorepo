@@ -82,8 +82,8 @@ const getRoute: BackendQuery<RouteRequest, RouteResponse> = async (
 ) => {
   const params: QuoteQueryParams = {
     amount,
-    ingressAsset: routeRequest.srcTokenSymbol,
-    egressAsset: routeRequest.destTokenSymbol,
+    depositAsset: routeRequest.srcTokenSymbol,
+    destinationAsset: routeRequest.destTokenSymbol,
   };
 
   const queryParams = new URLSearchParams(params);
@@ -101,10 +101,10 @@ const executeRoute: BackendQuery<SwapRequest, SwapResponse> = async (
   { signal },
 ) => {
   const body: SwapRequestBody = {
-    egressAddress: route.egressAddress,
-    ingressAsset: route.srcTokenSymbol,
-    egressAsset: route.destTokenSymbol,
-    expectedIngressAmount: route.expectedIngressAmount,
+    destinationAddress: route.destinationAddress,
+    depositAsset: route.srcTokenSymbol,
+    destinationAsset: route.destTokenSymbol,
+    expectedDepositAmount: route.expectedDepositAmount,
   };
 
   const url = new URL('/swaps', baseUrl).toString();
@@ -122,10 +122,10 @@ const executeRoute: BackendQuery<SwapRequest, SwapResponse> = async (
 
 const getStatus: BackendQuery<SwapStatusRequest, SwapStatusResponse> = async (
   baseUrl,
-  { swapIntentId },
+  { swapDepositChannelId },
   { signal },
 ): Promise<SwapStatusResponse> => {
-  const url = new URL(`/swaps/${swapIntentId}`, baseUrl).toString();
+  const url = new URL(`/swaps/${swapDepositChannelId}`, baseUrl).toString();
   const { data } = await axios.get<SwapStatusResponse>(url, {
     signal,
   });

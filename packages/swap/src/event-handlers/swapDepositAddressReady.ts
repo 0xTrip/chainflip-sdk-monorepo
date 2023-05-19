@@ -6,10 +6,10 @@ import logger from '../utils/logger';
 import type { EventHandlerArgs } from '.';
 
 const eventArgs = z.object({
-  ingressAddress: chainAddress,
+  depositAddress: chainAddress,
 });
 
-export default async function newSwapIntent({
+export default async function swapDepositAddressReady({
   prisma,
   block,
   event,
@@ -17,28 +17,28 @@ export default async function newSwapIntent({
   try {
     // get necessary params
     const {
-      ingressAddress: { address: ingressAddress },
+      depositAddress: { address: depositAddress },
     } = eventArgs.parse(event.args);
 
-    // retrieve SwapIntent for later processing
-    const swapIntents = await prisma.swapIntent.findMany({
-      where: { ingressAddress, active: true },
+    // retrieve SwapDepositChannel for later processing
+    const swapIntents = await prisma.swapDepositChannel.findMany({
+      where: { depositAddress, active: true },
     });
 
     assert(
       swapIntents.length === 0,
-      `swapIngressReceived: too many active swap intents found for ingressAddress ${ingressAddress}`,
+      `swapDepositAddressReady: too many active swap intents found for depositAddress ${depositAddress}`,
     );
 
     // Create a new swap object
     await prisma.swapIntentBlock.create({
-      data: { ingressAddress, blockHeight: block.height },
+      data: { depositAddress, blockHeight: block.height },
     });
   } catch (error) {
     logger.customError(
-      'error in "swapIngressReceived" handler',
+      'error in "swapDepositAddressReady" handler',
       { alertCode: 'EventHandlerError' },
-      { error, handler: 'swapIngressReceived' },
+      { error, handler: 'swapDepositAddressReady' },
     );
     throw error;
   }

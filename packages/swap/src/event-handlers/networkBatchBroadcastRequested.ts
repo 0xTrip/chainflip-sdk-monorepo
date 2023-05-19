@@ -1,18 +1,18 @@
 import { z } from 'zod';
 import { unsignedInteger } from '@/shared/parsers';
-import { egressId } from './common';
+import { egressId as egressIdParser } from './common';
 import logger from '../utils/logger';
 import type { EventHandlerArgs } from '.';
 
 const eventArgs = z.object({
   broadcastId: unsignedInteger,
-  egressIds: z.array(egressId),
+  egressIds: z.array(egressIdParser),
 });
 
 /**
  * this event emits a list of egress ids and a new broadcast id to track the
- * egresses. the broadcast success event will be emitted with this id when all
- * of the egresses are successful
+ * egress. the broadcast success event will be emitted with this id when all
+ * of the egresss are successful
  */
 export default async function networkBatchBroadcastRequested({
   prisma,
@@ -28,15 +28,15 @@ export default async function networkBatchBroadcastRequested({
 
     const [[network]] = egressIds;
 
-    const egresses = await prisma.egress.findMany({
+    const depositChannels = await prisma.egress.findMany({
       where: {
         network,
         nativeId: { in: egressIds.map(([, id]) => id) },
       },
     });
 
-    if (egresses.length === 0) {
-      logger.customInfo('no egresses found, skipping', {}, { broadcastId });
+    if (depositChannels.length === 0) {
+      logger.customInfo('no egresss found, skipping', {}, { broadcastId });
       return;
     }
 
@@ -45,14 +45,16 @@ export default async function networkBatchBroadcastRequested({
     });
 
     await prisma.egress.updateMany({
-      where: { id: { in: egresses.map((egress) => egress.id) } },
+      where: {
+        id: { in: depositChannels.map((destination) => destination.id) },
+      },
       data: { broadcastId: broadcast.id },
     });
   } catch (error) {
     logger.customError(
-      'error in "chainBatchBroadcastRequested" handler',
+      'error in "networkBatchBroadcastRequested" handler',
       { alertCode: 'EventHandlerError' },
-      { error, handler: 'chainBatchBroadcastRequested' },
+      { error, handler: 'networkBatchBroadcastRequested' },
     );
     throw error;
   }

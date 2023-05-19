@@ -2,22 +2,22 @@ import prisma from '../../client';
 import { loop } from '../../utils/function';
 import logger from '../../utils/logger';
 
-const findBlockHeightForSwapIntent = async (
+const findBlockHeightForSwapRequest = async (
   previousHeight: number,
-  ingressAddress: string,
+  depositAddress: string,
   // eslint-disable-next-line consistent-return
 ): Promise<number | undefined> => {
   for await (const count of loop({ timeout: 250 })) {
     if (count === 100) {
       logger.error('failed to find block height for swap intent', {
-        ingressAddress,
+        depositAddress,
       });
       return undefined;
     }
 
     const blockForIntent = await prisma.swapIntentBlock.findFirst({
       where: {
-        ingressAddress,
+        depositAddress,
         blockHeight: { gt: previousHeight },
       },
     });
@@ -29,4 +29,4 @@ const findBlockHeightForSwapIntent = async (
   }
 };
 
-export default findBlockHeightForSwapIntent;
+export default findBlockHeightForSwapRequest;

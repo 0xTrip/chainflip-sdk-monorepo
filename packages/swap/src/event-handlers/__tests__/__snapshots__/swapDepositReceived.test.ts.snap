@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`swapExecuted updates an existing swap with the execution timestamp 1`] = `
+exports[`swapDepositReceived stores a new swap 1`] = `
 {
   "createdAt": Any<Date>,
-  "depositAmount": "10000000000",
+  "depositAmount": "222222222222222222",
   "depositReceivedAt": 2022-12-06T14:31:33.000Z,
   "egressCompletedAt": null,
   "id": Any<BigInt>,
   "nativeId": 9876545n,
   "swapDepositChannelId": Any<BigInt>,
-  "swapExecutedAt": 2022-12-06T14:31:39.000Z,
+  "swapExecutedAt": null,
   "updatedAt": Any<Date>,
 }
 `;

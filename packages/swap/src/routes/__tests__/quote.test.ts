@@ -66,8 +66,8 @@ describe('server', () => {
         });
 
       const params = new URLSearchParams({
-        ingressAsset: 'FLIP',
-        egressAsset: 'ETH',
+        depositAsset: 'FLIP',
+        destinationAsset: 'ETH',
         amount: '1',
       });
 
@@ -98,8 +98,8 @@ describe('server', () => {
           output: (1e18).toString(),
         });
       const params = new URLSearchParams({
-        ingressAsset: 'FLIP',
-        egressAsset: 'ETH',
+        depositAsset: 'FLIP',
+        destinationAsset: 'ETH',
         amount: '1',
       });
 

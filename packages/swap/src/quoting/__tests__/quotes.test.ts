@@ -117,48 +117,48 @@ describe('quotes', () => {
     it('returns a QuoteRequest', () => {
       expect(
         buildQuoteRequest({
-          ingressAsset: 'FLIP',
-          egressAsset: 'ETH',
+          depositAsset: 'FLIP',
+          destinationAsset: 'ETH',
           amount: '1000000000000000000',
         }),
       ).toEqual({
         id: expect.any(String),
-        ingress_asset: 'FLIP',
+        deposit_asset: 'FLIP',
         intermediate_asset: 'USDC',
-        egress_asset: 'ETH',
-        ingress_amount: '1000000000000000000',
+        destination_asset: 'ETH',
+        deposit_amount: '1000000000000000000',
       });
     });
 
-    it('returns a QuoteRequest with a null intermediate_asset if ingressAsset is USDC', () => {
+    it('returns a QuoteRequest with a null intermediate_asset if depositAsset is USDC', () => {
       expect(
         buildQuoteRequest({
-          ingressAsset: 'USDC',
-          egressAsset: 'ETH',
+          depositAsset: 'USDC',
+          destinationAsset: 'ETH',
           amount: '100000000',
         }),
       ).toEqual({
         id: expect.any(String),
-        ingress_asset: 'USDC',
+        deposit_asset: 'USDC',
         intermediate_asset: null,
-        egress_asset: 'ETH',
-        ingress_amount: '100000000',
+        destination_asset: 'ETH',
+        deposit_amount: '100000000',
       });
     });
 
-    it('returns a QuoteRequest with a null intermediate_asset if egressAsset is USDC', () => {
+    it('returns a QuoteRequest with a null intermediate_asset if destinationAsset is USDC', () => {
       expect(
         buildQuoteRequest({
-          ingressAsset: 'ETH',
-          egressAsset: 'USDC',
+          depositAsset: 'ETH',
+          destinationAsset: 'USDC',
           amount: '100000000',
         }),
       ).toEqual({
         id: expect.any(String),
-        ingress_asset: 'ETH',
+        deposit_asset: 'ETH',
         intermediate_asset: null,
-        egress_asset: 'USDC',
-        ingress_amount: '100000000',
+        destination_asset: 'USDC',
+        deposit_amount: '100000000',
       });
     });
   });

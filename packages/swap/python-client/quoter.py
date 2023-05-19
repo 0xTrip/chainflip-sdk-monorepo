@@ -8,15 +8,15 @@ import base64, socketio, time
 @dataclass
 class Quote:
     id: str
-    ingress_asset: str
-    egress_asset: str
-    ingress_amount: str
+    deposit_asset: str
+    destination_asset: str
+    deposit_amount: str
 
     def __init__(self, json: dict[str, Any]):
         self.id = json["id"]
-        self.ingress_asset = json["ingress_asset"]
-        self.egress_asset = json["egress_asset"]
-        self.ingress_amount = json["ingress_amount"]
+        self.deposit_asset = json["deposit_asset"]
+        self.destination_asset = json["destination_asset"]
+        self.deposit_amount = json["deposit_amount"]
 
 
 class Quoter(ABC):
@@ -27,7 +27,7 @@ class Quoter(ABC):
     async def on_quote_request(self, quote: Quote) -> tuple[str, str]:
         """
         :param quote: Quote object
-        :return: (intermediate_amount, egress_amount)
+        :return: (intermediate_amount, destination_amount)
         """
         pass
 
@@ -56,12 +56,12 @@ class Quoter(ABC):
         @self.sio.event
         async def quote_request(data: dict[str, Any]):
             quote = Quote(data)
-            (intermediate_amount, egress_amount) = await self.on_quote_request(quote)
+            (intermediate_amount, destination_amount) = await self.on_quote_request(quote)
             await self.send_quote(
                 {
                     "id": quote.id,
                     "intermediate_amount": intermediate_amount,
-                    "egress_amount": egress_amount,
+                    "destination_amount": destination_amount,
                 }
             )
 

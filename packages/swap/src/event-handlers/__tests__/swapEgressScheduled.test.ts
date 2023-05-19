@@ -1,19 +1,23 @@
 import { swapEgressScheduledMock } from './utils';
-import prisma, { SwapIntent } from '../../client';
+import prisma, { SwapDepositChannel } from '../../client';
 import swapEgressScheduled from '../swapEgressScheduled';
 
 const ETH_ADDRESS = '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2';
 const DOT_ADDRESS = '5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX';
 
-type SwapData = Parameters<(typeof prisma)['swapIntent']['create']>[0]['data'];
-const createSwapIntent = (data: Partial<SwapData> = {}): Promise<SwapIntent> =>
-  prisma.swapIntent.create({
+type SwapData = Parameters<
+  (typeof prisma)['swapDepositChannel']['create']
+>[0]['data'];
+const createSwapRequest = (
+  data: Partial<SwapData> = {},
+): Promise<SwapDepositChannel> =>
+  prisma.swapDepositChannel.create({
     data: {
-      ingressAsset: 'ETH',
-      egressAsset: 'DOT',
-      ingressAddress: ETH_ADDRESS,
-      egressAddress: DOT_ADDRESS,
-      expectedIngressAmount: '10000000000',
+      depositAsset: 'ETH',
+      destinationAsset: 'DOT',
+      depositAddress: ETH_ADDRESS,
+      destinationAddress: DOT_ADDRESS,
+      expectedDepositAmount: '10000000000',
       ...data,
     },
   });
@@ -25,7 +29,7 @@ const {
 
 describe(swapEgressScheduled, () => {
   beforeEach(async () => {
-    await prisma.$queryRaw`TRUNCATE TABLE "SwapIntent", "Swap" CASCADE`;
+    await prisma.$queryRaw`TRUNCATE TABLE "SwapDepositChannel", "Swap" CASCADE`;
   });
 
   it('updates an existing swap with the scheduled timestamp', async () => {
@@ -41,12 +45,12 @@ describe(swapEgressScheduled, () => {
     });
 
     // store a new swap intent to initiate a new swap
-    const swapIntent = await createSwapIntent({
+    const swapDepositChannel = await createSwapRequest({
       swaps: {
         create: {
           nativeId: BigInt(swapId),
-          ingressAmount: '10000000000',
-          ingressReceivedAt: new Date(block.timestamp - 12000),
+          depositAmount: '10000000000',
+          depositReceivedAt: new Date(block.timestamp - 12000),
           swapExecutedAt: new Date(block.timestamp - 6000),
         },
       },
@@ -61,7 +65,7 @@ describe(swapEgressScheduled, () => {
     );
 
     const swap = await prisma.swap.findFirstOrThrow({
-      where: { swapIntentId: swapIntent.id },
+      where: { swapDepositChannelId: swapDepositChannel.id },
       include: {
         egress: {
           select: {
@@ -77,7 +81,7 @@ describe(swapEgressScheduled, () => {
       id: expect.any(BigInt),
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
-      swapIntentId: expect.any(BigInt),
+      swapDepositChannelId: expect.any(BigInt),
     });
   });
 });

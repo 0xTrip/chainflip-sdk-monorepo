@@ -51,34 +51,34 @@ export const findBestQuote = (
   }, brokerQuote);
 
 export const buildQuoteRequest = (query: QuoteQueryParams): QuoteRequest => {
-  const { ingressAsset, egressAsset, amount } = query;
+  const { depositAsset, destinationAsset, amount } = query;
 
-  if (ingressAsset === 'USDC') {
-    assert(egressAsset !== 'USDC');
+  if (depositAsset === 'USDC') {
+    assert(destinationAsset !== 'USDC');
     return {
       id: crypto.randomUUID(),
-      ingress_asset: ingressAsset,
+      deposit_asset: depositAsset,
       intermediate_asset: null,
-      egress_asset: egressAsset,
-      ingress_amount: amount,
+      destination_asset: destinationAsset,
+      deposit_amount: amount,
     };
   }
 
-  if (egressAsset === 'USDC') {
+  if (destinationAsset === 'USDC') {
     return {
       id: crypto.randomUUID(),
-      ingress_asset: ingressAsset,
+      deposit_asset: depositAsset,
       intermediate_asset: null,
-      egress_asset: egressAsset,
-      ingress_amount: amount,
+      destination_asset: destinationAsset,
+      deposit_amount: amount,
     };
   }
 
   return {
     id: crypto.randomUUID(),
-    ingress_asset: ingressAsset,
+    deposit_asset: depositAsset,
     intermediate_asset: 'USDC',
-    egress_asset: egressAsset,
-    ingress_amount: amount,
+    destination_asset: destinationAsset,
+    deposit_amount: amount,
   };
 };

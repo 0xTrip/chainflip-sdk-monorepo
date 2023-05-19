@@ -31,7 +31,7 @@ interface Route {
   destChainId: ChainId;
   srcTokenSymbol: TokenSymbol;
   destTokenSymbol: TokenSymbol;
-  egressAddress: string;
+  destinationAddress: string;
 }
 
 export interface RouteRequest extends Route {
@@ -43,55 +43,55 @@ export interface RouteResponse extends Route {
 }
 
 export interface SwapRequest extends Omit<RouteResponse, 'quote'> {
-  expectedIngressAmount: string;
+  expectedDepositAmount: string;
 }
 
 export interface SwapResponse {
   id: string;
-  ingressAddress: string;
+  depositAddress: string;
 }
 
 export interface SwapStatusRequest {
-  swapIntentId: string;
+  swapDepositChannelId: string;
 }
 
 type CommonStatusFields = {
-  ingressAddress: string;
-  egressAddress: string;
-  ingressAsset: SupportedAsset;
-  egressAsset: SupportedAsset;
-  expectedIngressAmount: string;
+  depositAddress: string;
+  destinationAddress: string;
+  depositAsset: SupportedAsset;
+  destinationAsset: SupportedAsset;
+  expectedDepositAmount: string;
 };
 
 export type SwapStatusResponse = CommonStatusFields &
   (
-    | { state: 'AWAITING_INGRESS' }
+    | { state: 'AWAITING_DEPOSIT' }
     | {
-        state: 'INGRESS_RECEIVED';
-        ingressAmount: string;
-        ingressReceivedAt: number;
+        state: 'DEPOSIT_RECEIVED';
+        depositAmount: string;
+        depositReceivedAt: number;
       }
     | {
         state: 'SWAP_EXECUTED';
-        ingressAmount: string;
-        ingressReceivedAt: number;
+        depositAmount: string;
+        depositReceivedAt: number;
         swapExecutedAt: number;
       }
     | {
         state: 'EGRESS_SCHEDULED';
         egressAmount: string;
         egressScheduledAt: number;
-        ingressAmount: string;
-        ingressReceivedAt: number;
+        depositAmount: string;
+        depositReceivedAt: number;
         swapExecutedAt: number;
       }
     | {
         state: 'COMPLETE';
         egressAmount: string;
-        egressCompleteAt: number;
+        egressCompletedAt: number;
         egressScheduledAt: number;
-        ingressAmount: string;
-        ingressReceivedAt: number;
+        depositAmount: string;
+        depositReceivedAt: number;
         swapExecutedAt: number;
       }
   );

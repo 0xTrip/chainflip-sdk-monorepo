@@ -1,6 +1,6 @@
-import { swapExecutedMock } from './utils';
+import { swapIngressMock } from './utils';
 import prisma, { SwapDepositChannel } from '../../client';
-import swapExecuted from '../swapExecuted';
+import swapDepositReceived from '../swapDepositReceived';
 
 const ETH_ADDRESS = '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2';
 const DOT_ADDRESS = '5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX';
@@ -22,42 +22,31 @@ const createSwapRequest = (
     },
   });
 
-const {
-  eventContext: { event },
-  block,
-} = swapExecutedMock;
-
-describe(swapExecuted, () => {
+describe(swapDepositReceived, () => {
   beforeEach(async () => {
     await prisma.$queryRaw`TRUNCATE TABLE "SwapDepositChannel", "Swap" CASCADE`;
   });
 
-  it('updates an existing swap with the execution timestamp', async () => {
-    const { swapId } = event.args;
-
+  it('stores a new swap', async () => {
     // store a new swap intent to initiate a new swap
-    const swapDepositChannel = await createSwapRequest({
-      swaps: {
-        create: {
-          nativeId: BigInt(swapId),
-          depositAmount: '10000000000',
-          depositReceivedAt: new Date(block.timestamp - 6000),
-        },
-      },
-    });
+    const swapDepositChannel = await createSwapRequest();
 
-    await prisma.$transaction((tx) =>
-      swapExecuted({
-        block: block as any,
-        event: event as any,
-        prisma: tx,
-      }),
-    );
+    // create a swap after receiving the event
+    await prisma.$transaction(async (client) => {
+      await swapDepositReceived({
+        prisma: client,
+        block: swapIngressMock.block as any,
+        event: swapIngressMock.eventContext.event as any,
+      });
+    });
 
     const swap = await prisma.swap.findFirstOrThrow({
       where: { swapDepositChannelId: swapDepositChannel.id },
     });
 
+    expect(swap.depositAmount.toString()).toEqual(
+      swapIngressMock.eventContext.event.args.depositAmount,
+    );
     expect(swap).toMatchSnapshot({
       id: expect.any(BigInt),
       createdAt: expect.any(Date),

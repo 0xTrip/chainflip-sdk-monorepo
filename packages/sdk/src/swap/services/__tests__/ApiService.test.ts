@@ -11,7 +11,7 @@ jest.mock('axios', () => ({
 describe('ApiService', () => {
   const mockRoute = {
     amount: '10000',
-    egressAddress: '',
+    destinationAddress: '',
     srcChainId: ChainId.Bitcoin,
     srcTokenSymbol: 'BTC',
     destChainId: ChainId.Ethereum,
@@ -58,7 +58,7 @@ describe('ApiService', () => {
         'https://swapperoo.org',
         {
           amount: '10000',
-          egressAddress: '',
+          destinationAddress: '',
           srcChainId: ChainId.Bitcoin,
           srcTokenSymbol: 'BTC',
           destChainId: ChainId.Ethereum,
@@ -94,7 +94,7 @@ describe('ApiService', () => {
       const mockedPost = jest.mocked(axios.post);
       const response = {
         id: 'new deposit channel id',
-        ingressAddress: '0xcafebabe',
+        depositAddress: '0xcafebabe',
       };
       mockedPost.mockResolvedValueOnce({ data: response });
 
@@ -102,7 +102,7 @@ describe('ApiService', () => {
         'https://swapperoo.org',
         {
           ...mockRoute,
-          expectedIngressAmount: mockRoute.amount,
+          expectedDepositAmount: mockRoute.amount,
         },
         {},
       );
@@ -112,14 +112,14 @@ describe('ApiService', () => {
     it('passes on the signal', async () => {
       const mockedPost = jest.mocked(axios.post);
       mockedPost.mockResolvedValueOnce({
-        data: { id: 'new deposit channel id', ingressAddress: '0xcafebabe' },
+        data: { id: 'new deposit channel id', depositAddress: '0xcafebabe' },
       });
 
       await ApiService.executeRoute(
         'https://swapperoo.org',
         {
           ...mockRoute,
-          expectedIngressAmount: mockRoute.amount,
+          expectedDepositAmount: mockRoute.amount,
         },
         {
           signal: new AbortController().signal,
@@ -135,7 +135,7 @@ describe('ApiService', () => {
       mockedGet.mockResolvedValueOnce({ data: 'hello darkness' });
       mockedGet.mockResolvedValueOnce({ data: 'my old friend' });
 
-      const statusRequest = { swapIntentId: 'the id' };
+      const statusRequest = { swapDepositChannelId: 'the id' };
 
       const status1 = await ApiService.getStatus(
         'https://swapperoo.org',
@@ -157,7 +157,7 @@ describe('ApiService', () => {
 
       await ApiService.getStatus(
         'https://swapperoo.org',
-        { swapIntentId: '' },
+        { swapDepositChannelId: '' },
         { signal: new AbortController().signal },
       );
 

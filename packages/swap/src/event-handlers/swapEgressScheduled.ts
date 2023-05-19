@@ -15,7 +15,7 @@ const eventArgs = z.object({
 
 /**
  * this event is emitted in order to correlate the egress id from a network
- * ingress/egress pallet to a swap id
+ * deposit/egress pallet to a swap id
  */
 export default async function swapEgressScheduled({
   prisma,

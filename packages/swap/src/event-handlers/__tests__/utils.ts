@@ -13,17 +13,17 @@ export const swapIngressMock = {
           weight: '101978000',
           paysFee: [null],
         },
-        ingressAddress: {
+        depositAddress: {
           __kind: 'Eth',
           value: '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2',
         },
         swapId: '9876545',
-        ingressAmount: '222222222222222222',
+        depositAmount: '222222222222222222',
       },
       id: '0000012799-000000-c1ea7',
       indexInBlock: 0,
       nodeId: 'WyJldmVudHMiLCIwMDAwMDEyNzk5LTAwMDAwMC1jMWVhNyJd',
-      name: Swapping.SwapIngressReceived,
+      name: Swapping.SwapDepositReceived,
       phase: 'ApplyExtrinsic',
       pos: 2,
       extrinsic: {
@@ -154,7 +154,7 @@ export const SwapExpiredMock = {
           weight: '101978000',
           paysFee: [null],
         },
-        ingressAddress: {
+        depositAddress: {
           __kind: 'Eth',
           value: '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2',
         },
@@ -162,7 +162,7 @@ export const SwapExpiredMock = {
       id: '0000012799-000000-c1ea7',
       indexInBlock: 0,
       nodeId: 'WyJldmVudHMiLCIwMDAwMDEyNzk5LTAwMDAwMC1jMWVhNyJd',
-      name: Swapping.SwapIntentExpired,
+      name: Swapping.SwapDepositAddressExpired,
       phase: 'ApplyExtrinsic',
       pos: 2,
       extrinsic: {

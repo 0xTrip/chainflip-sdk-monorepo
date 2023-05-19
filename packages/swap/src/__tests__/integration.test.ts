@@ -84,8 +84,8 @@ describe('python integration test', () => {
     ).resolves.toBe('connected');
 
     const params = new URLSearchParams({
-      ingressAsset: 'FLIP',
-      egressAsset: 'ETH',
+      depositAsset: 'FLIP',
+      destinationAsset: 'ETH',
       amount: '1000000000000000000',
     } as QuoteQueryParams);
 
@@ -100,7 +100,7 @@ describe('python integration test', () => {
     expect(await response.json()).toEqual({
       id: expect.any(String),
       intermediateAmount: '2000000000',
-      egressAmount: '1000000000000000000',
+      egressAmount: '999999999999999999',
     });
   });
 });

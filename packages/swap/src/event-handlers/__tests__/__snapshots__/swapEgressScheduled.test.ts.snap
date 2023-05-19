@@ -3,18 +3,18 @@
 exports[`swapEgressScheduled updates an existing swap with the scheduled timestamp 1`] = `
 {
   "createdAt": Any<Date>,
+  "depositAmount": "10000000000",
+  "depositReceivedAt": 2022-12-06T14:31:33.000Z,
   "egress": {
     "amount": "1234567890",
     "network": "Ethereum",
     "timestamp": 2022-12-06T14:31:45.000Z,
   },
-  "egressCompleteAt": null,
+  "egressCompletedAt": null,
   "id": Any<BigInt>,
-  "ingressAmount": "10000000000",
-  "ingressReceivedAt": 2022-12-06T14:31:33.000Z,
   "nativeId": 9876545n,
+  "swapDepositChannelId": Any<BigInt>,
   "swapExecutedAt": 2022-12-06T14:31:39.000Z,
-  "swapIntentId": Any<BigInt>,
   "updatedAt": Any<Date>,
 }
 `;

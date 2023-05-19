@@ -7,7 +7,7 @@ describe('server', () => {
   let server: Server;
 
   beforeEach(async () => {
-    await prisma.$queryRaw`TRUNCATE TABLE "SwapIntent" CASCADE`;
+    await prisma.$queryRaw`TRUNCATE TABLE "SwapDepositChannel" CASCADE`;
     server = app.listen(0);
   });
 
