@@ -89,7 +89,7 @@ describe('ApiService', () => {
     });
   });
 
-  describe(ApiService.executeRoute, () => {
+  describe(ApiService.requestDepositAddress, () => {
     it('executes the route and returns the data from the service', async () => {
       const mockedPost = jest.mocked(axios.post);
       const response = {
@@ -98,7 +98,7 @@ describe('ApiService', () => {
       };
       mockedPost.mockResolvedValueOnce({ data: response });
 
-      const depositChannel = await ApiService.executeRoute(
+      const depositChannel = await ApiService.requestDepositAddress(
         'https://swapperoo.org',
         {
           ...mockRoute,
@@ -115,7 +115,7 @@ describe('ApiService', () => {
         data: { id: 'new deposit channel id', depositAddress: '0xcafebabe' },
       });
 
-      await ApiService.executeRoute(
+      await ApiService.requestDepositAddress(
         'https://swapperoo.org',
         {
           ...mockRoute,

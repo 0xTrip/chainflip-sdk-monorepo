@@ -95,7 +95,7 @@ const getRoute: BackendQuery<RouteRequest, RouteResponse> = async (
   return { quote: data, ...routeRequest };
 };
 
-const executeRoute: BackendQuery<SwapRequest, SwapResponse> = async (
+const requestDepositAddress: BackendQuery<SwapRequest, SwapResponse> = async (
   baseUrl,
   route,
   { signal },
@@ -109,13 +109,7 @@ const executeRoute: BackendQuery<SwapRequest, SwapResponse> = async (
 
   const url = new URL('/swaps', baseUrl).toString();
 
-  const { data } = await axios.post<SwapResponse>(
-    url,
-    { ...body },
-    {
-      signal,
-    },
-  );
+  const { data } = await axios.post<SwapResponse>(url, body, { signal });
 
   return data;
 };
@@ -138,5 +132,5 @@ export default {
   getRoute,
   getTokens,
   getStatus,
-  executeRoute,
+  requestDepositAddress,
 };

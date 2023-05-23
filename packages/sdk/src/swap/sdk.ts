@@ -51,11 +51,11 @@ export class SwapSDK {
     return ApiService.getRoute(this.baseUrl, routeRequest, options);
   }
 
-  executeRoute(
+  requestDepositAddress(
     swapRequest: SwapRequest,
     options: RequestOptions = {},
   ): Promise<SwapResponse> {
-    return ApiService.executeRoute(this.baseUrl, swapRequest, options);
+    return ApiService.requestDepositAddress(this.baseUrl, swapRequest, options);
   }
 
   getStatus(
