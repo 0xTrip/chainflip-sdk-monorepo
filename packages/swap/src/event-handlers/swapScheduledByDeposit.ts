@@ -30,7 +30,7 @@ export default async function swapScheduledByDeposit({
 
     // retrieve SwapDepositChannel for later processing
     const swapRequests = await prisma.swapDepositChannel.findMany({
-      where: { depositAddress, active: true },
+      where: { depositAddress, expiryBlock: { gte: block.height } },
     });
 
     if (swapRequests.length === 0) {

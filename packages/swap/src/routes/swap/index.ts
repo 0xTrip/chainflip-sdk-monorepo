@@ -2,7 +2,7 @@ import assert from 'assert';
 import express from 'express';
 import { validateAddress } from '@/sdk/swap/validation/addressValidation';
 import { postSwapSchema } from '@/shared/schemas';
-import findBlockHeightForSwapRequest from './findBlockHeightForSwapRequest';
+import findIssuedBlockForSwapRequest from './findIssuedBlockForSwapRequest';
 import prisma from '../../client';
 import { submitSwapToBroker } from '../../utils/broker';
 import { isProduction } from '../../utils/consts';
@@ -97,19 +97,15 @@ router.post(
       throw ServiceError.badRequest('provided address is not valid');
     }
 
-    const { height } = await prisma.state.findFirstOrThrow();
-    const depositAddress = await submitSwapToBroker(payload);
+    const brokerResponse = await submitSwapToBroker(payload);
 
-    const blockHeight = await findBlockHeightForSwapRequest(
-      height,
-      depositAddress,
-    );
+    const issuedBlock = await findIssuedBlockForSwapRequest(brokerResponse);
 
     const { uuid } = await prisma.swapDepositChannel.create({
-      data: { ...payload, depositAddress, blockHeight },
+      data: { ...payload, issuedBlock, ...brokerResponse },
     });
 
-    res.json({ depositAddress, blockHeight, id: uuid });
+    res.json({ ...brokerResponse, issuedBlock, id: uuid });
   }),
 );
 

@@ -14,7 +14,7 @@ describe(processBlocks, () => {
     await prisma.swapDepositChannel.create({
       data: {
         depositAddress,
-        active: true,
+        expiryBlock: 100,
         depositAsset: 'ETH',
         destinationAsset: 'USDC',
         destinationAddress: '0xdeadbeef',

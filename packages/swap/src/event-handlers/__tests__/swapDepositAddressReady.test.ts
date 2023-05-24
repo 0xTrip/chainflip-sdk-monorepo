@@ -16,14 +16,15 @@ describe(swapDepositAddressReady, () => {
       });
     });
 
-    const swapIntentBlock = await prisma.swapIntentBlock.findFirstOrThrow({
-      where: {
-        depositAddress:
-          swapDepositAddressReadyMock.eventContext.event.args.depositAddress
-            .value,
-      },
-    });
-    expect(swapIntentBlock.depositAddress).toBe(
+    const swapDepositChannelBlock =
+      await prisma.swapDepositChannelBlock.findFirstOrThrow({
+        where: {
+          depositAddress:
+            swapDepositAddressReadyMock.eventContext.event.args.depositAddress
+              .value,
+        },
+      });
+    expect(swapDepositChannelBlock.depositAddress).toBe(
       swapDepositAddressReadyMock.eventContext.event.args.depositAddress.value,
     );
   });

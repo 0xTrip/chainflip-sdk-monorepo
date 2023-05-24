@@ -17,12 +17,13 @@ datasource db {
   schemas  = ["public", "private"]
 }
 
-model SwapIntentBlock {
+model SwapDepositChannelBlock {
   id             BigInt @id @default(autoincrement())
   depositAddress String
-  blockHeight    Int
+  issuedBlock    Int
+  expiryBlock    Int
 
-  @@index([blockHeight])
+  @@index([issuedBlock, expiryBlock])
   @@schema("public")
 }
 
@@ -34,7 +35,8 @@ model SwapDepositChannel {
   expectedDepositAmount Decimal  @db.Decimal(30, 0)
   destinationAsset      String
   destinationAddress    String
-  active                Boolean  @default(true)
+  expiryBlock           Int
+  issuedBlock           Int?
   createdAt             DateTime @default(now())
   swaps                 Swap[]
   blockHeight           Int?

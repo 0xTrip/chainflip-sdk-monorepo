@@ -7,6 +7,7 @@ import type { EventHandlerArgs } from '.';
 
 const eventArgs = z.object({
   depositAddress: chainAddress,
+  expiryBlock: z.number(),
 });
 
 export default async function swapDepositAddressReady({
@@ -15,24 +16,22 @@ export default async function swapDepositAddressReady({
   event,
 }: EventHandlerArgs): Promise<void> {
   try {
-    // get necessary params
     const {
       depositAddress: { address: depositAddress },
+      expiryBlock,
     } = eventArgs.parse(event.args);
 
-    // retrieve SwapDepositChannel for later processing
-    const swapIntents = await prisma.swapDepositChannel.findMany({
-      where: { depositAddress, active: true },
+    const depositChannels = await prisma.swapDepositChannel.findMany({
+      where: { depositAddress, expiryBlock: { gte: block.height } },
     });
 
     assert(
-      swapIntents.length === 0,
-      `swapDepositAddressReady: too many active swap intents found for depositAddress ${depositAddress}`,
+      depositChannels.length === 0,
+      `swapDepositAddressReady: too many open deposit channels found for depositAddress ${depositAddress}`,
     );
 
-    // Create a new swap object
-    await prisma.swapIntentBlock.create({
-      data: { depositAddress, blockHeight: block.height },
+    await prisma.swapDepositChannelBlock.create({
+      data: { depositAddress, issuedBlock: block.height, expiryBlock },
     });
   } catch (error) {
     logger.customError(

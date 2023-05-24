@@ -2,7 +2,12 @@ import { u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { z } from 'zod';
 import { supportedAsset, SupportedAsset } from '@/shared/assets';
-import { hexString, numericString, btcString } from '@/shared/parsers';
+import {
+  hexString,
+  numericString,
+  btcString,
+  bareHexString,
+} from '@/shared/parsers';
 import { memoize } from './function';
 import RpcClient from './RpcClient';
 import { transformAsset } from './string';
@@ -12,8 +17,6 @@ type NewSwapRequest = {
   destinationAsset: SupportedAsset;
   destinationAddress: string;
 };
-
-const address = z.union([hexString, btcString]);
 
 const requestValidators = {
   requestSwapDepositAddress: z
@@ -27,7 +30,19 @@ const requestValidators = {
 };
 
 const responseValidators = {
-  requestSwapDepositAddress: address,
+  requestSwapDepositAddress: z
+    .object({
+      address: z.union([
+        hexString,
+        bareHexString.transform((v) => `0x${v}`),
+        btcString,
+      ]),
+      expiry_block: z.number(),
+    })
+    .transform(({ address, expiry_block: expiryBlock }) => ({
+      depositAddress: address,
+      expiryBlock,
+    })),
 };
 
 const initializeClient = memoize(async () => {
@@ -41,9 +56,13 @@ const initializeClient = memoize(async () => {
   return rpcClient;
 });
 
+export type DepositChannelResponse = z.infer<
+  (typeof responseValidators)['requestSwapDepositAddress']
+>;
+
 export const submitSwapToBroker = async (
   swapRequest: NewSwapRequest,
-): Promise<string> => {
+): Promise<DepositChannelResponse> => {
   const { depositAsset, destinationAsset, destinationAddress } = swapRequest;
   const client = await initializeClient();
   const depositAddress = await client.sendRequest(

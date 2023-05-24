@@ -44,6 +44,7 @@ const createSwapRequest = (
       depositAddress: ETH_ADDRESS,
       destinationAddress: DOT_ADDRESS,
       expectedDepositAmount: '1000000000',
+      expiryBlock: 100,
       ...data,
     },
   });
@@ -53,8 +54,7 @@ describe('server', () => {
   jest.setTimeout(1000);
 
   beforeEach(async () => {
-    await prisma.$queryRaw`TRUNCATE TABLE "SwapDepositChannel", private."State", "SwapIntentBlock" CASCADE`;
-    await prisma.state.create({ data: { id: 1, height: 10 } });
+    await prisma.$queryRaw`TRUNCATE TABLE "SwapDepositChannel", "SwapDepositChannelBlock" CASCADE`;
     server = app.listen(0);
   });
 
@@ -63,7 +63,7 @@ describe('server', () => {
   });
 
   describe('GET /swaps/:id', () => {
-    it('throws an error if no swap intent is found', async () => {
+    it('throws an error if no swap deposit channel is found', async () => {
       const { body, status } = await request(server).get(`/swaps/1`);
 
       expect(status).toBe(404);
@@ -265,14 +265,14 @@ describe('server', () => {
           expectedDepositAmount: '1000000000',
         },
       ],
-    ])('creates a new swap intent', async (requestBody) => {
-      const blockHeight = 123;
+    ])('creates a new swap deposit channel', async (requestBody) => {
+      const issuedBlock = 123;
       const depositAddress = 'THE_INGRESS_ADDRESS';
       jest
         .spyOn(RpcClient.prototype, 'sendRequest')
-        .mockResolvedValueOnce(depositAddress);
-      await prisma.swapIntentBlock.create({
-        data: { depositAddress, blockHeight },
+        .mockResolvedValueOnce({ depositAddress, expiryBlock: 100 });
+      await prisma.swapDepositChannelBlock.create({
+        data: { depositAddress, issuedBlock, expiryBlock: 100 },
       });
 
       const { body, status } = await request(app)
@@ -281,7 +281,7 @@ describe('server', () => {
 
       expect(status).toBe(200);
       expect(body).toMatchObject({
-        blockHeight,
+        issuedBlock,
         depositAddress,
         id: expect.any(String),
       });
@@ -337,9 +337,10 @@ describe('server', () => {
   });
 
   it('returns no block height if unable', async () => {
-    jest
-      .spyOn(RpcClient.prototype, 'sendRequest')
-      .mockResolvedValueOnce('THE_INGRESS_ADDRESS');
+    jest.spyOn(RpcClient.prototype, 'sendRequest').mockResolvedValueOnce({
+      depositAddress: 'THE_INGRESS_ADDRESS',
+      expiryBlock: 100,
+    });
 
     const promise = request(app).post('/swaps').send({
       depositAsset: 'ETH',
@@ -351,7 +352,7 @@ describe('server', () => {
     const { body, status } = await promise;
 
     expect(status).toBe(200);
-    expect(body).not.toHaveProperty('blockHeight');
+    expect(body).not.toHaveProperty('issuedBlock');
     expect(body).toMatchObject({
       depositAddress: 'THE_INGRESS_ADDRESS',
       id: expect.any(String),

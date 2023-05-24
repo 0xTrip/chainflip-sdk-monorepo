@@ -2,7 +2,6 @@ import type { Prisma } from '.prisma/client';
 import networkBatchBroadcastRequested from './networkBatchBroadcastRequested';
 import networkBroadcastSuccess from './networkBroadcastSuccess';
 import networkEgressScheduled from './networkEgressScheduled';
-import swapDepositAddressExpired from './swapDepositAddressExpired';
 import swapDepositAddressReady from './swapDepositAddressReady';
 import swapEgressScheduled from './swapEgressScheduled';
 import swapExecuted from './swapExecuted';
@@ -14,7 +13,6 @@ export enum Swapping {
   SwapScheduledByDeposit = 'Swapping.SwapScheduledByDeposit',
   SwapExecuted = 'Swapping.SwapExecuted',
   SwapEgressScheduled = 'Swapping.SwapEgressScheduled',
-  SwapDepositAddressExpired = 'Swapping.SwapDepositAddressExpired',
 }
 
 export enum BitcoinIngressEgress {
@@ -79,5 +77,4 @@ export const eventHandlers: Record<
   [PolkadotIngressEgress.BatchBroadcastRequested]:
     networkBatchBroadcastRequested,
   [PolkadotBroadcaster.BroadcastSuccess]: networkBroadcastSuccess('Polkadot'),
-  [Swapping.SwapDepositAddressExpired]: swapDepositAddressExpired,
 };
