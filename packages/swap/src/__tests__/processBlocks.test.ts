@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import prisma from '../client';
-import type { SwapDepositReceivedEvent } from '../event-handlers/swapDepositReceived';
+import type { SwapScheduledByDepositEvent } from '../event-handlers/swapScheduledByDeposit';
 import { GetBatchQuery } from '../gql/generated/graphql';
 import processBlocks from '../processBlocks';
 
@@ -9,7 +9,7 @@ describe(processBlocks, () => {
     await prisma.$queryRaw`TRUNCATE TABLE "SwapDepositChannel", "Swap", private."State" CASCADE`;
   });
 
-  it('dispatches a SwapDepositReceived event', async () => {
+  it('dispatches a SwapScheduledByDeposit event', async () => {
     const depositAddress = '0xcafebabe';
     await prisma.swapDepositChannel.create({
       data: {
@@ -33,7 +33,7 @@ describe(processBlocks, () => {
               events: {
                 nodes: [
                   {
-                    name: 'Swapping.SwapDepositReceived',
+                    name: 'Swapping.SwapScheduledByDeposit',
                     args: {
                       depositAmount: '1000000000000000000',
                       swapId: 1,
@@ -41,7 +41,7 @@ describe(processBlocks, () => {
                         value: depositAddress,
                         __kind: 'Eth',
                       },
-                    } as SwapDepositReceivedEvent,
+                    } as SwapScheduledByDepositEvent,
                   },
                 ],
               },

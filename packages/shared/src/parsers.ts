@@ -10,7 +10,7 @@ export const numericString = string.regex(/^[0-9]+$/);
 export const hexString = string.regex(/^0x[0-9a-f]+$/i);
 export const bareHexString = string.regex(/^[0-9a-f]+$/);
 export const btcString = string
-  .regex(/^(bc1|tb1|bcrt1)/)
+  .regex(/^(bc1|tb1|bcrt1|m)/)
   .or(string.regex(/^[13][a-km-zA-HJ-NP-Z1-9]{25,39}$/)); // not strict
 
 export const u128 = z

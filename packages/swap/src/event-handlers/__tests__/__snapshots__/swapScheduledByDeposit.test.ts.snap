@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`swapDepositReceived stores a new swap 1`] = `
+exports[`swapScheduledByDeposit stores a new swap 1`] = `
 {
   "createdAt": Any<Date>,
   "depositAmount": "222222222222222222",

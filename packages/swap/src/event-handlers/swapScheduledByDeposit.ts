@@ -12,13 +12,14 @@ const eventArgs = z.object({
   depositAmount: unsignedInteger,
 });
 
-export type SwapDepositReceivedEvent = z.input<typeof eventArgs>;
+export type SwapScheduledByDepositEvent = z.input<typeof eventArgs>;
 
-export default async function swapDepositReceived({
+export default async function swapScheduledByDeposit({
   prisma,
   block,
   event,
 }: EventHandlerArgs): Promise<void> {
+  logger.warn('SwapScheduledByDeposit handler is here');
   try {
     // get necessary params
     const {
@@ -34,14 +35,14 @@ export default async function swapDepositReceived({
 
     if (swapRequests.length === 0) {
       logger.info(
-        `swapDepositReceived: SwapDepositChannel not found for depositAddress ${depositAddress}`,
+        `SwapScheduledByDeposit: SwapDepositChannel not found for depositAddress ${depositAddress}`,
       );
       return;
     }
 
     assert(
       swapRequests.length === 1,
-      `swapDepositReceived: too many active swap intents found for depositAddress ${depositAddress}`,
+      `SwapScheduledByDeposit: too many active swap intents found for depositAddress ${depositAddress}`,
     );
 
     // Create a new swap object
@@ -55,9 +56,9 @@ export default async function swapDepositReceived({
     });
   } catch (error) {
     logger.customError(
-      'error in "swapDepositReceived" handler',
+      'error in "SwapScheduledByDeposit" handler',
       { alertCode: 'EventHandlerError' },
-      { error, handler: 'swapDepositReceived' },
+      { error, handler: 'SwapScheduledByDeposit' },
     );
     throw error;
   }

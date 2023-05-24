@@ -1,4 +1,3 @@
-import { hexToU8a } from '@polkadot/util';
 import { z } from 'zod';
 import { SupportedAsset, Network, network } from '@/shared/assets';
 import { btcString, hexString, unsignedInteger } from '@/shared/parsers';
@@ -27,7 +26,7 @@ const dotChainAddress = z.object({
 const btcChainAddress = z.object({
   __kind: z.literal('Btc'),
   value: hexString
-    .transform((v) => Buffer.from(hexToU8a(v)).toString('utf-8'))
+    .transform((v) => Buffer.from(v.slice(2), 'hex').toString())
     .pipe(btcString),
 });
 

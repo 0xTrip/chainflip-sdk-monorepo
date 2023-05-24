@@ -1,6 +1,6 @@
-import { swapIngressMock } from './utils';
+import { swapScheduledByDepositMock } from './utils';
 import prisma, { SwapDepositChannel } from '../../client';
-import swapDepositReceived from '../swapDepositReceived';
+import swapScheduledByDeposit from '../swapScheduledByDeposit';
 
 const ETH_ADDRESS = '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2';
 const DOT_ADDRESS = '5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX';
@@ -22,7 +22,7 @@ const createSwapRequest = (
     },
   });
 
-describe(swapDepositReceived, () => {
+describe(swapScheduledByDeposit, () => {
   beforeEach(async () => {
     await prisma.$queryRaw`TRUNCATE TABLE "SwapDepositChannel", "Swap" CASCADE`;
   });
@@ -33,10 +33,10 @@ describe(swapDepositReceived, () => {
 
     // create a swap after receiving the event
     await prisma.$transaction(async (client) => {
-      await swapDepositReceived({
+      await swapScheduledByDeposit({
         prisma: client,
-        block: swapIngressMock.block as any,
-        event: swapIngressMock.eventContext.event as any,
+        block: swapScheduledByDepositMock.block as any,
+        event: swapScheduledByDepositMock.eventContext.event as any,
       });
     });
 
@@ -45,7 +45,7 @@ describe(swapDepositReceived, () => {
     });
 
     expect(swap.depositAmount.toString()).toEqual(
-      swapIngressMock.eventContext.event.args.depositAmount,
+      swapScheduledByDepositMock.eventContext.event.args.depositAmount,
     );
     expect(swap).toMatchSnapshot({
       id: expect.any(BigInt),

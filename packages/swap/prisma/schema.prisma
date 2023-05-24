@@ -29,15 +29,15 @@ model SwapIntentBlock {
 model SwapDepositChannel {
   id                    BigInt   @id @default(autoincrement())
   uuid                  String   @unique @default(uuid())
-  depositAsset           String
+  depositAsset          String
   depositAddress        String
   expectedDepositAmount Decimal  @db.Decimal(30, 0)
   destinationAsset      String
   destinationAddress    String
   active                Boolean  @default(true)
-  blockHeight           Int?
   createdAt             DateTime @default(now())
   swaps                 Swap[]
+  blockHeight           Int?
 
   @@index([depositAddress])
   @@schema("public")

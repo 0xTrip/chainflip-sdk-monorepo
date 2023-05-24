@@ -2,12 +2,7 @@ import { u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { z } from 'zod';
 import { supportedAsset, SupportedAsset } from '@/shared/assets';
-import {
-  bareHexString,
-  btcString,
-  hexString,
-  numericString,
-} from '@/shared/parsers';
+import { hexString, numericString, btcString } from '@/shared/parsers';
 import { memoize } from './function';
 import RpcClient from './RpcClient';
 import { transformAsset } from './string';
@@ -18,18 +13,14 @@ type NewSwapRequest = {
   destinationAddress: string;
 };
 
-const address = z.union([
-  hexString,
-  bareHexString.transform((v) => `0x${v}`),
-  btcString,
-]);
+const address = z.union([hexString, btcString]);
 
 const requestValidators = {
   requestSwapDepositAddress: z
     .tuple([
       supportedAsset.transform(transformAsset),
       supportedAsset.transform(transformAsset),
-      numericString.or(hexString),
+      z.union([numericString, hexString, btcString]),
       z.number(),
     ])
     .transform(([a, b, c, d]) => [a, b, c, d]),
@@ -59,7 +50,7 @@ export const submitSwapToBroker = async (
     'requestSwapDepositAddress',
     depositAsset,
     destinationAsset,
-    destinationAsset === 'DOT' // btc not yet implemented on broker side
+    destinationAsset === 'DOT'
       ? u8aToHex(decodeAddress(destinationAddress))
       : destinationAddress,
     0,
