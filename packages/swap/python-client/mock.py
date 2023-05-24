@@ -1,5 +1,6 @@
 from quoter import Quoter
 import sys, getopt, asyncio
+from typing import Optional
 
 
 def print_and_flush(*args):
@@ -17,8 +18,8 @@ class MockQuoter(Quoter):
 
 async def main(argv):
     try:
-        market_maker_id: str | None = None
-        private_key: str | None = None
+        market_maker_id: Optional[str] = None
+        private_key: Optional[str] = None
         url = "http://localhost:8080"
 
         opts, args = getopt.getopt(

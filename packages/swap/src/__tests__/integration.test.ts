@@ -92,7 +92,7 @@ describe('python integration test', () => {
     jest.mocked(getBrokerQuote).mockResolvedValueOnce({
       id: "doesn't matter",
       intermediateAmount: '2000000000',
-      egressAmount: '999999999999999999',
+      egressAmount: '0', // this shouldn't be the result
     });
 
     const response = await fetch(`${serverUrl}/quote?${params.toString()}`);
@@ -100,7 +100,7 @@ describe('python integration test', () => {
     expect(await response.json()).toEqual({
       id: expect.any(String),
       intermediateAmount: '2000000000',
-      egressAmount: '999999999999999999',
+      egressAmount: '1000000000000000000',
     });
   });
 });

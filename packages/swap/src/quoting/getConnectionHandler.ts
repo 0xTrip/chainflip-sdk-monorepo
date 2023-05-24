@@ -26,7 +26,7 @@ const getConnectionHandler = (): ConnectionHandler => {
         const result = quoteResponseSchema.safeParse(message);
 
         if (!result.success) {
-          logger.warn('received invalid quote response', { message });
+          logger.warn('received invalid quote response', {}, { message });
           return;
         }
 

@@ -39,7 +39,6 @@ model SwapDepositChannel {
   issuedBlock           Int?
   createdAt             DateTime @default(now())
   swaps                 Swap[]
-  blockHeight           Int?
 
   @@index([depositAddress])
   @@schema("public")
