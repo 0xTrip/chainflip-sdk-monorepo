@@ -2,14 +2,12 @@ import type { Prisma } from '.prisma/client';
 import networkBatchBroadcastRequested from './networkBatchBroadcastRequested';
 import networkBroadcastSuccess from './networkBroadcastSuccess';
 import networkEgressScheduled from './networkEgressScheduled';
-import swapDepositAddressReady from './swapDepositAddressReady';
 import swapEgressScheduled from './swapEgressScheduled';
 import swapExecuted from './swapExecuted';
 import swapScheduledByDeposit from './swapScheduledByDeposit';
 import type { Block, Event } from '../gql/generated/graphql';
 
 export enum Swapping {
-  SwapDepositAddressReady = 'Swapping.SwapDepositAddressReady',
   SwapScheduledByDeposit = 'Swapping.SwapScheduledByDeposit',
   SwapExecuted = 'Swapping.SwapExecuted',
   SwapEgressScheduled = 'Swapping.SwapEgressScheduled',
@@ -61,7 +59,6 @@ export const eventHandlers: Record<
   SwappingEventName,
   (args: EventHandlerArgs) => Promise<void>
 > = {
-  [Swapping.SwapDepositAddressReady]: swapDepositAddressReady,
   [Swapping.SwapScheduledByDeposit]: swapScheduledByDeposit,
   [Swapping.SwapExecuted]: swapExecuted,
   [Swapping.SwapEgressScheduled]: swapEgressScheduled,

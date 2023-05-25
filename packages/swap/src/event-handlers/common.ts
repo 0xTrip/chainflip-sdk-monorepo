@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { SupportedAsset, Network, network } from '@/shared/assets';
-import { btcString, hexString, unsignedInteger } from '@/shared/parsers';
+import {
+  btcAddress,
+  dotAddress,
+  hexString,
+  unsignedInteger,
+} from '@/shared/parsers';
 
 export const assetToNetwork: Record<SupportedAsset, Network> = {
   DOT: 'Polkadot',
@@ -21,13 +26,13 @@ const ethChainAddress = z.object({
 });
 const dotChainAddress = z.object({
   __kind: z.literal('Dot'),
-  value: hexString,
+  value: dotAddress,
 });
 const btcChainAddress = z.object({
   __kind: z.literal('Btc'),
   value: hexString
     .transform((v) => Buffer.from(v.slice(2), 'hex').toString())
-    .pipe(btcString),
+    .pipe(btcAddress),
 });
 
 export const chainAddress = z

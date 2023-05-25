@@ -5,8 +5,8 @@ import { supportedAsset, SupportedAsset } from '@/shared/assets';
 import {
   hexString,
   numericString,
-  btcString,
-  bareHexString,
+  btcAddress,
+  dotAddress,
 } from '@/shared/parsers';
 import { memoize } from './function';
 import RpcClient from './RpcClient';
@@ -23,7 +23,7 @@ const requestValidators = {
     .tuple([
       supportedAsset.transform(transformAsset),
       supportedAsset.transform(transformAsset),
-      z.union([numericString, hexString, btcString]),
+      z.union([numericString, hexString, btcAddress]),
       z.number(),
     ])
     .transform(([a, b, c, d]) => [a, b, c, d]),
@@ -32,16 +32,14 @@ const requestValidators = {
 const responseValidators = {
   requestSwapDepositAddress: z
     .object({
-      address: z.union([
-        hexString,
-        bareHexString.transform((v) => `0x${v}`),
-        btcString,
-      ]),
+      address: z.union([hexString, btcAddress, dotAddress]),
       expiry_block: z.number(),
+      issued_block: z.number(),
     })
-    .transform(({ address, expiry_block: expiryBlock }) => ({
-      depositAddress: address,
-      expiryBlock,
+    .transform(({ address, expiry_block, issued_block }) => ({
+      address,
+      expiryBlock: expiry_block,
+      issuedBlock: issued_block,
     })),
 };
 
@@ -65,7 +63,7 @@ export const submitSwapToBroker = async (
 ): Promise<DepositChannelResponse> => {
   const { depositAsset, destinationAsset, destinationAddress } = swapRequest;
   const client = await initializeClient();
-  const depositAddress = await client.sendRequest(
+  const depositChannelResponse = await client.sendRequest(
     'requestSwapDepositAddress',
     depositAsset,
     destinationAsset,
@@ -75,5 +73,5 @@ export const submitSwapToBroker = async (
     0,
   );
 
-  return depositAddress;
+  return depositChannelResponse;
 };

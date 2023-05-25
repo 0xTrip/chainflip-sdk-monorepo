@@ -1,4 +1,3 @@
-import { setTimeout as sleep } from 'timers/promises';
 import logger from './logger';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,13 +31,3 @@ export const handleExit = (cb: AnyFunction) => {
     exitHandlers.delete(cb);
   };
 };
-
-export const isTruthy = <T>(value: T | null | undefined): value is T =>
-  Boolean(value);
-
-export async function* loop({ timeout }: { timeout: number }) {
-  for (let i = 0; ; i += 1) {
-    yield i;
-    await sleep(timeout);
-  }
-}

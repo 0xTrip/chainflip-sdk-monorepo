@@ -19,7 +19,6 @@ export default async function swapScheduledByDeposit({
   block,
   event,
 }: EventHandlerArgs): Promise<void> {
-  logger.warn('SwapScheduledByDeposit handler is here');
   try {
     // get necessary params
     const {
@@ -44,7 +43,6 @@ export default async function swapScheduledByDeposit({
       swapRequests.length === 1,
       `SwapScheduledByDeposit: too many active swap intents found for depositAddress ${depositAddress}`,
     );
-
     // Create a new swap object
     await prisma.swap.create({
       data: {

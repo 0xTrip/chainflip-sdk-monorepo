@@ -18,7 +18,8 @@ const createSwapRequest = (
       depositAddress: ETH_ADDRESS,
       destinationAddress: DOT_ADDRESS,
       expectedDepositAmount: '10000000000',
-      expiryBlock: 100,
+      issuedBlock: 100,
+      expiryBlock: 200,
       ...data,
     },
   });
