@@ -43,13 +43,17 @@ router.get(
     const { uuid } = req.params;
 
     try {
-      const { id, ...swap } = await prisma.thirdPartySwap.findFirstOrThrow({
+      const thirdPartySwap = await prisma.thirdPartySwap.findFirst({
         where: {
           uuid,
         },
       });
+      if (!thirdPartySwap) throw ServiceError.notFound();
+
+      const { id, ...swap } = thirdPartySwap;
       res.json({ ...swap });
     } catch (err) {
+      if (err instanceof ServiceError) throw err;
       if (err instanceof Error) throw ServiceError.internalError(err.message);
       throw ServiceError.internalError();
     }

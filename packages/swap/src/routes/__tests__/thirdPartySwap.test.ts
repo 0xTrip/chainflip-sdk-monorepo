@@ -110,7 +110,7 @@ describe('server', () => {
 
     it('throws bad request uuid is not found', async () => {
       const { status } = await request(app).get('/third-party-swap/123');
-      expect(status).toBe(500);
+      expect(status).toBe(404);
     });
   });
 });
