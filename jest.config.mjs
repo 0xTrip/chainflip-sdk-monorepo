@@ -17,10 +17,14 @@ const tsconfig = JSON.parse(
   ).replace(/\/\*.*\*\//g, ''),
 );
 
-const pathsToModuleNameMapper = (pathMap, { prefix }) =>
+const pathsToModuleNameMapper = (pathMap) =>
   Object.fromEntries(
     Object.entries(pathMap).map(([key, paths]) => {
       if (paths.length !== 1) throw new Error('dunno what to do');
+
+      let prefix = process.cwd();
+      // go up to the root of the monorepo
+      if (prefix.includes('packages')) prefix = path.join(prefix, '..', '..');
 
       const regexKey = `^${key.replace(/\*$/, '(.*)')}$`;
       const remappedPath = path.join(prefix, paths[0].replace(/\*$/, '$1'));
@@ -45,7 +49,7 @@ export default {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: undefined,
+  collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.test.ts'],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: 'coverage',
@@ -208,9 +212,7 @@ export default {
   },
 
   moduleNameMapper: {
-    ...pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
-      prefix: '<rootDir>',
-    }),
+    ...pathsToModuleNameMapper(tsconfig.compilerOptions.paths),
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
