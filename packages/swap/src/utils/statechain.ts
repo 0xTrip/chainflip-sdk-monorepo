@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SupportedAsset, supportedAsset } from '@/shared/assets';
+import { SupportedAsset, supportedAsset } from '@/shared/enums';
 import { numericString } from '@/shared/parsers';
 import { memoize } from './function';
 import RpcClient from './RpcClient';

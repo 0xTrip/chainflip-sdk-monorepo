@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { network as networkSchema } from '@/shared/assets';
+import { network as networkSchema } from '@/shared/enums';
 import { unsignedInteger } from '@/shared/parsers';
 import { Prisma } from '../client';
 import logger from '../utils/logger';

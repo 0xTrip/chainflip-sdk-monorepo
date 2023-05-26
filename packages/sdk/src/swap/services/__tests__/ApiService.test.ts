@@ -19,26 +19,39 @@ describe('ApiService', () => {
   } satisfies RouteRequest;
 
   describe(ApiService.getChains, () => {
-    it('gets testnet chains', async () => {
-      expect(await ApiService.getChains(true)).toMatchSnapshot();
-    });
-    it('gets mainnet chains', async () => {
-      expect(await ApiService.getChains(false)).toMatchSnapshot();
-    });
-  });
-
-  describe(ApiService.getTokens, () => {
-    it.each([ChainId.Ethereum, ChainId.Bitcoin, ChainId.Polkadot])(
-      'gets the correct tokens for testnets (%d)',
-      async (chainId) => {
-        expect(await ApiService.getTokens(chainId, true)).toMatchSnapshot();
+    it.each(['sisyphos', 'perseverance'] as const)(
+      'gets testnet chains (%s)',
+      async (network) => {
+        expect(await ApiService.getChains(network)).toMatchSnapshot();
       },
     );
 
+    it('gets mainnet chains', async () => {
+      expect(await ApiService.getChains('mainnet')).toMatchSnapshot();
+    });
+  });
+
+  describe.each(['sisyphos', 'perseverance'] as const)(
+    `${ApiService.getTokens.name} (%s)`,
+    (network) => {
+      it.each([ChainId.Ethereum, ChainId.Bitcoin, ChainId.Polkadot])(
+        'gets the correct tokens for testnets (%d)',
+        async (chainId) => {
+          expect(
+            await ApiService.getTokens(chainId, network),
+          ).toMatchSnapshot();
+        },
+      );
+    },
+  );
+
+  describe(ApiService.getTokens, () => {
     it.each([ChainId.Ethereum, ChainId.Bitcoin, ChainId.Polkadot])(
       'gets the correct tokens for mainnets (%d)',
       async (chainId) => {
-        expect(await ApiService.getTokens(chainId, false)).toMatchSnapshot();
+        expect(
+          await ApiService.getTokens(chainId, 'mainnet'),
+        ).toMatchSnapshot();
       },
     );
   });

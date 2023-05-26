@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SupportedAsset, supportedAsset } from './assets';
+import { SupportedAsset, supportedAsset } from './enums';
 import { numericString } from './parsers';
 
 export const quoteQuerySchema = z.object({

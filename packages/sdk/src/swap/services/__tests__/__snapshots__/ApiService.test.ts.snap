@@ -20,7 +20,27 @@ exports[`ApiService getChains gets mainnet chains 1`] = `
 ]
 `;
 
-exports[`ApiService getChains gets testnet chains 1`] = `
+exports[`ApiService getChains gets testnet chains (perseverance) 1`] = `
+[
+  {
+    "id": 1,
+    "isMainnet": false,
+    "name": "Ethereum",
+  },
+  {
+    "id": 2,
+    "isMainnet": false,
+    "name": "Polkadot",
+  },
+  {
+    "id": 3,
+    "isMainnet": false,
+    "name": "Bitcoin",
+  },
+]
+`;
+
+exports[`ApiService getChains gets testnet chains (sisyphos) 1`] = `
 [
   {
     "id": 1,
@@ -60,6 +80,116 @@ exports[`ApiService getRoute gets a route with a quote 2`] = `
   "https://swapperoo.org/quote?amount=10000&depositAsset=BTC&destinationAsset=ETH",
   {
     "signal": undefined,
+  },
+]
+`;
+
+exports[`ApiService getTokens (perseverance) gets the correct tokens for testnets (1) 1`] = `
+[
+  {
+    "chainId": 1,
+    "contractAddress": "0xeth",
+    "decimals": 18,
+    "isMainnet": false,
+    "name": "ether",
+    "symbol": "ETH",
+  },
+  {
+    "chainId": 1,
+    "contractAddress": "0xusdc",
+    "decimals": 6,
+    "isMainnet": false,
+    "name": "usdc",
+    "symbol": "USDC",
+  },
+  {
+    "chainId": 1,
+    "contractAddress": "0xflip",
+    "decimals": 18,
+    "isMainnet": false,
+    "name": "flip",
+    "symbol": "FLIP",
+  },
+]
+`;
+
+exports[`ApiService getTokens (perseverance) gets the correct tokens for testnets (2) 1`] = `
+[
+  {
+    "chainId": 2,
+    "contractAddress": "0xdot",
+    "decimals": 10,
+    "isMainnet": false,
+    "name": "dot",
+    "symbol": "DOT",
+  },
+]
+`;
+
+exports[`ApiService getTokens (perseverance) gets the correct tokens for testnets (3) 1`] = `
+[
+  {
+    "chainId": 3,
+    "contractAddress": "0xbitcoin",
+    "decimals": 8,
+    "isMainnet": false,
+    "name": "bitcoin",
+    "symbol": "BTC",
+  },
+]
+`;
+
+exports[`ApiService getTokens (sisyphos) gets the correct tokens for testnets (1) 1`] = `
+[
+  {
+    "chainId": 1,
+    "contractAddress": "0xeth",
+    "decimals": 18,
+    "isMainnet": false,
+    "name": "ether",
+    "symbol": "ETH",
+  },
+  {
+    "chainId": 1,
+    "contractAddress": "0xusdc",
+    "decimals": 6,
+    "isMainnet": false,
+    "name": "usdc",
+    "symbol": "USDC",
+  },
+  {
+    "chainId": 1,
+    "contractAddress": "0xflip",
+    "decimals": 18,
+    "isMainnet": false,
+    "name": "flip",
+    "symbol": "FLIP",
+  },
+]
+`;
+
+exports[`ApiService getTokens (sisyphos) gets the correct tokens for testnets (2) 1`] = `
+[
+  {
+    "chainId": 2,
+    "contractAddress": "0xdot",
+    "decimals": 10,
+    "isMainnet": false,
+    "name": "dot",
+    "symbol": "DOT",
+  },
+]
+`;
+
+exports[`ApiService getTokens (sisyphos) gets the correct tokens for testnets (3) 1`] = `
+[
+  {
+    "chainId": 3,
+    "contractAddress": "0xbitcoin",
+    "decimals": 8,
+    "isMainnet": false,
+    "name": "bitcoin",
+    "symbol": "BTC",
   },
 ]
 `;
@@ -113,61 +243,6 @@ exports[`ApiService getTokens gets the correct tokens for mainnets (3) 1`] = `
     "contractAddress": "0xbitcoin",
     "decimals": 8,
     "isMainnet": true,
-    "name": "bitcoin",
-    "symbol": "BTC",
-  },
-]
-`;
-
-exports[`ApiService getTokens gets the correct tokens for testnets (1) 1`] = `
-[
-  {
-    "chainId": 1,
-    "contractAddress": "0xeth",
-    "decimals": 18,
-    "isMainnet": false,
-    "name": "ether",
-    "symbol": "ETH",
-  },
-  {
-    "chainId": 1,
-    "contractAddress": "0xusdc",
-    "decimals": 6,
-    "isMainnet": false,
-    "name": "usdc",
-    "symbol": "USDC",
-  },
-  {
-    "chainId": 1,
-    "contractAddress": "0xflip",
-    "decimals": 18,
-    "isMainnet": false,
-    "name": "flip",
-    "symbol": "FLIP",
-  },
-]
-`;
-
-exports[`ApiService getTokens gets the correct tokens for testnets (2) 1`] = `
-[
-  {
-    "chainId": 2,
-    "contractAddress": "0xdot",
-    "decimals": 10,
-    "isMainnet": false,
-    "name": "dot",
-    "symbol": "DOT",
-  },
-]
-`;
-
-exports[`ApiService getTokens gets the correct tokens for testnets (3) 1`] = `
-[
-  {
-    "chainId": 3,
-    "contractAddress": "0xbitcoin",
-    "decimals": 8,
-    "isMainnet": false,
     "name": "bitcoin",
     "symbol": "BTC",
   },

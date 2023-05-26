@@ -1,4 +1,5 @@
 import assert from 'assert';
+import { Signer } from 'ethers';
 import { BACKEND_SERVICE_URL, ChainId } from './consts';
 import ApiService, { RequestOptions } from './services/ApiService';
 import type {
@@ -11,37 +12,42 @@ import type {
   SwapStatusResponse,
   SwapRequest,
 } from './types';
+import { ExecuteSwapParams, executeSwap } from './vault';
+import { ChainflipNetwork } from '../enums';
 
 export { ChainId };
 export * from './types';
 
 export type SDKOptions = {
   backendServiceUrl?: string;
-  useTestnets?: boolean;
+  network?: ChainflipNetwork;
+  signer?: Signer;
 };
 
 export class SwapSDK {
   private readonly baseUrl: string;
 
-  private readonly useTestnets: boolean;
+  private readonly network: ChainflipNetwork;
+
+  private readonly signer?: Signer;
 
   constructor(options: SDKOptions = {}) {
     this.baseUrl = options.backendServiceUrl ?? BACKEND_SERVICE_URL;
-    this.useTestnets = options.useTestnets ?? true;
-    assert(process.env.NODE_ENV === 'test' || this.useTestnets);
+    this.network = options.network ?? 'sisyphos';
+    this.signer = options.signer;
   }
 
   getChains(): Promise<Chain[]>;
   getChains(chainId: ChainId): Promise<Chain[] | undefined>;
   getChains(chainId?: ChainId): Promise<Chain[] | undefined> {
     if (chainId !== undefined) {
-      return ApiService.getPossibleDestinationChains(chainId, this.useTestnets);
+      return ApiService.getPossibleDestinationChains(chainId, this.network);
     }
-    return ApiService.getChains(this.useTestnets);
+    return ApiService.getChains(this.network);
   }
 
   getTokens(chainId: ChainId): Promise<Token[] | undefined> {
-    return ApiService.getTokens(chainId, this.useTestnets);
+    return ApiService.getTokens(chainId, this.network);
   }
 
   getRoute(
@@ -63,5 +69,11 @@ export class SwapSDK {
     options: RequestOptions = {},
   ): Promise<SwapStatusResponse> {
     return ApiService.getStatus(this.baseUrl, swapStatusRequest, options);
+  }
+
+  executeSwap(params: ExecuteSwapParams, signer?: Signer) {
+    const s = signer ?? this.signer;
+    assert(s, 'No signer provided');
+    return executeSwap(params, this.network, s);
   }
 }

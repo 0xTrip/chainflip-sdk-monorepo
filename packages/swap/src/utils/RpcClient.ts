@@ -3,7 +3,7 @@ import { filter, firstValueFrom, Subject, timeout } from 'rxjs';
 import { setTimeout as sleep } from 'timers/promises';
 import WebSocket from 'ws';
 import { z } from 'zod';
-import { SupportedAsset } from '@/shared/assets';
+import { SupportedAsset } from '@/shared/enums';
 import { handleExit } from './function';
 import logger from './logger';
 

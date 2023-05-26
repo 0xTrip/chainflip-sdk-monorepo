@@ -1,5 +1,5 @@
 import express from 'express';
-import { supportedAsset } from '@/shared/assets';
+import { supportedAsset } from '@/shared/enums';
 
 const router = express.Router();
 

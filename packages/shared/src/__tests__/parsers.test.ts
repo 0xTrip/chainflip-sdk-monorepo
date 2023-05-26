@@ -1,4 +1,4 @@
-import { btcAddress, dotString, u128, unsignedInteger } from '../parsers';
+import { btcAddress, dotAddress, u128, unsignedInteger } from '../parsers';
 
 describe('btc parser', () => {
   it.each([
@@ -23,11 +23,11 @@ describe('btc parser', () => {
   });
 });
 
-describe('dotString', () => {
+describe('dotAddress', () => {
   it('validates dot address and transforms a dot address', async () => {
-    expect(dotString.parse('0x0')).toBe('F7Hs');
+    expect(dotAddress.parse('0x0')).toBe('F7Hs');
     expect(
-      dotString.parse(
+      dotAddress.parse(
         '0x9999999999999999999999999999999999999999999999999999999999999999',
       ),
     ).toBe('5FY6p4faNbTZeuEZat5QtPXhjUHvjopmqUCbQibdKpvyPbww');

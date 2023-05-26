@@ -1,4 +1,4 @@
-import { Network, SupportedAsset } from '@/shared/assets';
+import { Network, SupportedAsset } from '@/shared/enums';
 import { QuoteResponse } from '@/shared/schemas';
 import { ChainId, TokenSymbol } from '../consts';
 

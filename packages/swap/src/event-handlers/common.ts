@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SupportedAsset, Network, network } from '@/shared/assets';
+import { SupportedAsset, Network, network } from '@/shared/enums';
 import {
   btcAddress,
   dotAddress,

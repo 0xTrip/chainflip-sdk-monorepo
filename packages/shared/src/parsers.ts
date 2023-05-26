@@ -1,5 +1,6 @@
 import { hexToU8a } from '@polkadot/util';
-import { encodeAddress } from '@polkadot/util-crypto';
+import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
+import * as ethers from 'ethers';
 import { z, ZodErrorMap } from 'zod';
 import { isString } from './guards';
 
@@ -16,15 +17,25 @@ export const btcAddress = string
   .regex(/^(bc1|tb1|bcrt1|m)/)
   .or(string.regex(/^[13][a-km-zA-HJ-NP-Z1-9]{25,39}$/)); // not strict
 
-export const dotAddress = hexString
+export const dotAddress = z
+  .union([string, hexString])
   .transform((arg) => {
     try {
-      return encodeAddress(hexToU8a(arg));
+      if (arg.startsWith('0x')) {
+        return encodeAddress(hexToU8a(arg));
+      }
+      // this will throw if the address is invalid
+      decodeAddress(arg);
+      return arg;
     } catch {
       return null;
     }
   })
   .refine(isString);
+
+export const ethereumAddress = hexString.refine((address) =>
+  ethers.utils.isAddress(address),
+);
 
 export const u128 = z
   .union([numericString, hexString])

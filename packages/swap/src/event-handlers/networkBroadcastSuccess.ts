@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Network } from '@/shared/assets';
+import { Network } from '@/shared/enums';
 import { unsignedInteger } from '@/shared/parsers';
 import logger from '../utils/logger';
 import type { EventHandlerArgs } from './index';

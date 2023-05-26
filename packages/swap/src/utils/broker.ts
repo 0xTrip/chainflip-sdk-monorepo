@@ -1,7 +1,7 @@
 import { u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { z } from 'zod';
-import { supportedAsset, SupportedAsset } from '@/shared/assets';
+import { supportedAsset, SupportedAsset } from '@/shared/enums';
 import {
   hexString,
   numericString,

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { ChainflipNetwork } from '@/shared/enums';
 import type {
   QuoteQueryParams,
   QuoteResponse,
@@ -25,17 +26,20 @@ import {
   SwapStatusResponse,
   Token,
 } from '../types';
+import { isTestnet } from '../utils';
 
-const getChains = async (useTestnets: boolean): Promise<Chain[]> => {
-  if (useTestnets) return testnetChains([ethereum, polkadot, bitcoin]);
+const getChains = async (network: ChainflipNetwork): Promise<Chain[]> => {
+  if (isTestnet(network)) {
+    return testnetChains([ethereum, polkadot, bitcoin]);
+  }
   return [ethereum, polkadot, bitcoin];
 };
 
 const getPossibleDestinationChains = async (
   chainId: ChainId,
-  useTestnets: boolean,
+  network: ChainflipNetwork,
 ): Promise<Chain[]> => {
-  if (useTestnets) {
+  if (isTestnet(network)) {
     if (chainId === ChainId.Ethereum) return testnetChains([polkadot, bitcoin]);
     if (chainId === ChainId.Polkadot) return testnetChains([ethereum, bitcoin]);
     if (chainId === ChainId.Bitcoin) return testnetChains([ethereum, polkadot]);
@@ -50,9 +54,9 @@ const getPossibleDestinationChains = async (
 
 const getTokens = async (
   chainId: ChainId,
-  useTestnets: boolean,
+  network: ChainflipNetwork,
 ): Promise<Token[]> => {
-  if (useTestnets) {
+  if (isTestnet(network)) {
     if (chainId === ChainId.Ethereum) return testnetTokens(ethereumTokens);
     if (chainId === ChainId.Polkadot) return testnetTokens([dot$]);
     if (chainId === ChainId.Bitcoin) return testnetTokens([btc$]);

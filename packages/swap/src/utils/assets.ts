@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SupportedAsset, supportedAsset } from '@/shared/assets';
+import { SupportedAsset, supportedAsset } from '@/shared/enums';
 
 export const stateChainAsset = z
   .enum(['Usdc', 'Flip', 'Dot', 'Eth', 'Btc'])

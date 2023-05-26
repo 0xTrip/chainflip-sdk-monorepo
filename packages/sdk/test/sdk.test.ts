@@ -1,3 +1,4 @@
+import { VoidSigner } from 'ethers';
 import { ChainId } from '../src/swap/consts';
 import {
   bitcoin,
@@ -10,9 +11,12 @@ import {
   testnetTokens,
 } from '../src/swap/mocks';
 import { SwapSDK } from '../src/swap/sdk';
+import { executeSwap } from '../src/swap/vault';
+
+jest.mock('../src/swap/vault', () => ({ executeSwap: jest.fn() }));
 
 describe(SwapSDK, () => {
-  const sdk = new SwapSDK({ useTestnets: false });
+  const sdk = new SwapSDK({ network: 'mainnet' });
 
   describe(SwapSDK.prototype.getChains, () => {
     it('returns the available chains', async () => {
@@ -60,14 +64,10 @@ describe(SwapSDK, () => {
       await expect(sdk.getChains(NaN)).rejects.toThrow();
     });
   });
-
-  describe('routes', () => {
-    // implement
-  });
 });
 
 describe(SwapSDK, () => {
-  const sdk = new SwapSDK({ useTestnets: true });
+  const sdk = new SwapSDK({ network: 'sisyphos' });
 
   describe(SwapSDK.prototype.getChains, () => {
     it('returns the available chains', async () => {
@@ -114,7 +114,16 @@ describe(SwapSDK, () => {
     });
   });
 
-  describe('routes', () => {
-    // implement
+  describe(SwapSDK.prototype.executeSwap, () => {
+    it('throws when no signer is provided', () => {
+      expect(() => sdk.executeSwap({})).toThrow();
+    });
+
+    it('calls executeSwap', () => {
+      const signer = new VoidSigner('0x0');
+      const swap = {};
+      sdk.executeSwap(swap, signer);
+      expect(executeSwap).toHaveBeenCalledWith(swap, 'sisyphos', signer);
+    });
   });
 });

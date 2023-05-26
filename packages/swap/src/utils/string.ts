@@ -1,4 +1,4 @@
-import type { SupportedAsset } from '@/shared/assets';
+import type { SupportedAsset } from '@/shared/enums';
 import type { RpcAsset } from './RpcClient';
 
 export const transformAsset = (asset: SupportedAsset): RpcAsset =>
