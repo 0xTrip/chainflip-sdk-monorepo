@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { Signer } from 'ethers';
+import { ChainflipNetwork } from '@/shared/enums';
 import { BACKEND_SERVICE_URL, ChainId } from './consts';
 import ApiService, { RequestOptions } from './services/ApiService';
 import type {
@@ -13,7 +14,6 @@ import type {
   SwapRequest,
 } from './types';
 import { ExecuteSwapParams, executeSwap } from './vault';
-import { ChainflipNetwork } from '../enums';
 
 export { ChainId };
 export * from './types';
