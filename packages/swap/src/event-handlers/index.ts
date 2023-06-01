@@ -4,11 +4,11 @@ import networkBroadcastSuccess from './networkBroadcastSuccess';
 import networkEgressScheduled from './networkEgressScheduled';
 import swapEgressScheduled from './swapEgressScheduled';
 import swapExecuted from './swapExecuted';
-import swapScheduledByDeposit from './swapScheduledByDeposit';
+import swapScheduled from './swapScheduled';
 import type { Block, Event } from '../gql/generated/graphql';
 
 export enum Swapping {
-  SwapScheduledByDeposit = 'Swapping.SwapScheduledByDeposit',
+  SwapScheduled = 'Swapping.SwapScheduled',
   SwapExecuted = 'Swapping.SwapExecuted',
   SwapEgressScheduled = 'Swapping.SwapEgressScheduled',
 }
@@ -59,7 +59,7 @@ export const eventHandlers: Record<
   SwappingEventName,
   (args: EventHandlerArgs) => Promise<void>
 > = {
-  [Swapping.SwapScheduledByDeposit]: swapScheduledByDeposit,
+  [Swapping.SwapScheduled]: swapScheduled,
   [Swapping.SwapExecuted]: swapExecuted,
   [Swapping.SwapEgressScheduled]: swapEgressScheduled,
   [BitcoinIngressEgress.EgressScheduled]: networkEgressScheduled,

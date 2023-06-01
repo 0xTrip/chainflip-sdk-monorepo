@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import prisma from '../client';
-import type { SwapScheduledByDepositEvent } from '../event-handlers/swapScheduledByDeposit';
+import { swapScheduledDepositChannelMock } from '../event-handlers/__tests__/utils';
 import { GetBatchQuery } from '../gql/generated/graphql';
 import processBlocks from '../processBlocks';
 
@@ -9,8 +9,11 @@ describe(processBlocks, () => {
     await prisma.$queryRaw`TRUNCATE TABLE "SwapDepositChannel", "Swap", private."State" CASCADE`;
   });
 
-  it('dispatches a SwapScheduledByDeposit event', async () => {
-    const depositAddress = '0xcafebabe';
+  it('dispatches a SwapScheduled event', async () => {
+    const depositAddress =
+      swapScheduledDepositChannelMock.eventContext.event.args.origin.value
+        .depositAddress.value;
+
     await prisma.swapDepositChannel.create({
       data: {
         depositAddress,
@@ -32,20 +35,7 @@ describe(processBlocks, () => {
               height: 1,
               timestamp: 1681989543437,
               events: {
-                nodes: [
-                  {
-                    name: 'Swapping.SwapScheduledByDeposit',
-                    args: {
-                      depositAmount: '1000000000000000000',
-                      swapId: 1,
-                      depositAddress: {
-                        value: depositAddress,
-                        __kind: 'Eth',
-                      },
-                    } as SwapScheduledByDepositEvent,
-                    indexInBlock: 3,
-                  },
-                ],
+                nodes: [swapScheduledDepositChannelMock.eventContext.event],
               },
             },
           ],
@@ -68,13 +58,16 @@ describe(processBlocks, () => {
       `
       {
         "createdAt": Any<Date>,
-        "depositAmount": "1000000000000000000",
+        "depositAmount": "222222222222222222",
+        "depositAsset": "ETH",
         "depositReceivedAt": 2023-04-20T11:19:03.437Z,
-        "depositReceivedBlockIndex": "1-3",
+        "depositReceivedBlockIndex": "1-0",
+        "destinationAddress": "0xdeadbeef",
+        "destinationAsset": "USDC",
         "egressCompletedAt": null,
         "egressCompletedBlockIndex": null,
         "id": Any<BigInt>,
-        "nativeId": 1n,
+        "nativeId": 9876545n,
         "swapDepositChannelId": Any<BigInt>,
         "swapExecutedAt": null,
         "swapExecutedBlockIndex": null,

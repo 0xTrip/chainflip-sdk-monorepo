@@ -1,28 +1,10 @@
-import { swapEgressScheduledMock } from './utils';
-import prisma, { SwapDepositChannel } from '../../client';
+import {
+  DOT_ADDRESS,
+  createDepositChannel,
+  swapEgressScheduledMock,
+} from './utils';
+import prisma from '../../client';
 import swapEgressScheduled from '../swapEgressScheduled';
-
-const ETH_ADDRESS = '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2';
-const DOT_ADDRESS = '5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX';
-
-type SwapData = Parameters<
-  (typeof prisma)['swapDepositChannel']['create']
->[0]['data'];
-const createSwapRequest = (
-  data: Partial<SwapData> = {},
-): Promise<SwapDepositChannel> =>
-  prisma.swapDepositChannel.create({
-    data: {
-      depositAsset: 'ETH',
-      destinationAsset: 'DOT',
-      depositAddress: ETH_ADDRESS,
-      destinationAddress: DOT_ADDRESS,
-      expectedDepositAmount: '10000000000',
-      expiryBlock: 200,
-      issuedBlock: 100,
-      ...data,
-    },
-  });
 
 const {
   eventContext: { event },
@@ -47,7 +29,7 @@ describe(swapEgressScheduled, () => {
     });
 
     // store a new swap intent to initiate a new swap
-    const swapDepositChannel = await createSwapRequest({
+    const swapDepositChannel = await createDepositChannel({
       swaps: {
         create: {
           nativeId: BigInt(swapId),
@@ -58,6 +40,9 @@ describe(swapEgressScheduled, () => {
           }`,
           swapExecutedAt: new Date(block.timestamp - 6000),
           swapExecutedBlockIndex: `${block.height}-${event.indexInBlock}`,
+          depositAsset: 'ETH',
+          destinationAsset: 'DOT',
+          destinationAddress: DOT_ADDRESS,
         },
       },
     });

@@ -1,9 +1,4 @@
-import { z } from 'zod';
 import { SupportedAsset, supportedAsset } from '@/shared/enums';
-
-export const stateChainAsset = z
-  .enum(['Usdc', 'Flip', 'Dot', 'Eth', 'Btc'])
-  .transform((val) => val.toUpperCase() as SupportedAsset);
 
 export const isSupportedAsset = (value: string): value is SupportedAsset =>
   supportedAsset.safeParse(value).success;

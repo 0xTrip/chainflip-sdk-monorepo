@@ -35,12 +35,12 @@ const btcChainAddress = z.object({
     .pipe(btcAddress),
 });
 
-export const chainAddress = z
+export const encodedAddress = z
   .union([ethChainAddress, dotChainAddress, btcChainAddress])
   .transform(
     ({ __kind, value }) =>
       ({
-        chain: __kind.toUpperCase(),
+        chain: __kind.toUpperCase() as Uppercase<typeof __kind>,
         address: value,
       } as const),
   );

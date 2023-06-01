@@ -35,21 +35,24 @@ model SwapDepositChannel {
 }
 
 model Swap {
-  id                        BigInt             @id @default(autoincrement())
+  id                        BigInt              @id @default(autoincrement())
   /// the swap id on the state chain
-  nativeId                  BigInt             @unique
-  depositAmount             Decimal            @db.Decimal(30, 0)
+  nativeId                  BigInt              @unique
+  depositAsset              String
+  depositAmount             Decimal             @db.Decimal(30, 0)
+  destinationAsset          String
+  destinationAddress        String
   depositReceivedAt         DateTime
   depositReceivedBlockIndex String
   swapExecutedAt            DateTime?
   swapExecutedBlockIndex    String?
   egressCompletedAt         DateTime?
   egressCompletedBlockIndex String?
-  swapDepositChannel        SwapDepositChannel @relation(fields: [swapDepositChannelId], references: [id])
-  swapDepositChannelId      BigInt
+  swapDepositChannel        SwapDepositChannel? @relation(fields: [swapDepositChannelId], references: [id])
+  swapDepositChannelId      BigInt?
   egress                    Egress?
-  createdAt                 DateTime           @default(now())
-  updatedAt                 DateTime           @default(now()) @updatedAt
+  createdAt                 DateTime            @default(now())
+  updatedAt                 DateTime            @default(now()) @updatedAt
 
   @@schema("public")
 }

@@ -2,6 +2,7 @@ import { hexToU8a } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import * as ethers from 'ethers';
 import { z, ZodErrorMap } from 'zod';
+import type { SupportedAsset } from './enums';
 import { isString } from './guards';
 
 const errorMap: ZodErrorMap = (issue, context) => ({
@@ -45,3 +46,11 @@ export const unsignedInteger = z.union([
   u128,
   z.number().transform((n) => BigInt(n)),
 ]);
+
+export const stateChainAsset = z
+  .enum(['Usdc', 'Flip', 'Dot', 'Eth', 'Btc'])
+  .transform((val) => val.toUpperCase() as SupportedAsset);
+
+export const stateChainAssetEnum = z
+  .object({ __kind: stateChainAsset })
+  .transform(({ __kind }) => __kind);

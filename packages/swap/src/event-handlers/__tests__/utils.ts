@@ -1,9 +1,35 @@
+import prisma, { SwapDepositChannel } from '../../client';
 import { Swapping } from '../index';
+import { SwapScheduledEvent } from '../swapScheduled';
 
-export const swapScheduledByDepositMock = {
+export const ETH_ADDRESS = '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2';
+export const ETH_ADDRESS_2 = '0x6AA69332b63BB5B1d7CA5355387edd5624e181f3';
+export const DOT_ADDRESS = '5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX';
+
+type SwapChannelData = Parameters<
+  (typeof prisma)['swapDepositChannel']['create']
+>[0]['data'];
+
+export const createDepositChannel = (
+  data: Partial<SwapChannelData> = {},
+): Promise<SwapDepositChannel> =>
+  prisma.swapDepositChannel.create({
+    data: {
+      depositAsset: 'ETH',
+      destinationAsset: 'DOT',
+      depositAddress: ETH_ADDRESS,
+      destinationAddress: DOT_ADDRESS,
+      expectedDepositAmount: '10000000000',
+      expiryBlock: 200,
+      issuedBlock: 100,
+      ...data,
+    },
+  });
+
+const buildSwapScheduledEvent = <T extends SwapScheduledEvent>(args: T) => ({
   block: {
-    height: 10,
     timestamp: 1670337093000,
+    height: 100,
   },
   eventContext: {
     kind: 'event',
@@ -14,17 +40,12 @@ export const swapScheduledByDepositMock = {
           weight: '101978000',
           paysFee: [null],
         },
-        depositAddress: {
-          __kind: 'Eth',
-          value: '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2',
-        },
-        swapId: '9876545',
-        depositAmount: '222222222222222222',
+        ...args,
       },
       id: '0000012799-000000-c1ea7',
       indexInBlock: 0,
       nodeId: 'WyJldmVudHMiLCIwMDAwMDEyNzk5LTAwMDAwMC1jMWVhNyJd',
-      name: Swapping.SwapScheduledByDeposit,
+      name: Swapping.SwapScheduled,
       phase: 'ApplyExtrinsic',
       pos: 2,
       extrinsic: {
@@ -49,7 +70,37 @@ export const swapScheduledByDepositMock = {
       },
     },
   },
-};
+});
+
+export const swapScheduledDepositChannelMock = buildSwapScheduledEvent({
+  depositAsset: 'Eth',
+  destinationAsset: 'Flip',
+  swapId: '9876545',
+  depositAmount: '222222222222222222',
+  destinationAddress: {
+    __kind: 'Eth',
+    value: ETH_ADDRESS_2,
+  },
+  origin: {
+    __kind: 'DepositChannel',
+    value: { depositAddress: { __kind: 'Eth', value: ETH_ADDRESS } },
+  },
+} as const);
+
+export const swapScheduledVaultMock = buildSwapScheduledEvent({
+  depositAsset: 'Eth',
+  destinationAsset: 'Flip',
+  swapId: '9876545',
+  depositAmount: '222222222222222222',
+  destinationAddress: { __kind: 'Eth', value: ETH_ADDRESS },
+  origin: {
+    __kind: 'Vault',
+    value: {
+      txHash:
+        '0x414833b2fc5d31e2b967d2badd3fe658e5badc2b36543d579de00aed17ccc230',
+    },
+  },
+} as const);
 
 export const swapExecutedMock = {
   block: {

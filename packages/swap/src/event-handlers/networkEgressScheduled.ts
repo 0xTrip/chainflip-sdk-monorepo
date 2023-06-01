@@ -1,15 +1,12 @@
 import { z } from 'zod';
-import { unsignedInteger } from '@/shared/parsers';
+import { unsignedInteger, stateChainAssetEnum } from '@/shared/parsers';
 import { assetToNetwork, egressId } from './common';
-import { stateChainAsset } from '../utils/assets';
 import logger from '../utils/logger';
 import type { EventHandlerArgs } from '.';
 
 const eventArgs = z.object({
   id: egressId,
-  asset: z
-    .object({ __kind: stateChainAsset })
-    .transform(({ __kind }) => __kind),
+  asset: stateChainAssetEnum,
   amount: unsignedInteger,
 });
 
