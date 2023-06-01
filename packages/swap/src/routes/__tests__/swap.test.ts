@@ -30,6 +30,7 @@ const ETH_ADDRESS = '0x6Aa69332B63bB5b1d7Ca5355387EDd5624e181F2';
 const HEX_DOT_ADDRESS = '0xca';
 const DOT_ADDRESS = '5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX';
 const RECEIVED_TIMESTAMP = 1669907135201;
+const RECEIVED_BLOCK_INDEX = `100-3`;
 
 type SwapData = Parameters<
   (typeof prisma)['swapDepositChannel']['create']
@@ -98,6 +99,7 @@ describe('server', () => {
             depositAmount: '10',
             depositReceivedAt: new Date(RECEIVED_TIMESTAMP),
             nativeId: randomId(),
+            depositReceivedBlockIndex: RECEIVED_BLOCK_INDEX,
           },
         },
       });
@@ -113,10 +115,13 @@ describe('server', () => {
           "depositAmount": "10",
           "depositAsset": "ETH",
           "depositReceivedAt": 1669907135201,
+          "depositReceivedBlockIndex": "100-3",
           "destinationAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
           "destinationAsset": "DOT",
+          "egressCompletedBlockIndex": null,
           "expectedDepositAmount": "1000000000",
           "state": "DEPOSIT_RECEIVED",
+          "swapExecutedBlockIndex": null,
         }
       `);
     });
@@ -127,8 +132,10 @@ describe('server', () => {
           create: {
             nativeId: randomId(),
             depositReceivedAt: new Date(RECEIVED_TIMESTAMP),
+            depositReceivedBlockIndex: RECEIVED_BLOCK_INDEX,
             depositAmount: '10',
             swapExecutedAt: new Date(RECEIVED_TIMESTAMP + 6000),
+            swapExecutedBlockIndex: `200-3`,
           },
         },
       });
@@ -144,11 +151,14 @@ describe('server', () => {
           "depositAmount": "10",
           "depositAsset": "ETH",
           "depositReceivedAt": 1669907135201,
+          "depositReceivedBlockIndex": "100-3",
           "destinationAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
           "destinationAsset": "DOT",
+          "egressCompletedBlockIndex": null,
           "expectedDepositAmount": "1000000000",
           "state": "SWAP_EXECUTED",
           "swapExecutedAt": 1669907141201,
+          "swapExecutedBlockIndex": "200-3",
         }
       `);
     });
@@ -159,8 +169,10 @@ describe('server', () => {
           create: {
             nativeId: randomId(),
             depositReceivedAt: new Date(RECEIVED_TIMESTAMP),
+            depositReceivedBlockIndex: RECEIVED_BLOCK_INDEX,
             depositAmount: '10',
             swapExecutedAt: new Date(RECEIVED_TIMESTAMP + 6000),
+            swapExecutedBlockIndex: `200-3`,
             egress: {
               create: {
                 timestamp: new Date(RECEIVED_TIMESTAMP + 12000),
@@ -184,13 +196,16 @@ describe('server', () => {
           "depositAmount": "10",
           "depositAsset": "ETH",
           "depositReceivedAt": 1669907135201,
+          "depositReceivedBlockIndex": "100-3",
           "destinationAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
           "destinationAsset": "DOT",
           "egressAmount": "1000000000000000000",
+          "egressCompletedBlockIndex": null,
           "egressScheduledAt": 1669907147201,
           "expectedDepositAmount": "1000000000",
           "state": "EGRESS_SCHEDULED",
           "swapExecutedAt": 1669907141201,
+          "swapExecutedBlockIndex": "200-3",
         }
       `);
     });
@@ -201,9 +216,12 @@ describe('server', () => {
           create: {
             nativeId: randomId(),
             depositReceivedAt: new Date(RECEIVED_TIMESTAMP),
+            depositReceivedBlockIndex: RECEIVED_BLOCK_INDEX,
             depositAmount: '10',
             swapExecutedAt: new Date(RECEIVED_TIMESTAMP + 6000),
+            swapExecutedBlockIndex: `200-3`,
             egressCompletedAt: new Date(RECEIVED_TIMESTAMP + 18000),
+            egressCompletedBlockIndex: RECEIVED_BLOCK_INDEX + 200,
             egress: {
               create: {
                 timestamp: new Date(RECEIVED_TIMESTAMP + 12000),
@@ -227,14 +245,17 @@ describe('server', () => {
           "depositAmount": "10",
           "depositAsset": "ETH",
           "depositReceivedAt": 1669907135201,
+          "depositReceivedBlockIndex": "100-3",
           "destinationAddress": "5F3sa2TJAWMqDhXG6jhV4N8ko9SxwGy8TpaNS1repo5EYjQX",
           "destinationAsset": "DOT",
           "egressAmount": "1000000000000000000",
           "egressCompletedAt": 1669907153201,
+          "egressCompletedBlockIndex": "100-3200",
           "egressScheduledAt": 1669907147201,
           "expectedDepositAmount": "1000000000",
           "state": "COMPLETE",
           "swapExecutedAt": 1669907141201,
+          "swapExecutedBlockIndex": "200-3",
         }
       `);
     });

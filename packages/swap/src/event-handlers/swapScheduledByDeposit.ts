@@ -49,6 +49,7 @@ export default async function swapScheduledByDeposit({
         depositAmount: depositAmount.toString(),
         nativeId: swapId,
         depositReceivedAt: new Date(block.timestamp),
+        depositReceivedBlockIndex: `${block.height}-${event.indexInBlock}`,
         swapDepositChannelId: swapRequests[0].id,
       },
     });

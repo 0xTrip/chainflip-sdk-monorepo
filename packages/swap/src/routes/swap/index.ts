@@ -55,18 +55,21 @@ router.get(
 
     const response = {
       state,
-      egressCompletedAt: swap?.egressCompletedAt?.valueOf(),
-      egressAmount: swap?.egress?.amount?.toString(),
-      depositAmount: swap?.depositAmount?.toString(),
-      egressScheduledAt: swap?.egress?.timestamp.valueOf(),
-      swapExecutedAt: swap?.swapExecutedAt?.valueOf(),
-      depositReceivedAt: swap?.depositReceivedAt.valueOf(),
       depositAddress: swapDepositChannel.depositAddress,
+      depositAmount: swap?.depositAmount?.toString(),
+      depositAsset: swapDepositChannel.depositAsset,
+      depositReceivedAt: swap?.depositReceivedAt.valueOf(),
+      depositReceivedBlockIndex: swap?.depositReceivedBlockIndex,
+      destinationAddress: swapDepositChannel.destinationAddress,
+      destinationAsset: swapDepositChannel.destinationAsset,
+      egressAmount: swap?.egress?.amount?.toString(),
+      egressCompletedAt: swap?.egressCompletedAt?.valueOf(),
+      egressCompletedBlockIndex: swap?.egressCompletedBlockIndex,
+      egressScheduledAt: swap?.egress?.timestamp.valueOf(),
       expectedDepositAmount:
         swapDepositChannel.expectedDepositAmount.toString(),
-      destinationAddress: swapDepositChannel.destinationAddress,
-      depositAsset: swapDepositChannel.depositAsset,
-      destinationAsset: swapDepositChannel.destinationAsset,
+      swapExecutedAt: swap?.swapExecutedAt?.valueOf(),
+      swapExecutedBlockIndex: swap?.swapExecutedBlockIndex,
     };
 
     logger.info('sending response for swap request', { uuid, response });

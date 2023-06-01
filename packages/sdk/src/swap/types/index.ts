@@ -70,12 +70,15 @@ export type SwapStatusResponse = CommonStatusFields &
         state: 'DEPOSIT_RECEIVED';
         depositAmount: string;
         depositReceivedAt: number;
+        depositReceivedBlockIndex: string;
       }
     | {
         state: 'SWAP_EXECUTED';
         depositAmount: string;
         depositReceivedAt: number;
+        depositReceivedBlockIndex: string;
         swapExecutedAt: number;
+        swapExecutedBlockIndex: string;
       }
     | {
         state: 'EGRESS_SCHEDULED';
@@ -83,15 +86,20 @@ export type SwapStatusResponse = CommonStatusFields &
         egressScheduledAt: number;
         depositAmount: string;
         depositReceivedAt: number;
+        depositReceivedBlockIndex: string;
         swapExecutedAt: number;
+        swapExecutedBlockIndex: string;
       }
     | {
         state: 'COMPLETE';
         egressAmount: string;
         egressCompletedAt: number;
+        egressCompletedBlockIndex: string;
         egressScheduledAt: number;
         depositAmount: string;
         depositReceivedAt: number;
+        depositReceivedBlockIndex: string;
         swapExecutedAt: number;
+        swapExecutedBlockIndex: string;
       }
   );

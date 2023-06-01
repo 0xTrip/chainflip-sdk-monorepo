@@ -28,7 +28,6 @@ export async function handleEvent(
       );
       return;
     }
-
     await prisma.swap.updateMany({
       where: {
         id: {
@@ -38,7 +37,10 @@ export async function handleEvent(
           }, [] as bigint[]),
         },
       },
-      data: { egressCompletedAt: new Date(block.timestamp) },
+      data: {
+        egressCompletedAt: new Date(block.timestamp),
+        egressCompletedBlockIndex: `${block.height}-${event.indexInBlock}`,
+      },
     });
   } catch (error) {
     logger.customError(

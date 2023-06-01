@@ -15,7 +15,10 @@ export default async function swapExecuted({
 
     await prisma.swap.updateMany({
       where: { nativeId: swapId },
-      data: { swapExecutedAt: new Date(block.timestamp) },
+      data: {
+        swapExecutedAt: new Date(block.timestamp),
+        swapExecutedBlockIndex: `${block.height}-${event.indexInBlock}`,
+      },
     });
   } catch (error) {
     logger.customError(

@@ -53,7 +53,11 @@ describe(swapEgressScheduled, () => {
           nativeId: BigInt(swapId),
           depositAmount: '10000000000',
           depositReceivedAt: new Date(block.timestamp - 12000),
+          depositReceivedBlockIndex: `${block.height - 100}-${
+            event.indexInBlock
+          }`,
           swapExecutedAt: new Date(block.timestamp - 6000),
+          swapExecutedBlockIndex: `${block.height}-${event.indexInBlock}`,
         },
       },
     });

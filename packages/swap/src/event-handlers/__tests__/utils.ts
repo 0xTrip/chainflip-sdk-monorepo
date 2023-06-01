@@ -2,6 +2,7 @@ import { Swapping } from '../index';
 
 export const swapScheduledByDepositMock = {
   block: {
+    height: 10,
     timestamp: 1670337093000,
   },
   eventContext: {
@@ -52,6 +53,7 @@ export const swapScheduledByDepositMock = {
 
 export const swapExecutedMock = {
   block: {
+    height: 100,
     timestamp: 1670337099000,
   },
   eventContext: {
@@ -97,6 +99,7 @@ export const swapExecutedMock = {
 
 export const swapEgressScheduledMock = {
   block: {
+    height: 120,
     timestamp: 1670337105000,
   },
   eventContext: {

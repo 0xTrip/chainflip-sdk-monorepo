@@ -44,6 +44,7 @@ describe(swapExecuted, () => {
           nativeId: BigInt(swapId),
           depositAmount: '10000000000',
           depositReceivedAt: new Date(block.timestamp - 6000),
+          depositReceivedBlockIndex: `${block.height}-${event.indexInBlock}`,
         },
       },
     });

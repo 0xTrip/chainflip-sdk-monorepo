@@ -14,6 +14,7 @@ export const GET_BATCH = gql(/* GraphQL */ `
           nodes {
             args
             name
+            indexInBlock
           }
         }
       }

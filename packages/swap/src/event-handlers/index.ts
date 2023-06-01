@@ -51,7 +51,7 @@ export type SwappingEventName =
 
 export type EventHandlerArgs = {
   prisma: Prisma.TransactionClient;
-  event: Pick<Event, 'args' | 'name'>;
+  event: Pick<Event, 'args' | 'name' | 'indexInBlock'>;
   block: Pick<Block, 'height' | 'timestamp'>;
 };
 
