@@ -36,7 +36,6 @@
     "start": "node ./dist/cjs/swap/index.js",
     "dev": "tsc-watch --noClear --compiler ./node_modules/typescript/bin/tsc --onFirstSuccess \"nodemon\"",
     "lint": "pnpm eslint --max-warnings 0 './**/*.ts'",
-    "postinstall": "pnpm run build:abis",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
