@@ -29,16 +29,17 @@ const quote = (io: Server) => {
         throw ServiceError.badRequest('invalid request');
       }
 
-      const quoteRequest = buildQuoteRequest(result.data);
+      // const quoteRequest = buildQuoteRequest(result.data);
 
-      io.emit('quote_request', quoteRequest);
+      // io.emit('quote_request', quoteRequest);
 
-      const [marketMakerQuotes, brokerQuote] = await Promise.all([
-        collectQuotes(quoteRequest.id, io.sockets.sockets.size, quotes$),
-        getBrokerQuote(result.data, quoteRequest.id),
-      ]);
+      // const [marketMakerQuotes, brokerQuote] = await Promise.all([
+      //   collectQuotes(quoteRequest.id, io.sockets.sockets.size, quotes$),
+      //   getBrokerQuote(result.data, quoteRequest.id),
+      // ]);
 
-      res.json(findBestQuote(marketMakerQuotes, brokerQuote));
+      // res.json(findBestQuote(marketMakerQuotes, brokerQuote));
+      res.json(findBestQuote([], { id: 'test', egressAmount: '10000000' }));
     }),
   );
 
