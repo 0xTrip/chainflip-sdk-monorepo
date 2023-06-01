@@ -1,6 +1,6 @@
-import { DOT_ADDRESS, createDepositChannel, swapExecutedMock } from './utils';
 import prisma from '../../client';
 import swapExecuted from '../swapExecuted';
+import { DOT_ADDRESS, createDepositChannel, swapExecutedMock } from './utils';
 
 const {
   eventContext: { event },

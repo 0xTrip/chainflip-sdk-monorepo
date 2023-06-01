@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { unsignedInteger, stateChainAssetEnum } from '@/shared/parsers';
-import { assetToNetwork, egressId } from './common';
 import logger from '../utils/logger';
+import { assetToNetwork, egressId } from './common';
 import type { EventHandlerArgs } from '.';
 
 const eventArgs = z.object({

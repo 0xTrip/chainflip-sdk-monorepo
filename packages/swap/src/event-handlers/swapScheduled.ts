@@ -2,8 +2,8 @@
 import assert from 'assert';
 import { z } from 'zod';
 import { stateChainAsset, unsignedInteger } from '@/shared/parsers';
-import { encodedAddress } from './common';
 import logger from '../utils/logger';
+import { encodedAddress } from './common';
 import type { EventHandlerArgs } from '.';
 
 const baseArgs = z.object({

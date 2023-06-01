@@ -1,10 +1,10 @@
+import prisma, { SwapDepositChannel } from '../../client';
+import swapScheduled from '../swapScheduled';
 import {
   createDepositChannel,
   swapScheduledDepositChannelMock,
   swapScheduledVaultMock,
 } from './utils';
-import prisma, { SwapDepositChannel } from '../../client';
-import swapScheduled from '../swapScheduled';
 
 describe(swapScheduled, () => {
   beforeEach(async () => {

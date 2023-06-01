@@ -1,10 +1,10 @@
+import prisma from '../../client';
+import swapEgressScheduled from '../swapEgressScheduled';
 import {
   DOT_ADDRESS,
   createDepositChannel,
   swapEgressScheduledMock,
 } from './utils';
-import prisma from '../../client';
-import swapEgressScheduled from '../swapEgressScheduled';
 
 const {
   eventContext: { event },

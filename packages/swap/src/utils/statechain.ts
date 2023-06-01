@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { SupportedAsset, supportedAsset } from '@/shared/enums';
 import { numericString } from '@/shared/parsers';
+import { QuoteResponse, QuoteQueryParams } from '../schemas';
 import { memoize } from './function';
 import RpcClient from './RpcClient';
 import { transformAsset } from './string';
-import { QuoteResponse, QuoteQueryParams } from '../schemas';
 
 const requestValidators = {
   swap_rate: z.tuple([

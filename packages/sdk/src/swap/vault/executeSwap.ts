@@ -11,18 +11,18 @@ import {
   chainflipNetwork,
 } from '@/shared/enums';
 import {
-  ExecuteSwapParams,
-  NativeSwapParams,
-  TokenSwapParams,
-  executeSwapParamsSchema,
-} from './validators';
-import {
   Vault,
   Vault__factory,
   ERC20__factory,
 } from '../../../types/ethers-contracts';
 import { ChainId } from '../sdk';
 import { isTestnet } from '../utils';
+import {
+  ExecuteSwapParams,
+  NativeSwapParams,
+  TokenSwapParams,
+  executeSwapParamsSchema,
+} from './validators';
 
 // !!!!! IMPORTANT !!!!!
 // Do not change these indices.

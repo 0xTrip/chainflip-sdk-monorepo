@@ -1,11 +1,11 @@
 import type { Prisma } from '.prisma/client';
+import type { Block, Event } from '../gql/generated/graphql';
 import networkBatchBroadcastRequested from './networkBatchBroadcastRequested';
 import networkBroadcastSuccess from './networkBroadcastSuccess';
 import networkEgressScheduled from './networkEgressScheduled';
 import swapEgressScheduled from './swapEgressScheduled';
 import swapExecuted from './swapExecuted';
 import swapScheduled from './swapScheduled';
-import type { Block, Event } from '../gql/generated/graphql';
 
 export enum Swapping {
   SwapScheduled = 'Swapping.SwapScheduled',
