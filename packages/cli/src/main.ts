@@ -18,7 +18,7 @@ const args = yargs(process.argv.slice(2))
         describe: 'The token to swap to',
       })
       .option('chainflip-network', {
-        choices: Object.values(chainflipNetwork.enum),
+        choices: [...Object.values(chainflipNetwork.enum), 'localnet'],
         describe: 'The Chainflip network to execute the swap on',
         default: 'sisyphos',
       })
@@ -38,11 +38,13 @@ const args = yargs(process.argv.slice(2))
       })
       .option('src-token-contract-address', {
         type: 'string',
-        describe: 'The contract address of the token to swap from',
+        describe:
+          'The contract address of the token to swap from when `chainflip-network` is `localnet`',
       })
       .option('vault-contract-address', {
         type: 'string',
-        describe: 'The contract address of the vault',
+        describe:
+          'The contract address of the vault when `chainflip-network` is `localnet`',
       });
   })
   .help()
