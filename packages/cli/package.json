@@ -5,7 +5,7 @@
   "main": "./dist/lib.js",
   "types": "./dist/lib.d.ts",
   "bin": {
-    "chainflip": "./dist/lib.js"
+    "chainflip": "./dist/cli.js"
   },
   "exports": {
     ".": {
