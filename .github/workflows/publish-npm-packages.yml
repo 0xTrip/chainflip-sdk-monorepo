@@ -7,14 +7,14 @@ on:
       - main
     paths:
       - packages/sdk/**
+      - packages/cli/**
 
 permissions:
   packages: write
   contents: read
 
 env:
-  PACKAGE: "@chainflip-io/chainflip-sdk"
-  PUBLISH: "false"
+  PACKAGE: "none"
 
 jobs:
   publish-gpr:
@@ -28,19 +28,24 @@ jobs:
         run: |
           if [[ "${{ github.event.head_commit.message }}" =~ ^@chainflip-io/chainflip-sdk/v[0-9]+\.[0-9]+\.[0-9]+$ ]]
           then
-            echo "PUBLISH=true" >> $GITHUB_ENV
+            echo "PACKAGE=@chainflip-io/chainflip-sdk" >> $GITHUB_ENV
           fi
 
-      - name: Get Node.JS version from package.json 👀
-        if: ${{ env.PUBLISH == 'true' }}
+          if [[ "${{ github.event.head_commit.message }}" =~ ^@chainflip-io/cli/v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          then
+            echo "PACKAGE=@chainflip-io/cli" >> $GITHUB_ENV
+          fi
+
+      - name: Get Node.JS version from .nvmrc
+        if: ${{ env.PACKAGE != 'none' }}
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
 
       - name: Install pnpm 💿
-        if: ${{ env.PUBLISH == 'true' }}
+        if: ${{ env.PACKAGE != 'none' }}
         run: npm install -g pnpm@8
 
       - name: Setup Node 🎮
-        if: ${{ env.PUBLISH == 'true' }}
+        if: ${{ env.PACKAGE != 'none' }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -49,16 +54,16 @@ jobs:
           scope: "@chainflip-io"
 
       - name: Install dependencies 🚚 📦
-        if: ${{ env.PUBLISH == 'true' }}
+        if: ${{ env.PACKAGE != 'none' }}
         run: pnpm install
 
       - name: Build
-        if: ${{ env.PUBLISH == 'true' }}
+        if: ${{ env.PACKAGE != 'none' }}
         run: pnpm --filter $PACKAGE build
         working-directory: ./
 
       - name: Publish npm package 📦
-        if: ${{ env.PUBLISH == 'true' }}
+        if: ${{ env.PACKAGE != 'none' }}
         run: |
           pnpm --filter $PACKAGE publish
         working-directory: ./

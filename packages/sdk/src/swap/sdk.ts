@@ -74,6 +74,6 @@ export class SwapSDK {
   executeSwap(params: ExecuteSwapParams, signer?: Signer) {
     const s = signer ?? this.signer;
     assert(s, 'No signer provided');
-    return executeSwap(params, this.network, s);
+    return executeSwap(params, { cfNetwork: this.network, signer: s });
   }
 }

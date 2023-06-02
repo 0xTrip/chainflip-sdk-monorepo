@@ -46,9 +46,12 @@ jest.mock(
 describe(executeSwap, () => {
   it.each(['perseverance', 'mainnet'] as const)(
     'only works on sisyphos for now',
-    async (network) => {
+    async (cfNetwork) => {
       await expect(
-        executeSwap({} as any, network, new VoidSigner('MY ADDRESS')),
+        executeSwap({} as any, {
+          cfNetwork,
+          signer: new VoidSigner('MY ADDRESS'),
+        }),
       ).rejects.toThrowError();
     },
   );
@@ -85,11 +88,10 @@ describe(executeSwap, () => {
         .mockResolvedValue({ wait });
 
       expect(
-        await executeSwap(
-          { amount: '1', ...params } as ExecuteSwapParams,
-          'sisyphos',
-          new VoidSigner('MY ADDRESS'),
-        ),
+        await executeSwap({ amount: '1', ...params } as ExecuteSwapParams, {
+          cfNetwork: 'sisyphos',
+          signer: new VoidSigner('MY ADDRESS'),
+        }),
       ).toBe('hello world');
       expect(wait).toHaveBeenCalledWith(1);
       expect(swapSpy.mock.calls).toMatchSnapshot();
@@ -108,8 +110,7 @@ describe(executeSwap, () => {
           destAddress: DOT_ADDRESS,
           amount: '1',
         },
-        'sisyphos',
-        new VoidSigner('MY ADDRESS'),
+        { cfNetwork: 'sisyphos', signer: new VoidSigner('MY ADDRESS') },
       ),
     ).rejects.toThrowError();
   });
@@ -150,11 +151,10 @@ describe(executeSwap, () => {
       const allowanceSpy = jest.spyOn(MockERC20.prototype, 'allowance');
 
       expect(
-        await executeSwap(
-          { amount: '1', ...params } as ExecuteSwapParams,
-          'sisyphos',
-          new VoidSigner('MY ADDRESS'),
-        ),
+        await executeSwap({ amount: '1', ...params } as ExecuteSwapParams, {
+          cfNetwork: 'sisyphos',
+          signer: new VoidSigner('MY ADDRESS'),
+        }),
       ).toBe('hello world');
       expect(wait).toHaveBeenCalledWith(1);
       expect(swapSpy.mock.calls).toMatchSnapshot();
@@ -186,8 +186,7 @@ describe(executeSwap, () => {
           srcTokenSymbol: 'FLIP',
           amount: '1',
         } as ExecuteSwapParams,
-        'sisyphos',
-        new VoidSigner('MY ADDRESS'),
+        { cfNetwork: 'sisyphos', signer: new VoidSigner('MY ADDRESS') },
       ),
     ).toBe('hello world');
     expect(wait).toHaveBeenCalledWith(1);
@@ -212,8 +211,7 @@ describe(executeSwap, () => {
           srcTokenSymbol: 'FLIP',
           amount: '1',
         },
-        'sisyphos',
-        new VoidSigner('MY ADDRESS'),
+        { cfNetwork: 'sisyphos', signer: new VoidSigner('MY ADDRESS') },
       ),
     ).rejects.toThrowError();
   });
@@ -232,9 +230,45 @@ describe(executeSwap, () => {
           srcTokenSymbol: 'FLIP',
           amount: '1',
         },
-        'sisyphos',
-        new VoidSigner('MY ADDRESS'),
+        { cfNetwork: 'sisyphos', signer: new VoidSigner('MY ADDRESS') },
       ),
     ).rejects.toThrowError();
+  });
+
+  it('can be invoked with localnet options', async () => {
+    const wait = jest
+      .fn()
+      .mockResolvedValue({ status: 1, transactionHash: 'hello world' });
+    const approveSpy = jest
+      .spyOn(MockERC20.prototype, 'approve')
+      .mockResolvedValue({ wait });
+    const swapSpy = jest
+      .spyOn(MockVault.prototype, 'xSwapToken')
+      .mockResolvedValue({ wait });
+    const allowanceSpy = jest
+      .spyOn(MockERC20.prototype, 'allowance')
+      .mockResolvedValueOnce(BigNumber.from(0));
+
+    expect(
+      await executeSwap(
+        {
+          destTokenSymbol: 'BTC',
+          destChainId: ChainId.Bitcoin,
+          destAddress: BTC_ADDRESS,
+          srcTokenSymbol: 'FLIP',
+          amount: '1',
+        } as ExecuteSwapParams,
+        {
+          cfNetwork: 'localnet',
+          signer: new VoidSigner('MY ADDRESS'),
+          vaultContractAddress: '0x123',
+          srcTokenContractAddress: '0x456',
+        },
+      ),
+    ).toBe('hello world');
+    expect(wait).toHaveBeenCalledWith(1);
+    expect(swapSpy.mock.calls).toMatchSnapshot();
+    expect(allowanceSpy.mock.calls).toMatchSnapshot();
+    expect(approveSpy.mock.calls).toMatchSnapshot();
   });
 });

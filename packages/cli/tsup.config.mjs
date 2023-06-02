@@ -5,10 +5,10 @@ export default defineConfig({
   treeshake: true,
   minify: false,
   dts: true,
-  external: [/^node:/],
   format: ['cjs', 'esm'],
   entry: {
-    swap: 'src/swap/index.ts',
-    types: 'src/swap/types/index.ts',
+    lib: 'src/lib/index.ts',
+    cli: 'src/main.ts',
   },
+  splitting: true,
 });

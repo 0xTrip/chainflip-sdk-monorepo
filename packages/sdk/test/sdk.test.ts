@@ -123,7 +123,10 @@ describe(SwapSDK, () => {
       const signer = new VoidSigner('0x0');
       const swap = {};
       sdk.executeSwap(swap, signer);
-      expect(executeSwap).toHaveBeenCalledWith(swap, 'sisyphos', signer);
+      expect(executeSwap).toHaveBeenCalledWith(swap, {
+        cfNetwork: 'sisyphos',
+        signer,
+      });
     });
   });
 });

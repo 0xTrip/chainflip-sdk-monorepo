@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { Signer } from 'ethers';
+import { z } from 'zod';
 import {
   SISYPHOS_FLIP_CONTRACT_ADDRESS,
   GOERLI_USDC_CONTRACT_ADDRESS,
@@ -81,13 +82,12 @@ const getTokenContractAddress = (
 const swapToken = async (
   vault: Vault,
   params: TokenSwapParams,
-  cfNetwork: ChainflipNetwork,
-  signer: Signer,
+  { signer, ...opts }: ExecuteSwapOptions,
 ): Promise<string> => {
-  const erc20Address = getTokenContractAddress(
-    params.srcTokenSymbol,
-    cfNetwork,
-  );
+  const erc20Address =
+    opts.cfNetwork === 'localnet'
+      ? opts.srcTokenContractAddress
+      : getTokenContractAddress(params.srcTokenSymbol, opts.cfNetwork);
 
   const erc20 = ERC20__factory.connect(erc20Address, signer);
   const signerAddress = await signer.getAddress();
@@ -103,7 +103,7 @@ const swapToken = async (
     chainMap[params.destChainId],
     params.destAddress,
     assetMap[params.destTokenSymbol],
-    getTokenContractAddress(params.srcTokenSymbol, cfNetwork),
+    erc20Address,
     params.amount,
     [],
   );
@@ -118,26 +118,42 @@ const swapToken = async (
 const isTokenSwap = (params: ExecuteSwapParams): params is TokenSwapParams =>
   'srcTokenSymbol' in params;
 
+const executeSwapOptionsSchema = z.intersection(
+  z.object({ signer: z.instanceof(Signer) }),
+  z.union([
+    z.object({ cfNetwork: chainflipNetwork }),
+    z.object({
+      cfNetwork: z.literal('localnet'),
+      vaultContractAddress: z.string(),
+      srcTokenContractAddress: z.string(),
+    }),
+  ]),
+);
+
+export type ExecuteSwapOptions = z.infer<typeof executeSwapOptionsSchema>;
+
 const executeSwap = async (
   params: ExecuteSwapParams,
-  cfNetwork: ChainflipNetwork,
-  signer: Signer,
+  options: ExecuteSwapOptions,
 ): Promise<string> => {
   executeSwapParamsSchema.parse(params);
-  chainflipNetwork.parse(cfNetwork);
-  assert(signer instanceof Signer, 'Invalid signer');
+  const opts = executeSwapOptionsSchema.parse(options);
 
   let vaultContractAddress: string | undefined;
-
-  if (cfNetwork === 'sisyphos') {
+  if (opts.cfNetwork === 'localnet') {
+    vaultContractAddress = opts.vaultContractAddress;
+  } else if (opts.cfNetwork === 'sisyphos') {
     vaultContractAddress = SISYPHOS_VAULT_CONTRACT_ADDRESS;
   }
 
-  assert(vaultContractAddress, 'Unsupported network');
+  assert(
+    vaultContractAddress,
+    'Missing vault contract address or network unsupported',
+  );
 
-  const vault = Vault__factory.connect(vaultContractAddress, signer);
+  const vault = Vault__factory.connect(vaultContractAddress, opts.signer);
 
-  if (isTokenSwap(params)) return swapToken(vault, params, cfNetwork, signer);
+  if (isTokenSwap(params)) return swapToken(vault, params, opts);
   return swapNative(vault, params);
 };
 

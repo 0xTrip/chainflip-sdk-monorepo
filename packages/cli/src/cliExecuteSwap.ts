@@ -1,8 +1,9 @@
 import { getDefaultProvider, providers, Wallet } from 'ethers';
-import { createInterface } from 'readline/promises';
+import { createInterface } from 'node:readline/promises';
 import { z } from 'zod';
 import { ChainId } from '@/sdk/swap/consts';
 import { executeSwap, ExecuteSwapParams } from '@/sdk/swap/vault';
+import { ExecuteSwapOptions } from '@/sdk/swap/vault/executeSwap';
 import {
   chainflipNetwork,
   SupportedAsset,
@@ -24,7 +25,10 @@ const argsSchema = z
     destToken: supportedAsset,
     amount: z.union([numericString, hexString]),
     destAddress: z.string(),
-    chainflipNetwork,
+    walletPrivateKey: z.string().optional(),
+    srcTokenContractAddress: z.string().optional(),
+    vaultContractAddress: z.string().optional(),
+    chainflipNetwork: z.union([chainflipNetwork, z.literal('localnet')]),
     _: z.tuple([z.literal('swap')]),
   })
   .transform(({ destToken, srcToken, _, ...rest }) => {
@@ -38,33 +42,44 @@ const argsSchema = z
     };
   });
 
-export default async function cliExecuteSwap(args: unknown) {
+const askForPrivateKey = async () => {
   const rl = createInterface({ input: process.stdin, output: process.stdout });
 
   try {
-    const { chainflipNetwork: cfNetwork, ...validatedArgs } =
-      argsSchema.parse(args);
-
-    const privateKey = await rl.question(
-      "Please enter your wallet's private key: ",
-    );
-
-    const ethNetwork = cfNetwork === 'mainnet' ? 'mainnet' : 'goerli';
-
-    const wallet = new Wallet(privateKey).connect(
-      process.env.ALCHEMY_KEY
-        ? new providers.AlchemyProvider(ethNetwork, process.env.ALCHEMY_KEY)
-        : getDefaultProvider(ethNetwork),
-    );
-
-    const txHash = await executeSwap(
-      validatedArgs as ExecuteSwapParams,
-      cfNetwork,
-      wallet,
-    );
-
-    console.log(`Swap executed. Transaction hash: ${txHash}`);
+    return await rl.question("Please enter your wallet's private key: ");
   } finally {
     rl.close();
   }
+};
+
+export default async function cliExecuteSwap(args: unknown) {
+  const {
+    chainflipNetwork: cfNetwork,
+    walletPrivateKey,
+    vaultContractAddress,
+    srcTokenContractAddress,
+    ...validatedArgs
+  } = argsSchema.parse(args);
+
+  const privateKey = walletPrivateKey ?? (await askForPrivateKey());
+
+  const ethNetwork = cfNetwork === 'mainnet' ? 'mainnet' : 'goerli';
+
+  const wallet = new Wallet(privateKey).connect(
+    process.env.ALCHEMY_KEY
+      ? new providers.AlchemyProvider(ethNetwork, process.env.ALCHEMY_KEY)
+      : getDefaultProvider(ethNetwork),
+  );
+
+  const txHash = await executeSwap(
+    validatedArgs as ExecuteSwapParams,
+    {
+      cfNetwork,
+      signer: wallet,
+      vaultContractAddress,
+      srcTokenContractAddress,
+    } as ExecuteSwapOptions,
+  );
+
+  console.log(`Swap executed. Transaction hash: ${txHash}`);
 }
