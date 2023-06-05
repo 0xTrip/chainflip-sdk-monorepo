@@ -89,6 +89,7 @@ const swapToken = async (
       ? opts.srcTokenContractAddress
       : getTokenContractAddress(params.srcTokenSymbol, opts.cfNetwork);
 
+  assert(erc20Address !== undefined, 'Missing ERC20 contract address');
   const erc20 = ERC20__factory.connect(erc20Address, signer);
   const signerAddress = await signer.getAddress();
   const allowance = await erc20.allowance(signerAddress, vault.address);
@@ -125,7 +126,7 @@ const executeSwapOptionsSchema = z.intersection(
     z.object({
       cfNetwork: z.literal('localnet'),
       vaultContractAddress: z.string(),
-      srcTokenContractAddress: z.string(),
+      srcTokenContractAddress: z.string().optional(),
     }),
   ]),
 );
@@ -147,7 +148,7 @@ const executeSwap = async (
   }
 
   assert(
-    vaultContractAddress,
+    vaultContractAddress !== undefined,
     'Missing vault contract address or network unsupported',
   );
 
