@@ -11,7 +11,7 @@ describe(processBlocks, () => {
 
   it('dispatches a SwapScheduled event', async () => {
     const depositAddress =
-      swapScheduledDepositChannelMock.eventContext.event.args.origin.value
+      swapScheduledDepositChannelMock.eventContext.event.args.origin
         .depositAddress.value;
 
     await prisma.swapDepositChannel.create({

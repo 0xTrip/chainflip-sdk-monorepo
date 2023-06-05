@@ -33,12 +33,19 @@ const quote = (io: Server) => {
 
       io.emit('quote_request', quoteRequest);
 
-      const [marketMakerQuotes, brokerQuote] = await Promise.all([
-        collectQuotes(quoteRequest.id, io.sockets.sockets.size, quotes$),
-        getBrokerQuote(result.data, quoteRequest.id),
-      ]);
-
-      res.json(findBestQuote(marketMakerQuotes, brokerQuote));
+      try {
+        const [marketMakerQuotes, brokerQuote] = await Promise.all([
+          collectQuotes(quoteRequest.id, io.sockets.sockets.size, quotes$),
+          getBrokerQuote(result.data, quoteRequest.id),
+        ]);
+        res.json(findBestQuote(marketMakerQuotes, brokerQuote));
+      } catch (err) {
+        const message =
+          err instanceof Error
+            ? err.message
+            : 'unknown error (possibly no liquidity)';
+        res.status(500).json({ error: message });
+      }
     }),
   );
 

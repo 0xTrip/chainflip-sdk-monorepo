@@ -73,8 +73,8 @@ const buildSwapScheduledEvent = <T extends SwapScheduledEvent>(args: T) => ({
 });
 
 export const swapScheduledDepositChannelMock = buildSwapScheduledEvent({
-  depositAsset: 'Eth',
-  destinationAsset: 'Flip',
+  depositAsset: { __kind: 'Eth' },
+  destinationAsset: { __kind: 'Flip' },
   swapId: '9876545',
   depositAmount: '222222222222222222',
   destinationAddress: {
@@ -83,13 +83,13 @@ export const swapScheduledDepositChannelMock = buildSwapScheduledEvent({
   },
   origin: {
     __kind: 'DepositChannel',
-    value: { depositAddress: { __kind: 'Eth', value: ETH_ADDRESS } },
+    depositAddress: { __kind: 'Eth', value: ETH_ADDRESS },
   },
 } as const);
 
 export const swapScheduledVaultMock = buildSwapScheduledEvent({
-  depositAsset: 'Eth',
-  destinationAsset: 'Flip',
+  depositAsset: { __kind: 'Eth' },
+  destinationAsset: { __kind: 'Flip' },
   swapId: '9876545',
   depositAmount: '222222222222222222',
   destinationAddress: { __kind: 'Eth', value: ETH_ADDRESS },

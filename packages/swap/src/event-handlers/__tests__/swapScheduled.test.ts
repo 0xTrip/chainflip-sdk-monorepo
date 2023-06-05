@@ -17,12 +17,13 @@ describe(swapScheduled, () => {
     beforeEach(async () => {
       swapDepositChannel = await createDepositChannel({
         depositAsset:
-          swapScheduledDepositChannelMock.eventContext.event.args.depositAsset,
+          swapScheduledDepositChannelMock.eventContext.event.args.depositAsset
+            .__kind,
         destinationAsset:
           swapScheduledDepositChannelMock.eventContext.event.args
-            .destinationAsset,
+            .destinationAsset.__kind,
         depositAddress:
-          swapScheduledDepositChannelMock.eventContext.event.args.origin.value
+          swapScheduledDepositChannelMock.eventContext.event.args.origin
             .depositAddress.value,
         destinationAddress:
           swapScheduledDepositChannelMock.eventContext.event.args

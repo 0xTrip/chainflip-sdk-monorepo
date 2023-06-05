@@ -1,24 +1,22 @@
 // Set the column in the DB to the block timestamp and the deposit amount.
 import assert from 'assert';
 import { z } from 'zod';
-import { stateChainAsset, unsignedInteger } from '@/shared/parsers';
+import { stateChainAssetEnum, unsignedInteger } from '@/shared/parsers';
 import logger from '../utils/logger';
 import { encodedAddress } from './common';
 import type { EventHandlerArgs } from '.';
 
 const baseArgs = z.object({
   swapId: unsignedInteger,
-  depositAsset: stateChainAsset,
+  depositAsset: stateChainAssetEnum,
   depositAmount: unsignedInteger,
-  destinationAsset: stateChainAsset,
+  destinationAsset: stateChainAssetEnum,
   destinationAddress: encodedAddress,
 });
 
 const depositChannelOrigin = z.object({
   __kind: z.literal('DepositChannel'),
-  value: z.object({
-    depositAddress: encodedAddress, // hopefully this works for foreign chain address
-  }),
+  depositAddress: encodedAddress,
 });
 
 const vaultOrigin = z.object({
@@ -51,7 +49,7 @@ export default async function swapScheduled({
     };
 
     if (args.origin.__kind === 'DepositChannel') {
-      const depositAddress = args.origin.value.depositAddress.address;
+      const depositAddress = args.origin.depositAddress.address;
 
       const channels = await prisma.swapDepositChannel.findMany({
         where: { depositAddress, expiryBlock: { gte: block.height } },
