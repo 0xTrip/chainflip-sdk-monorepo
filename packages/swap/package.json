@@ -10,7 +10,7 @@
     "dev:process": "tsx src/process.ts",
     "preinstall": "npx only-allow pnpm",
     "lint": "pnpm eslint --max-warnings 0 './**/*.ts'",
-    "postinstall": "prisma generate && pnpm graphql:codegen",
+    "postinstall": "prisma generate",
     "prettier:write": "pnpm prettier --write ./**/*",
     "start": "node dist/swap/src/index.js",
     "test:ci": "CI=1 jest --forceExit",
