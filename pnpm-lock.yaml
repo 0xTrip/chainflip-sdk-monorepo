@@ -211,8 +211,8 @@ importers:
         specifier: ^7.21.4
         version: 7.21.4
       '@graphql-codegen/cli':
-        specifier: 4.0.0
-        version: 4.0.0(@babel/core@7.21.4)(@types/node@18.0.0)(graphql@16.6.0)
+        specifier: 4.0.1
+        version: 4.0.1(@babel/core@7.21.4)(@types/node@18.0.0)(graphql@16.6.0)
       '@graphql-codegen/client-preset':
         specifier: ^4.0.0
         version: 4.0.0(graphql@16.6.0)
@@ -1542,8 +1542,8 @@ packages:
       tslib: 2.5.2
     dev: true
 
-  /@graphql-codegen/cli@4.0.0(@babel/core@7.21.4)(@types/node@18.0.0)(graphql@16.6.0):
-    resolution: {integrity: sha512-wmJXs48Apu+dXQ7utHa3cY1ulFJuflrqpbkhLwxfIAHjSfQouWCn2k7Udq+5PqbCLTDdbUQvw6vGZ5hgud0XuQ==}
+  /@graphql-codegen/cli@4.0.1(@babel/core@7.21.4)(@types/node@18.0.0)(graphql@16.6.0):
+    resolution: {integrity: sha512-/H4imnGOl3hoPXLKmIiGUnXpmBmeIClSZie/YHDzD5N59cZlGGJlIOOrUlOTDpJx5JNU1MTQcRjyTToOYM5IfA==}
     hasBin: true
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
