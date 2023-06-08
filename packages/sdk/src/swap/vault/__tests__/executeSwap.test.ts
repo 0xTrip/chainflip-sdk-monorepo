@@ -92,7 +92,7 @@ describe(executeSwap, () => {
           cfNetwork: 'sisyphos',
           signer: new VoidSigner('MY ADDRESS'),
         }),
-      ).toBe('hello world');
+      ).toStrictEqual({ status: 1, transactionHash: 'hello world' });
       expect(wait).toHaveBeenCalledWith(1);
       expect(swapSpy.mock.calls).toMatchSnapshot();
     },
@@ -155,7 +155,7 @@ describe(executeSwap, () => {
           cfNetwork: 'sisyphos',
           signer: new VoidSigner('MY ADDRESS'),
         }),
-      ).toBe('hello world');
+      ).toStrictEqual({ status: 1, transactionHash: 'hello world' });
       expect(wait).toHaveBeenCalledWith(1);
       expect(swapSpy.mock.calls).toMatchSnapshot();
       expect(allowanceSpy.mock.calls).toMatchSnapshot();
@@ -188,7 +188,7 @@ describe(executeSwap, () => {
         } as ExecuteSwapParams,
         { cfNetwork: 'sisyphos', signer: new VoidSigner('MY ADDRESS') },
       ),
-    ).toBe('hello world');
+    ).toStrictEqual({ status: 1, transactionHash: 'hello world' });
     expect(wait).toHaveBeenCalledWith(1);
     expect(swapSpy.mock.calls).toMatchSnapshot();
     expect(allowanceSpy.mock.calls).toMatchSnapshot();
@@ -265,7 +265,7 @@ describe(executeSwap, () => {
           srcTokenContractAddress: '0x456',
         },
       ),
-    ).toBe('hello world');
+    ).toStrictEqual({ status: 1, transactionHash: 'hello world' });
     expect(wait).toHaveBeenCalledWith(1);
     expect(swapSpy.mock.calls).toMatchSnapshot();
     expect(allowanceSpy.mock.calls).toMatchSnapshot();

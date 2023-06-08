@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Signer } from 'ethers';
+import { ContractReceipt, Signer } from 'ethers';
 import { ChainflipNetwork } from '@/shared/enums';
 import { BACKEND_SERVICE_URL, ChainId } from './consts';
 import ApiService, { RequestOptions } from './services/ApiService';
@@ -71,7 +71,10 @@ export class SwapSDK {
     return ApiService.getStatus(this.baseUrl, swapStatusRequest, options);
   }
 
-  executeSwap(params: ExecuteSwapParams, signer?: Signer) {
+  executeSwap(
+    params: ExecuteSwapParams,
+    signer?: Signer,
+  ): Promise<ContractReceipt> {
     const s = signer ?? this.signer;
     assert(s, 'No signer provided');
     return executeSwap(params, { cfNetwork: this.network, signer: s });

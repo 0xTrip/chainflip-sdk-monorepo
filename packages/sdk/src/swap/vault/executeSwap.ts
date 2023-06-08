@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Signer } from 'ethers';
+import { ContractReceipt, Signer } from 'ethers';
 import { z } from 'zod';
 import {
   SISYPHOS_FLIP_CONTRACT_ADDRESS,
@@ -48,7 +48,7 @@ const assetMap: Record<SupportedAsset, number> = {
 const swapNative = async (
   vault: Vault,
   { destChainId, destTokenSymbol, destAddress, amount }: NativeSwapParams,
-): Promise<string> => {
+): Promise<ContractReceipt> => {
   const transaction = await vault.xSwapNative(
     chainMap[destChainId],
     destAddress,
@@ -61,7 +61,7 @@ const swapNative = async (
 
   assert(receipt.status !== 0, 'Transaction failed');
 
-  return receipt.transactionHash;
+  return receipt;
 };
 
 const getTokenContractAddress = (
@@ -83,7 +83,7 @@ const swapToken = async (
   vault: Vault,
   params: TokenSwapParams,
   { signer, ...opts }: ExecuteSwapOptions,
-): Promise<string> => {
+): Promise<ContractReceipt> => {
   const erc20Address =
     opts.cfNetwork === 'localnet'
       ? opts.srcTokenContractAddress
@@ -113,7 +113,7 @@ const swapToken = async (
 
   assert(receipt.status !== 0, 'Transaction failed');
 
-  return receipt.transactionHash;
+  return receipt;
 };
 
 const isTokenSwap = (params: ExecuteSwapParams): params is TokenSwapParams =>
@@ -136,7 +136,7 @@ export type ExecuteSwapOptions = z.infer<typeof executeSwapOptionsSchema>;
 const executeSwap = async (
   params: ExecuteSwapParams,
   options: ExecuteSwapOptions,
-): Promise<string> => {
+): Promise<ContractReceipt> => {
   executeSwapParamsSchema.parse(params);
   const opts = executeSwapOptionsSchema.parse(options);
 
