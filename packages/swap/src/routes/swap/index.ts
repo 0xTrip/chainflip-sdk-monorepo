@@ -57,11 +57,11 @@ router.get(
       state,
       depositAddress: swapDepositChannel.depositAddress,
       depositAmount: swap?.depositAmount?.toString(),
-      depositAsset: swapDepositChannel.depositAsset,
+      srcAsset: swapDepositChannel.srcAsset,
       depositReceivedAt: swap?.depositReceivedAt.valueOf(),
       depositReceivedBlockIndex: swap?.depositReceivedBlockIndex,
-      destinationAddress: swapDepositChannel.destinationAddress,
-      destinationAsset: swapDepositChannel.destinationAsset,
+      destAddress: swapDepositChannel.destAddress,
+      destAsset: swapDepositChannel.destAsset,
       egressAmount: swap?.egress?.amount?.toString(),
       egressCompletedAt: swap?.egressCompletedAt?.valueOf(),
       egressCompletedBlockIndex: swap?.egressCompletedBlockIndex,
@@ -90,11 +90,7 @@ router.post(
     const payload = result.data;
 
     if (
-      !validateAddress(
-        payload.destinationAsset,
-        payload.destinationAddress,
-        isProduction,
-      )
+      !validateAddress(payload.destAsset, payload.destAddress, isProduction)
     ) {
       throw ServiceError.badRequest('provided address is not valid');
     }

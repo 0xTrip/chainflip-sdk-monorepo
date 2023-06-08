@@ -6,13 +6,28 @@ import logger from '../utils/logger';
 import { encodedAddress } from './common';
 import type { EventHandlerArgs } from '.';
 
-const baseArgs = z.object({
+const baseArgsWithoutSource = z.object({
   swapId: unsignedInteger,
-  depositAsset: stateChainAssetEnum,
   depositAmount: unsignedInteger,
   destinationAsset: stateChainAssetEnum,
   destinationAddress: encodedAddress,
 });
+
+// TODO:0.9 remove this
+const depositAssetArg = z
+  .object({
+    depositAsset: stateChainAssetEnum,
+  })
+  .transform(({ depositAsset }) => ({ sourceAsset: depositAsset }));
+
+const sourceAssetArg = z.object({
+  sourceAsset: stateChainAssetEnum,
+});
+
+const baseArgs = z.union([
+  z.intersection(baseArgsWithoutSource, depositAssetArg),
+  z.intersection(baseArgsWithoutSource, sourceAssetArg),
+]);
 
 const depositChannelOrigin = z.object({
   __kind: z.literal('DepositChannel'),
@@ -67,24 +82,23 @@ export default async function swapScheduled({
         `SwapScheduled: too many active swap intents found for depositAddress ${depositAddress}`,
       );
 
-      const [{ depositAsset, destinationAddress, destinationAsset, id }] =
-        channels;
+      const [{ srcAsset, destAddress, destAsset, id }] = channels;
 
       await prisma.swap.create({
         data: {
           swapDepositChannelId: id,
-          depositAsset,
-          destinationAsset,
-          destinationAddress,
+          srcAsset,
+          destAsset,
+          destAddress,
           ...newSwapData,
         },
       });
     } else if (args.origin.__kind === 'Vault') {
       await prisma.swap.create({
         data: {
-          depositAsset: args.depositAsset,
-          destinationAsset: args.destinationAsset,
-          destinationAddress: args.destinationAddress.address,
+          srcAsset: args.sourceAsset,
+          destAsset: args.destinationAsset,
+          destAddress: args.destinationAddress.address,
           ...newSwapData,
         },
       });

@@ -22,9 +22,9 @@ describe(submitSwapToBroker, () => {
     const sendSpy = jest.spyOn(WebSocket.prototype, 'send');
 
     const resultPromise = submitSwapToBroker({
-      depositAsset: 'FLIP',
-      destinationAsset: 'USDC',
-      destinationAddress: '0xcafebabe',
+      srcAsset: 'FLIP',
+      destAsset: 'USDC',
+      destAddress: '0xcafebabe',
     });
 
     // event loop tick to allow promise within client to resolve

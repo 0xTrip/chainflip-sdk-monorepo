@@ -84,8 +84,8 @@ describe('python integration test', () => {
     ).resolves.toBe('connected');
 
     const params = new URLSearchParams({
-      depositAsset: 'FLIP',
-      destinationAsset: 'ETH',
+      srcAsset: 'FLIP',
+      destAsset: 'ETH',
       amount: '1000000000000000000',
     } as QuoteQueryParams);
 

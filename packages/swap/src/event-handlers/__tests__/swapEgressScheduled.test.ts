@@ -40,9 +40,9 @@ describe(swapEgressScheduled, () => {
           }`,
           swapExecutedAt: new Date(block.timestamp - 6000),
           swapExecutedBlockIndex: `${block.height}-${event.indexInBlock}`,
-          depositAsset: 'ETH',
-          destinationAsset: 'DOT',
-          destinationAddress: DOT_ADDRESS,
+          srcAsset: 'ETH',
+          destAsset: 'DOT',
+          destAddress: DOT_ADDRESS,
         },
       },
     });

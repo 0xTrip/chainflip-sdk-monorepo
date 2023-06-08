@@ -20,11 +20,11 @@ datasource db {
 model SwapDepositChannel {
   id                    BigInt   @id @default(autoincrement())
   uuid                  String   @unique @default(uuid())
-  depositAsset          String
+  srcAsset              String
   depositAddress        String
   expectedDepositAmount Decimal  @db.Decimal(30, 0)
-  destinationAsset      String
-  destinationAddress    String
+  destAsset             String
+  destAddress           String
   expiryBlock           Int
   issuedBlock           Int
   createdAt             DateTime @default(now())
@@ -38,10 +38,10 @@ model Swap {
   id                        BigInt              @id @default(autoincrement())
   /// the swap id on the state chain
   nativeId                  BigInt              @unique
-  depositAsset              String
+  srcAsset                  String
   depositAmount             Decimal             @db.Decimal(30, 0)
-  destinationAsset          String
-  destinationAddress        String
+  destAsset                 String
+  destAddress               String
   depositReceivedAt         DateTime
   depositReceivedBlockIndex String
   swapExecutedAt            DateTime?

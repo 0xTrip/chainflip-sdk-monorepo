@@ -86,8 +86,8 @@ const getRoute: BackendQuery<RouteRequest, RouteResponse> = async (
 ) => {
   const params: QuoteQueryParams = {
     amount,
-    depositAsset: routeRequest.srcTokenSymbol,
-    destinationAsset: routeRequest.destTokenSymbol,
+    srcAsset: routeRequest.srcTokenSymbol,
+    destAsset: routeRequest.destTokenSymbol,
   };
 
   const queryParams = new URLSearchParams(params);
@@ -105,9 +105,9 @@ const requestDepositAddress: BackendQuery<SwapRequest, SwapResponse> = async (
   { signal },
 ) => {
   const body: SwapRequestBody = {
-    destinationAddress: route.destinationAddress,
-    depositAsset: route.srcTokenSymbol,
-    destinationAsset: route.destTokenSymbol,
+    destAddress: route.destAddress,
+    srcAsset: route.srcTokenSymbol,
+    destAsset: route.destTokenSymbol,
     expectedDepositAmount: route.expectedDepositAmount,
   };
 

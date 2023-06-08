@@ -11,7 +11,7 @@ jest.mock('axios', () => ({
 describe('ApiService', () => {
   const mockRoute = {
     amount: '10000',
-    destinationAddress: '',
+    destAddress: '',
     srcChainId: ChainId.Bitcoin,
     srcTokenSymbol: 'BTC',
     destChainId: ChainId.Ethereum,
@@ -71,7 +71,7 @@ describe('ApiService', () => {
         'https://swapperoo.org',
         {
           amount: '10000',
-          destinationAddress: '',
+          destAddress: '',
           srcChainId: ChainId.Bitcoin,
           srcTokenSymbol: 'BTC',
           destChainId: ChainId.Ethereum,

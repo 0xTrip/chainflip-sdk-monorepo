@@ -15,10 +15,10 @@ export const createDepositChannel = (
 ): Promise<SwapDepositChannel> =>
   prisma.swapDepositChannel.create({
     data: {
-      depositAsset: 'ETH',
-      destinationAsset: 'DOT',
+      srcAsset: 'ETH',
+      destAsset: 'DOT',
       depositAddress: ETH_ADDRESS,
-      destinationAddress: DOT_ADDRESS,
+      destAddress: DOT_ADDRESS,
       expectedDepositAmount: '10000000000',
       expiryBlock: 200,
       issuedBlock: 100,
@@ -73,7 +73,7 @@ const buildSwapScheduledEvent = <T extends SwapScheduledEvent>(args: T) => ({
 });
 
 export const swapScheduledDepositChannelMock = buildSwapScheduledEvent({
-  depositAsset: { __kind: 'Eth' },
+  sourceAsset: { __kind: 'Eth' },
   destinationAsset: { __kind: 'Flip' },
   swapId: '9876545',
   depositAmount: '222222222222222222',
@@ -88,7 +88,7 @@ export const swapScheduledDepositChannelMock = buildSwapScheduledEvent({
 } as const);
 
 export const swapScheduledVaultMock = buildSwapScheduledEvent({
-  depositAsset: { __kind: 'Eth' },
+  sourceAsset: { __kind: 'Eth' },
   destinationAsset: { __kind: 'Flip' },
   swapId: '9876545',
   depositAmount: '222222222222222222',

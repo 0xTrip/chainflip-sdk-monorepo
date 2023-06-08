@@ -9,13 +9,13 @@ from typing import Optional, Dict, Tuple
 @dataclass
 class Quote:
     id: str
-    deposit_asset: str
+    source_asset: str
     destination_asset: str
     deposit_amount: str
 
     def __init__(self, json: Dict[str, Any]):
         self.id = json["id"]
-        self.deposit_asset = json["deposit_asset"]
+        self.source_asset = json["source_asset"]
         self.destination_asset = json["destination_asset"]
         self.deposit_amount = json["deposit_amount"]
 

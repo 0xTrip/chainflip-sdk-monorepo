@@ -23,9 +23,9 @@ describe(swapExecuted, () => {
           depositAmount: '10000000000',
           depositReceivedAt: new Date(block.timestamp - 6000),
           depositReceivedBlockIndex: `${block.height}-${event.indexInBlock}`,
-          depositAsset: 'ETH',
-          destinationAsset: 'DOT',
-          destinationAddress: DOT_ADDRESS,
+          srcAsset: 'ETH',
+          destAsset: 'DOT',
+          destAddress: DOT_ADDRESS,
         },
       },
     });

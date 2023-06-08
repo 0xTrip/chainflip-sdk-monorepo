@@ -31,7 +31,7 @@ interface Route {
   destChainId: ChainId;
   srcTokenSymbol: TokenSymbol;
   destTokenSymbol: TokenSymbol;
-  destinationAddress: string;
+  destAddress: string;
 }
 
 export interface RouteRequest extends Route {
@@ -57,9 +57,9 @@ export interface SwapStatusRequest {
 
 type CommonStatusFields = {
   depositAddress: string;
-  destinationAddress: string;
-  depositAsset: SupportedAsset;
-  destinationAsset: SupportedAsset;
+  destAddress: string;
+  srcAsset: SupportedAsset;
+  destAsset: SupportedAsset;
   expectedDepositAmount: string;
 };
 

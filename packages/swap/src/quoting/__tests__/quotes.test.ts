@@ -117,45 +117,45 @@ describe('quotes', () => {
     it('returns a QuoteRequest', () => {
       expect(
         buildQuoteRequest({
-          depositAsset: 'FLIP',
-          destinationAsset: 'ETH',
+          srcAsset: 'FLIP',
+          destAsset: 'ETH',
           amount: '1000000000000000000',
         }),
       ).toEqual({
         id: expect.any(String),
-        deposit_asset: 'FLIP',
+        source_asset: 'FLIP',
         intermediate_asset: 'USDC',
         destination_asset: 'ETH',
         deposit_amount: '1000000000000000000',
       });
     });
 
-    it('returns a QuoteRequest with a null intermediate_asset if depositAsset is USDC', () => {
+    it('returns a QuoteRequest with a null intermediate_asset if srcAsset is USDC', () => {
       expect(
         buildQuoteRequest({
-          depositAsset: 'USDC',
-          destinationAsset: 'ETH',
+          srcAsset: 'USDC',
+          destAsset: 'ETH',
           amount: '100000000',
         }),
       ).toEqual({
         id: expect.any(String),
-        deposit_asset: 'USDC',
+        source_asset: 'USDC',
         intermediate_asset: null,
         destination_asset: 'ETH',
         deposit_amount: '100000000',
       });
     });
 
-    it('returns a QuoteRequest with a null intermediate_asset if destinationAsset is USDC', () => {
+    it('returns a QuoteRequest with a null intermediate_asset if destAsset is USDC', () => {
       expect(
         buildQuoteRequest({
-          depositAsset: 'ETH',
-          destinationAsset: 'USDC',
+          srcAsset: 'ETH',
+          destAsset: 'USDC',
           amount: '100000000',
         }),
       ).toEqual({
         id: expect.any(String),
-        deposit_asset: 'ETH',
+        source_asset: 'ETH',
         intermediate_asset: null,
         destination_asset: 'USDC',
         deposit_amount: '100000000',

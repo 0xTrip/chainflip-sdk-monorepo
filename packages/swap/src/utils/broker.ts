@@ -13,9 +13,9 @@ import RpcClient from './RpcClient';
 import { transformAsset } from './string';
 
 type NewSwapRequest = {
-  depositAsset: SupportedAsset;
-  destinationAsset: SupportedAsset;
-  destinationAddress: string;
+  srcAsset: SupportedAsset;
+  destAsset: SupportedAsset;
+  destAddress: string;
 };
 
 const requestValidators = {
@@ -61,15 +61,13 @@ export type DepositChannelResponse = z.infer<
 export const submitSwapToBroker = async (
   swapRequest: NewSwapRequest,
 ): Promise<DepositChannelResponse> => {
-  const { depositAsset, destinationAsset, destinationAddress } = swapRequest;
+  const { srcAsset, destAsset, destAddress } = swapRequest;
   const client = await initializeClient();
   const depositChannelResponse = await client.sendRequest(
     'requestSwapDepositAddress',
-    depositAsset,
-    destinationAsset,
-    destinationAsset === 'DOT'
-      ? u8aToHex(decodeAddress(destinationAddress))
-      : destinationAddress,
+    srcAsset,
+    destAsset,
+    destAsset === 'DOT' ? u8aToHex(decodeAddress(destAddress)) : destAddress,
     0,
   );
 

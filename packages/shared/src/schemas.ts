@@ -3,17 +3,17 @@ import { SupportedAsset, supportedAsset } from './enums';
 import { numericString } from './parsers';
 
 export const quoteQuerySchema = z.object({
-  depositAsset: supportedAsset,
-  destinationAsset: supportedAsset,
+  srcAsset: supportedAsset,
+  destAsset: supportedAsset,
   amount: numericString,
 });
 
 export type QuoteQueryParams = z.infer<typeof quoteQuerySchema>;
 
 export const postSwapSchema = z.object({
-  depositAsset: supportedAsset,
-  destinationAsset: supportedAsset,
-  destinationAddress: z.string(),
+  srcAsset: supportedAsset,
+  destAsset: supportedAsset,
+  destAddress: z.string(),
   expectedDepositAmount: numericString,
 });
 
@@ -51,19 +51,19 @@ interface BaseRequest {
 }
 
 interface Intermediate extends BaseRequest {
-  deposit_asset: Exclude<SupportedAsset, 'USDC'>;
+  source_asset: Exclude<SupportedAsset, 'USDC'>;
   intermediate_asset: 'USDC';
   destination_asset: Exclude<SupportedAsset, 'USDC'>;
 }
 
 interface USDCDeposit extends BaseRequest {
-  deposit_asset: 'USDC';
+  source_asset: 'USDC';
   intermediate_asset: null;
   destination_asset: Exclude<SupportedAsset, 'USDC'>;
 }
 
 interface USDCEgress extends BaseRequest {
-  deposit_asset: Exclude<SupportedAsset, 'USDC'>;
+  source_asset: Exclude<SupportedAsset, 'USDC'>;
   intermediate_asset: null;
   destination_asset: 'USDC';
 }
