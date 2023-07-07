@@ -10,7 +10,7 @@ on:
       - packages/swap/**
   push:
     branches:
-      - release/*
+      - main
     paths:
       - packages/swap/**
 
@@ -85,6 +85,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           repository: chainflip-io/chainflip-web-services
-          event-type: build-swap-staging
+          event-type: build-swap-partnernet
           token: ${{ secrets.CF_GITHUB_BOT_TOKEN  }}
           client-payload: '{"commit_sha": "${{ github.sha }}"}'
